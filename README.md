@@ -1,7 +1,6 @@
 # Bachelor's thesis of Soma Lucz
 
-Computer Science Engineering BSc from
-
+* **Computer Science Engineering**
 * [Budapest University of Technology and Economics](http://www.bme.hu/?language=en)
 * [Faculty of Electrical Engineering and Informatics](https://www.vik.bme.hu/en)
 * [Department of Measurement and Information Systems](http://www.mit.bme.hu/eng/)
@@ -11,4 +10,4 @@ Many thanks for the [template](https://github.com/kris7t/thesis-template-latex) 
 
 ---
 
-**Soma Lucz** (2017)
+© Soma Lucz (2017)
