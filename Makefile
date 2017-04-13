@@ -14,8 +14,6 @@ all:
 
 	rm  out/run*.pid
 
-jenkins: clean all
-
 clean:
 	rm -rf ./out
 	rm -rf ./pdf
