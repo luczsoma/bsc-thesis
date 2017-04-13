@@ -10,4 +10,5 @@ Many thanks for the [template](https://github.com/kris7t/thesis-template-latex) 
 
 ---
 
-© Soma Lucz (2017)
+© Soma Lucz, 2017
+
