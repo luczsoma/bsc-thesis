@@ -1,0 +1,14 @@
+*~
+\#*\#
+auto-save-list
+auto/
+tramp
+.\#*
+
+out/
+pdf/
+/*.txss
+/*.sublime-workspace
+/*.sublime-project
+.DS_Store
+
