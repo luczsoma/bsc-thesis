@@ -3,9 +3,9 @@
 
 \section{Context}
 
-Software development is a highly complex process involving many people, tools and methods. As the source code repository grows, code quality becomes an important aspect of the development procedure: the software gets more and more complex, the number of human errors in the implementation gets higher and higher. It is important to find and fix these errors as soon as possible: software defects found after deployment are 15 times more costly than if they were found during implementation.~\cite{dawson2010integrating} According to NIST, software bugs cost generally \$59.5 billion dollars for the US government annually.~\cite{tassey2002economic}
+Software development is a highly complex process involving many people, tools and methods. As the source code repository grows, code quality becomes an important aspect of the development procedure: the software gets more and more complex, the number of human errors in the implementation gets higher and higher. It is important to find and fix these errors as soon as possible: software defects found after deployment are 15 times more costly than if they were found during implementation.~\cite{dawson2010integrating} According to NIST, software bugs cost generally \$59.5 billion for the US government annually.~\cite{tassey2002economic}
 
-Today's developer tools in commercial or significant open-source projects generally include \emph{version control systems (VCS)} and \emph{continuous integration (CI)} toolsets.~\cite{hilton2016usage}~\cite{fowlerCI} Integrating \emph{code quality assurance} tools into the CI platform (or into the developer's \emph{integrated development environment (IDE)}) seems to be the practical choice for enforcing project-/company-wide coding style compliance, and analysing the code deeper whether it contains defects.
+Today's developer tools in commercial and open-source projects generally include \emph{version control systems (VCS)} and \emph{continuous integration (CI)} toolsets.~\cite{hilton2016usage}~\cite{fowlerCI} Integrating code quality assurance tools into the CI platform (or into the developer's \emph{integrated development environment (IDE)}) seems to be the practical choice for enforcing project-/company-wide coding style compliance, and analysing the code deeper whether it contains defects.
 
 A CI tool can be configured to scan and analyse the source code with external tools when the developer commits their code to the central code repository. A common workflow is the following:
 
@@ -35,7 +35,7 @@ The solution can introduce other administrative requirements as well, like incre
 
 \section{Objectives and Contributions}
 
-My prospective colleague and former mentor, Dániel Stein created a graph-based static analysis framework called \emph{Codemodel-Rifle}.~\cite{stein-daniel-msc} This framework stores the parsed source code repository's each parsed file as a separate property graph – called an \emph{Abstract Syntax Graph} –, and gives us an interface to run analyses via graph queries.
+My prospective colleague and former mentor, Dániel Stein created a graph-based static analysis framework called \emph{Codemodel-Rifle}.~\cite{stein-daniel-msc} This framework stores the parsed source code repository's each parsed file as a separate property graph – called an \emph{Abstract Syntax Graph (ASG)} –, and gives us an interface to run analyses via graph queries.
 
 My main goal is to extend \emph{Codemodel-Rifle} with several static analysis constraints. This implies providing ways for evaluating analysis queries involving multiple JavaScript modules related to each other.
 
