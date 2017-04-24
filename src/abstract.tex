@@ -5,9 +5,14 @@
   \addcontentsline{toc}{chapter}{Kivonat}
   \thispagestyle{plain}
 
-  Ide kerül a kivonat.
-  
-  \paragraph{Kulcsszavak} diplomaterv, sablon, \LaTeX
+  Szoftvereink kódját általában emberek írják. Az emberek általában hibákat követnek el, amik megfelelő eszköztárak hiányában felfedezetlenek maradhatnak. Ezen fejlesztői hibák fokozott kockázatot jelenthetnek a készülő szoftverre, hiszen az esetlegesen helytelen logikai működés mellett jelentős biztonsági réseket eredményezhetnek; kiaknázásuk a szoftver nemkívánatos viselkedését idézheti elő. Ez rosszindulatú támadóknak lehetőséget nyújthat arra, hogy a szoftvert számukra kedvező, az eredetileg tervezettől eltérő módon futtassák.
+
+  A statikus forráskódanalízis egy iparban gyakran használt, általánosan elfogadott szoftvertesztelési megközelítés. Mivel alkalmazásához a vizsgált kód lefuttatása nem szükséges, célja, hogy minél több szoftverfejlesztői hibát minél előbb, még a program fejlesztési szakaszában feltárjon, csökkentve ezzel a működés közben felmerülő programhibák számát, és így a telepítés utáni hibajavítással járó pluszköltségeket. Felhasználási lehetőségei közé tartozik a csoportos, vállalati kódolási szabályoknak, stílusoknak való megfelelés ellenőrzése, illetve egyre több szoftver nyújt támogatást egyre komolyabb logikai hibák fordítási vagy akár kódírási idejű feltárásához is.
+
+  Napjaink folytonos integrációs infrastruktúrájába vagy fejlesztőkörnyezetbe illesztve a statikus analízis hatékony eszköz lehet a fejlesztői hibák feltárásában, és ezáltal állandó kódminőség biztosításában. Nagymértékű népszerűsége ellenére a JavaScript nyelvhez – annak dinamikus és gyenge típusosságából eredő sajátosságok következményeként – kevés statikus analízis-eszköztár létezik, és rendelkezésre álló eszközök sem nyújtanak teljeskörű megoldást nagyméretű, vállalati szintű JavaScript forráskódtárak összefüggő elemzéséhez. Gyakran felmerülő probléma emellett az analitikus komplexitással általában fordítottan arányos sebesség: sem folytonos integrációs infrastruktúrába, sem fejlesztőkörnyezetbe nem illeszthető olyan eszköz, amely miatt a fordítási vagy telepítési idő akár órákkal növekszik.
+
+  Dolgozatomban egy már létező, a fenti követelményeknek nagy részben megfelelő statikus kódanalízis-keretrendszer bővítését tervezem meg, fejlesztem le és értékelem ki. A bővítés során egyrészt új – logikai és formai – JavaScript-alapú statikus analízis-kikötéseket implementálok a rendszerhez. Másrészt lehetővé teszem, hogy a rendszer több összefüggő JavaScript-modulon (forrásfájlon) átívelő, globális analízis-kikötések kiértékelésére is képes legyen. Ezt kihasználva újabb kikötéseket implementálok, immáron több JavaScript-modult (forráskódfájlt) összefüggően elemző analízisekhez. Végezetül bevezetek egy modellt, amellyel az eddig alapvetően csak mintaillesztési elveken működő keretrendszert egyszerűbben és általánosabban lehet JavaScript-alapú logikai analízis-kikötésekkel bővíteni.
+
 \end{otherlanguage}
 
 \cleardoublepage
@@ -17,9 +22,13 @@
 \addcontentsline{toc}{chapter}{Abstract}
 \thispagestyle{plain}
 
-Here comes the abstract.
+	Software codes are usually written by humans. Humans usually make mistakes, and in the absence of competent toolsets these human errors can remain undiscovered. Developer errors can be sufficiently dangerous: besides the improper logical operation of the software, they can lead to serious security bugs; exploiting them can cause the software to behave undesirably. This way, malicious attackers can take control over the software in some ways to run it according to their goals, or at least differently than originally intended.
 
-\paragraph{Keywords} thesis, template, \LaTeX
+	Static source code analysis is a widely used, generally approved software testing approach. As it does not require the code to be compiled and run, its goal is to discover and fix as many human errors as possible, as early as possible – meaning during development –, in order to reduce the number of software failures in production and to minimize the extra costs of fixing bugs after deployment. Possible applications of static code analysis include verifying the code whether it complies with enterprise coding standards and styles, but more and more analysis toolsets provide ways to detect more complex logical errors during compilation time, or even development time.
+
+	In our days, static analysis toolsets integrated in Continous Integration (CI) workflows can be an efficient way to detect developer errors at push- and build-time, and thus to provide constant code quality. Despite its widespread popularity, JavaScript does not have extensive static analysis tooling – a possible cause can be the language's dynamic and weak typing –, and either the existing tools do not provide a full-scale solution to globally analyse connected modules in large, enterprise-grade code repositories. Moreover, increased analysis complexity generally means significant reduction of speed, and of course a tool can not be integrated neither into a CI workflow, nor into a development environment, if it increases compilation/build time with hours.
+
+	In this thesis I design, implement and evaluate the extension of an existing static code analysis framework complying with most of the above detailed requirements. With the extension on the one hand, I implement new JavaScript static analysis constraints – logical and formal – for the framework. On the other hand, I extend the system with the capability of analysing more than one JavaScript source code file, thus I provide a way to evaluate global analysis queries involving multiple JavaScript modules related to each other. Then I implement more analysis constraints, but now for global analyses involving multiple, related JavaScript modules. Finally I introduce a model to simplify extending this basically pattern-matching analytical system with more complex, general logical rules for JavaScript analysis.
 
 %%% Local Variables:
 %%% mode: latex
