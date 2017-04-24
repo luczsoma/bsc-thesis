@@ -1,22 +1,30 @@
 \chapter{Introduction}
 
-\noindent The quick brown fox jumps over the lazy dog $\mathscr{ABCS}$ a$a$
+\section{Context}
 
-\noindent\textsf{The quick brown fox jumps over the lazy dog}
+Software development is a highly complex process involving many people, tools and methods. As the source code repository grows, code quality becomes an important aspect of the development procedure: as the software gets more and more complex, the number of human errors in the implementation gets higher. It is important to find and fix these errors as soon as possible: software defects found after deployment are 15 times more costly than if they were found during implementation.~\cite{dawson2010integrating} According to NIST, software bugs cost generally \$59.5 billion dollars for the US government annually.~\cite{tassey2002economic}
 
-\noindent\texttt{The quick brown fox jumps over the lazy dog}
+Today's generally used developer tools in commercial or significant open-source projects generally include \emph{version control systems (VCS)} and \emph{continuous integration (CI)} platforms.~\cite{hilton2016usage}~\cite{fowlerCI} Integrating \emph{code quality assurance} tools into the CI platform (or into the developer's \emph{integrated development environment (IDE)}) seems to be the practical choice for enforcing project-/company-wide coding style compliance, and to analyse the code deeper whether it contains defects.
 
-($($()$)$) $a + b$ $a \oplus b$ $\sum$ $\prod$ $a \cup b$ $\bigcup$ $\int$ \cref{eq:example}
+A CI tool can be configured to scan and analyse the source code with external tools when the developer commits their code to the central code repository. A common workflow is the following:
 
-\begin{equation}
-a + b a \oplus b \sum \prod a \cup b \bigcup \int \label{eq:example}
-\end{equation}
+\begin{enumerate}
+\item the developer edits the code,
+\item the developer commits the modified code into the central repository,
+\item the VCS triggers a hook to inform the subscribers of the hook (including the CI platform) that new code has been committed,
+\item the CI tool analyses the source code with the static analysis tools integrated and configured by the user, and creates a report about the analyses,
+\item the CI tool builds the code and passes on the built artifact for testing and deployment.
+\end{enumerate}
 
-\begin{dfn}
-  \blindtext[1]
-\end{dfn}
+The reports created by the integrated static analysis tools give the developers insights about code quality and help them discover faults in the software before it gets to testing or production state.
 
-\Blindtext[2][1]
+We will focus on the static analysis of JavaScript projects. Although JavaScript is an interpreted language and thus generally considered not to require any building to be executed in browsers, it is still sensible to involve CI into JavaScript-projects for code quality and testing purposes, for a so-called transpiling\footnote{The procedure of transpiling will be detailed in Chapter 2.} step for the sake of compatibility, and for deployment.
+
+\section{Problem Statement}
+
+\section{Objectives and Contributions}
+
+\section{Structure of the Thesis}
 
 %%% Local Variables:
 %%% mode: latex
