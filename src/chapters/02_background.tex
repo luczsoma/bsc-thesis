@@ -1,5 +1,76 @@
+\chapter{Preliminaries: Background}
 
-% Generate some blind text for testing.
+This chapter presents the conception of static analysis, shortly summarizes the JavaScript and its static analysis approaches to be detailed in Chapter 3, and gives insights to the previously mentioned background technologies of the \emph{Codemodel-Rifle} framework.
+
+
+\section{Static Analysis}
+
+\subsection{Introduction}
+
+Static source code analysis is a widely used, generally approved~\cite{373902} software testing approach for analysing computer programs in as early as its source code state. It is performed without actually executing the program, meaning software can be analysed during development, before getting to the testing or deployment stage.
+
+Static analysis techniques exists for almost 50 years.~\cite{emanuelsson2008comparative} A 1995 research paper concludes, that \textquote{Static analysis is effective and complementary to dynamic testing. Hence its use is to be recommended in the context of the majority of critical software.}~\cite{373902} In 2017, open- and closed-source static analysis tooling is quite extensive, and publicly available for not only the academia and the commercial industry, but for open-source projects as well.~\cite{wikipedia-static-analysis}
+
+The sophistication and the generated reports' quality of static analysis tools vary: some report potential fault locations, others mathematically verify properties of a software and its specification. Besides general code quality-related applications, static analysis acquires a growing market share in safety- and mission-critical systems for exploring defects.~\cite{livshits2006improving}
+
+In comparison with \emph{dynamic analysis}, static analysis is performed without compiling and executing the program itself. Usually statically analysed software source code is represented by a mathematical data structure, generally a tree or a graph, therefore the code needs to be transformed into an abstract data structure first.
+
+\subsection{Source code transformation}
+
+Software source code is a text, usually consisting of human-readable characters. Characters formulate sequences of instructions by the specified grammar of the programming language. To be executed on a computer, most programming languages need to be \emph{compiled} by a \emph{compiler} first, meaning the source code has to be transformed into a \emph{binary code} or \emph{bytecode} to be executed. Other languages, called interpreted languages, do not need to be compiled, they are interpreted and executed at runtime.\footnote{JavaScript is an interpreted language.}
+
+Compiled languages' first static analysis happens at compilation time by the compiler. If the software contains severe errors (like type association errors at strongly typed languages), the compiler will abort its operation, thus software can not be run, since it has not been compiled. Considering interpreted languages do not need to be compiled, they are not analysed by a compiler before running, and generally not analysed at all.
+
+Interpreted languages' static analysis is therefore beneficial to compensate the lack of a compiler-like entity in the software processing chain. But, considering various static analysis procedures can only compliment each other and provide more insights to the source code, it is still sensible the use static analysis tools at compiled languages as well, or multiple analysis tools at interpreted languages.
+
+Usually three abstract data structures are used to represent software source code in a mathematically defined form.
+
+\subsubsection{Abstract Syntax Tree (AST)}
+
+If the compiler or an analysis tool processes the source code and its parser transforms the source code into an abstract data structure, it usually creates an \emph{Abstract Syntax Tree}. It is the tree-representation of the code, meaning every node in the tree is a semantic element of the source code. The \emph{source code to AST transformation} is vica versa unambiguous, meaning the two structures are identical to each other regarding the program logic. It is abstract in the sense of syntax: not all elements of the syntax is preserved in its AST, meaning without the language grammar, transformation would not be possible.\footnote{compare with: Concrete Syntax Tree or Parse Tree usually created by compilers.}
+
+\subsubsection{Abstract Semantic Graph (ASG)}
+
+A more abstract representation of the source code (or an AST) can be an \emph{Abstract Semantic Graph}. Derived semantic information added to the AST can result in a graph which provides more insights into the structure of the program: it can reveal data about variable and function scopes, and much more to be detailed later.
+
+\subsubsection{Control-Flow Graph (CFG)}
+
+Control-Flow Graphs or Execution Graphs contain execution path of a program. They are essential to compiler optimizations and widely used in static analysis tools.
+
+\subsection{Use Cases and Limitations}
+
+Static analysis use cases are generally code quality-related: on the one hand, usually the program under development should comply to specified programming styles and rules, on the other hand, the number of defects in the software should be as low as possible, ideally zero. If the software under development is part of a mission-critical solution, finding and fixing defects is essential.
+
+Code style analysers and code formatters are used to enforce team- or company-wide coding styles. Linters are rule-based tools and are used to reveal simple programming errors and poorly used programming constructs. Pattern-matching techniques supplemented with algorithms to manipulate the representing data structure can be efficient to obtain deeper insights of the source code: this approach is to be detailed later being one of the subjects of this thesis. Static analysis with methods of formal verification uses mathematical models and methods to prove well-defined statements about the inspected source code.
+
+Static analysis is limited in many ways. It often provides false values: \emph{false positives} are issues which do not have real significance or are not even true, or more seriously, \emph{false negatives} are real issues not being reported by the analysis tool. A framework is considered to be \emph{sound} if all defects checked for are reported by the tool: there are no false negatives but there can be false positives. A general approach of static analysis frameworks is to be sound, and simultaneously avoid extensive reporting of false positives.~\cite{emanuelsson2008comparative}
+
+Regarding limitations, time and resources are also important aspects. An analysis tool can not be utilised efficiently, if the amount of either time or resources consumed by an analysis is too high. Even if it was theoretically possible to create a tool which finds every possible defects in a piece of source code, this tool would presumably consume so much time and resources for an analysis that there would be no appropriate use case for operating it.~\cite{anderson2008use}
+
+Static analysis can neither answer all states of a program. Exploring execution paths greatly benefits the analyses, as it provides extra information about program states. Nevertheless, exploring all possible execution paths is very costly: if a program contains $n$ branches without loops, the number of execution paths of that program would be $2^n$.~\cite{anderson2008use} And even if a tool would encapsulate so much resources that it would be capable of exploring all possible executions paths, the set of possible inputs, whose cardinality is typically infinite, of the software would still not be taken into account. Since Alan Turing proved the halting problem to be generally undecidable over Turing-machines, we can conclude that static analysis can not solve every software testing-related problems.
+
+\section{JavaScript}
+
+\subsection{Brief history of JavaScript}
+
+\subsection{The ECMAScript as a standard and as a language}
+
+\subsection{The process of transpiling}
+
+\subsection{JavaScript static analysis}
+
+
+\section{Graph Databases}
+
+\subsection{The property graph data model}
+
+\subsection{Neo4j}
+
+\subsection{Cypher}
+
+
+\section{Running Example}
+
 
 %%% Local Variables:
 %%% mode: latex
