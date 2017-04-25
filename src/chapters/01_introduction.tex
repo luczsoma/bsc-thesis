@@ -24,13 +24,13 @@ I will focus on the static analysis of JavaScript projects. Although JavaScript 
 
 \section{Problem Statement and Requirements}
 
-Despite being the most commonly used programming language in the world~\cite{javascriptstackoverflow}, JavaScript does not have extensive static analysis tooling. There are static analysers for the language, but either their capabilities are very limited, or thy require special preparations, like code annotations or special syntax flavours to work appropriately. There are only a couple of general analysers which handles the relations of multiple JavaScript modules.
+Despite being the most commonly used programming language in the world~\cite{javascriptstackoverflow}, JavaScript does not have extensive static analysis tooling. There are static analysers for the language, but either their capabilities are very limited, or they require special preparations, like code annotations or special syntax flavours to work appropriately. There are only a couple of general analysers which handles the relations of multiple JavaScript modules.
 
-One solution can be modifying the existing JavaScript-projects according to the needs of the analysis toolsets. If developers annotate their objects and/or use specially extended, non-standard flavours of the JavaScript language, they can easily get benefits like type inference.
+One solution can be modifying already existing JavaScript-projects according to the needs of the analysis toolsets. If developers annotate their objects and/or use specially extended, non-standard flavours of the JavaScript language, they can get benefits like type inference. For already existing projects being developed for a longer amount of time, this is solution is far from ideal. Since more complex projects can reach 1 million lines of code in size, utilising annotations or special, non-standard syntax flavours would involve huge refactoring costs.
 
 The ideal solution would be a general JavaScript analysis framework with a static type system and other analytical benefits based on nothing else, but the current JavaScript – or more appropriately, ECMAScript – standard.~\cite{ecmascriptstandard} This ideal solution requires a JavaScript parser complying with the latest ECMAScript standards to parse the source files into a data structure that can be processed and manipulated effectively, a database technology for storing the data structure, and an intuitive interface to manipulate the data structure for the analyses' purposes.
 
-The solution can introduce other administrative requirements as well, like incremental processing of source code repositories for speed, multi-threaded functioning in order to be used by many developers simultaneously.
+The solution can introduce other usability requirements as well, like incremental processing of source code repositories for speed, multi-branch data model in accordance with VSC systems so the analysis framework can be used by many developers simultaneously, or even a centralized interface for collecting, storing, and presenting previous analysis results for a fine-grained, per-person or per-workgroup efficiency analytics. This thesis focuses on the source code analyses themselves instead of the usability requirements.
 
 
 \section{Objectives and Contributions}
