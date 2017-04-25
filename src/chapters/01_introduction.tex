@@ -35,7 +35,7 @@ The solution can introduce other usability requirements as well, like incrementa
 
 \section{Objectives and Contributions}
 
-My prospective colleague and former research fellow, Dániel Stein created a graph-based static analysis framework called \emph{Codemodel-Rifle}.~\cite{stein-daniel-msc} This framework stores the parsed source code repository's each parsed file as a separate property graph – called an \emph{Abstract Syntax Graph (ASG)} –, and gives us an interface to run analyses via graph queries.
+My prospective colleague and former research fellow, Dániel Stein created a graph-based static analysis framework called \emph{Codemodel-Rifle}.~\cite{stein-daniel-msc} This framework stores the parsed source code repository's each parsed file as a separate property graph – called an \emph{Abstract Semantic Graph (ASG)} –, and gives us an interface to run analyses via graph queries.
 
 My main goal is to extend \emph{Codemodel-Rifle} with several static analysis constraints. This implies providing ways for evaluating analysis queries involving multiple JavaScript modules related to each other.
 
@@ -44,7 +44,7 @@ The framework and the analyses are tested with open-source projects and a closed
 
 \section{Structure of the Thesis}
 
-The thesis is structured as follows. \emph{Chapter 2} presents the conception of static analysis and particularly JavaScript static analysis, and gives insights to the previously mentioned background technologies of the \emph{Codemodel-Rifle} framework. It also provides an example which will accompany the reader throughout the thesis. \emph{Chapter 3} specifies the currently known approaches and related work. \emph{Chapter 4} gives an overview of my approach of JavaScript static analysis using the \emph{Codemodel-Rifle} framework. \emph{Chapter 5} details the implementation of the analyses and the additional proceedings about processing multiple JavaScript modules related to each other. \emph{Chapter 6} demonstrates and evaluates the implemented analyses. \emph{Chapter 7} provides a case study with a closed-source, security-oriented industrial project from Tresorit. \emph{Chapter 8} concludes the thesis and presents the possible future work.
+The thesis is structured as follows. \emph{Chapter 2} presents the conception of static analysis, shortly summarizes the JavaScript and its static analysis approaches to be detailed in Chapter 3, and gives insights to the previously mentioned background technologies of the \emph{Codemodel-Rifle} framework. It also provides an example which will accompany the reader throughout the thesis. \emph{Chapter 3} specifies the currently known approaches and related work. \emph{Chapter 4} gives an overview of my approach of JavaScript static analysis using the \emph{Codemodel-Rifle} framework. \emph{Chapter 5} details the implementation of the analyses and the additional proceedings about processing multiple JavaScript modules related to each other. \emph{Chapter 6} demonstrates and evaluates the implemented analyses. \emph{Chapter 7} provides a case study with a closed-source, security-oriented industrial project from Tresorit. \emph{Chapter 8} concludes the thesis and presents the possible future work.
 
 %%% Local Variables:
 %%% mode: latex
