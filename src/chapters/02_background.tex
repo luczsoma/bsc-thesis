@@ -51,11 +51,59 @@ Exploring execution paths greatly benefits static analysis proceedings, as it pr
 
 \section{JavaScript}
 
+JavaScript is a high-level, run-time interpreted language, featuring object-oriented capabilities. Being part of the core of the World Wide Web~\cite{flanagan2006javascript}, it is the most commonly used programming language in the world in 2016.~\cite{javascriptstackoverflow}
+
 \subsection{Brief history of JavaScript}
+
+Like all new technologies, JavaScript evolved very fast in the beginnings. The basics of the language was developed in 10 days by Brendan Eich, then-employee of Netscape Communications.~\cite{10.1109/MC.2012.57} The language had multiple names over the time: first it was Mocha, then LiveScript, then in December 1995, it was renamed to JavaScript as a sort-of marketing movement~\cite{webedjavascripthistory}, after seeing the then-popularity of Sun Microsystems' heavyweight Java language.
+
+Initially, non-professional programmers were aimed by the idea to provide a portable, embeddable programming language that can be interpreted in web browsers. Since the syntax was closely similar to the syntax of C / C++ / Java, JavaScript rapidly gained traction. In the time of writing this thesis being the most used programming language in the world, it features browser-based client- and separate runtime-based server-side capabilities~\cite{nodejs} as well, and extensive tooling, package management~\cite{npmjs}, testing and build systems are available for automated operations in even larger software development organisations.
 
 \subsection{The ECMAScript as a standard and as a language}
 
+There is a significant aspiration regarding to standardise of the JavaScript language with its core capabilities and data structures. The first intentions of standardization begun by Ecma International in 1997~\cite{webedjavascripthistory}, resuling in \emph{Standard ECMA-262}.~\cite{ecmascriptstandardfirstversion} The currently freshest standard is the \emph{ECMA-262, 7\textsuperscript{th} Edition (ES7)}.~\cite{ecmascriptstandard} Apart from standardization, there are several implementations of JavaScript, e.g. Chakra\footnote{\texttt{https://github.com/Microsoft/ChakraCore}}, JScript\footnote{\texttt{https://msdn.microsoft.com/library/hbxc2t98.aspx}} and Google's V8\footnote{\texttt{https://github.com/v8/v8}}.~\cite{stein-daniel-msc}
+
+Today's growing traction of standardized JavaScript, henceforth referenced as ECMAScript, can be explained with several reasons. Static analysis JavaScript is difficult due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}. The ECMAScript standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple.~\cite{es6-features} Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
+
+
 \subsection{The process of transpiling}
+
+\emph{Transpiling} is a word came into existence by mixing \emph{transforming} and \emph{compiling}. It is a generally used process in the ECMAScript developer community to ensure backwards compatibility of newer ECMAScript language standards.
+
+\subsubsection{Compiler}
+
+A \emph{compiler} is a software with the primary goal of transforming software source code written in a high-level programming language into machine language, usually into a form of binary code called object code.~\cite{pcmagcompilers} Compiled languages, like C, C++, Java, or C\#, need to be compiled to be executed on a specific processor architecture.
+
+\subsubsection{Transpiler}
+
+A \emph{source-to-source compiler} or \emph{transpiler} is a software which transforms software source code written in a high-level programming language into another high-level programming language. Ideally the two source codes are logically equivalent, meaning that with given abstractions, the operation of the two software programs is the same.
+
+Transpiling and compiling have a set of common processing steps. First the source code is parsed into an abstract mathematical format for effective manipulation, then, after optimizations and transformations, both output another kind of source code. While compilers' output can be generally executed on a computer architecture without further transformation steps, transpilers' output need further processing; or, considering interpreted languages' transpilation steps, the main use case is to provide compatibility with older or other versions of the language.
+
+In the JavaScript scene, compatibility is a everly-present, ubiquitous problem.\footnote{See the following table about browser- and runtime-compatibility of different JavaScript versions: \texttt{http://kangax.github.io/compat-table}} Considering the slow progression of adopting JavaScript standards, the different browsers and separate runtimes, transpiling has an important role ensuring that the software works on a broad scale of platforms.
+
+\Cref{fig:transpiling-example} shows two logically equivalent pieces of code: the second one (plain JavaScript) is created by transpiling the first one (ECMAScript 6) with a popular, automated transpilation tool, \emph{babel}\footnote{\texttt{http://babeljs.io}}. As the example shows, new language constructs can make the mode much more concise, while the transpiled alternative provide compatibility with older desktop browsers and server runtimes.
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{10cm}
+		The first piece of code uses ES6 constructs for the sake of simplicity:
+
+		\begin{verbatim}
+		[1, 2, 3].map(n => n ** 2);
+		\end{verbatim}
+
+		The second piece of code uses widely-supported plain JavaScript constructs only, and is created by transpiling the first piece of code with \emph{babel}:
+
+		\begin{verbatim}
+		[1, 2, 3].map(function (n) {
+		  return Math.pow(n, 2);
+		});
+		\end{verbatim}
+	\end{minipage}
+  \caption{A transpilation example}
+  \label{fig:transpiling-example}
+\end{figure}
 
 \subsection{JavaScript static analysis}
 
