@@ -75,7 +75,7 @@ digraph Neo {
     label = "{AsgNode\nLiteralNumericExpression\nExpression|'value' = 3.141593 : double\l'session' = 'test' : String\l}"
   ]
   N37 [
-    label = "{\nAsgNode\nDeclaration|'kind' = 'Const' : String\l'session' = 'test' : String\l}"
+    label = "{AsgNode\nDeclaration|'kind' = 'Const' : String\l'session' = 'test' : String\l}"
   ]
   N37 -> N5 [
     label = "node\n"
