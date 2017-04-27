@@ -10,15 +10,15 @@ digraph Neo {
     fontsize = "8"
   ]
   N1 [
-    label = "{Alice\n:Human|'gender' = 'female' : String\l'age' = '24' : Integer\l}"
-  ]
-  N2 [
     label = "{Bob\n:Human|'gender' = 'male' : String\l'age' = '27' : Integer}"
   ]
+  N2 [
+    label = "{Alice\n:Human|'gender' = 'female' : String\l'age' = '24' : Integer\l}"
+  ]
   N1 -> N2 [
-    label = ":IGNORES\n"
+    label = ":LOVES\n"
   ]
   N2 -> N1 [
-    label = ":LOVES\n"
+    label = ":IGNORES\n"
   ]
 }

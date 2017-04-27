@@ -70,9 +70,9 @@ Initially, non-professional programmers were aimed by the idea to provide a port
 
 \subsection{The ECMAScript as a standard and as a language}
 
-There is a significant aspiration to standardise the JavaScript language with its core capabilities and data structures. The first intentions of standardisation begun by Ecma International in 1997~\cite{webedjavascripthistory}, resuling in \emph{Standard ECMA-262}.~\cite{ecmascriptstandardfirstversion} The currently freshest standard is the \emph{ECMA-262, 7\textsuperscript{th} Edition (ES7)}.~\cite{ecmascriptstandard} Apart from standardisation, there are several implementations of JavaScript, e.g. Chakra\footnote{\texttt{https://github.com/Microsoft/ChakraCore}}, JScript\footnote{\texttt{https://msdn.microsoft.com/library/hbxc2t98.aspx}} and Google's V8\footnote{\texttt{https://github.com/v8/v8}}.~\cite{stein-daniel-msc}
+There is a significant aspiration to standardise the JavaScript language with its core capabilities and data structures. The first intentions of standardisation began in 1997 by Ecma International~\cite{webedjavascripthistory}, resuling in \emph{Standard ECMA-262}.~\cite{ecmascriptstandardfirstversion} The currently freshest standard is the \emph{ECMA-262, 7\textsuperscript{th} Edition (ES7)}.~\cite{ecmascriptstandard} Apart from standardisation, there are several implementations of JavaScript, e.g. Chakra\footnote{\texttt{https://github.com/Microsoft/ChakraCore}}, JScript\footnote{\texttt{https://msdn.microsoft.com/library/hbxc2t98.aspx}} and Google's V8\footnote{\texttt{https://github.com/v8/v8}}.~\cite{stein-daniel-msc}
 
-Today's growing traction of standardised JavaScript, henceforth referenced as ECMAScript, can be explained with several reasons. Static analysis JavaScript is difficult due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}. The ECMAScript standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple.~\cite{es6-features} Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
+Today's growing traction of standardised JavaScript, henceforth also referenced as ECMAScript, can be explained with several reasons. Due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}, static analysis of JavaScript is difficult. The ECMAScript standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple.~\cite{es6-features} Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
 
 
 \subsection{The process of transpiling}
@@ -87,7 +87,7 @@ A \emph{compiler} is a software with the primary goal of transforming software s
 
 A \emph{source-to-source compiler} or \emph{transpiler} is a software which transforms software source code written in a high-level programming language into another high-level programming language. Ideally the two source codes are logically equivalent, meaning that with given abstractions, the operation of the two different software is the same.\footnote{The two executed programs need to be logically equivalent, but do not need to correspond in every technical aspects: there can be differences in machine-level operations and low-level proceedings.}
 
-Transpiling and compiling have a set of common processing steps.~\cite{kulkarnitranspiler} First the source code is parsed into an abstract mathematical format for effective manipulation, then, after optimisations and transformations, both methods output another kind of source code. While compilers' output, being low-level machine code, can be generally executed on a computer architecture without further transformation steps, transpilers' output need further processing. Considering transpiling interpreted languages', the main use case is to provide compatibility with older or other versions of the language.
+Transpiling and compiling have a set of common processing steps.~\cite{kulkarnitranspiler} First the source code is parsed into an abstract mathematical format for effective manipulation, then, after optimisations and transformations, both methods output another kind of code. While compilers' output, being low-level machine code, can be generally executed on a computer architecture without further transformation steps, transpilers' output need further processing. Considering transpiling interpreted languages', the main use case is to provide compatibility with older or other versions of the language.
 
 \begin{table}[!htbp]
 	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
@@ -138,7 +138,7 @@ In the JavaScript scene, compatibility is a ubiquitous problem, see \Cref{table:
 \end{figure}
 
 
-\subsection{Looking into goals of JavaScript static analysis}
+\subsection{Looking into the goals of JavaScript static analysis}
 
 As JavaScript is an interpreted language not being checked by a compiler by default at compilation time~\cite{373902}, it is sensible to apply static analysis techniques during the development of, or before deploying a JavaScript application. Due to its dynamic and untyped nature~\cite{flanagan2006javascript}, static analysis for the language is a challenging task. There are several existing approaches focusing mainly on defects detection~\cite{madsen2013practical, livshits2010gulfstream, jensen2009type}, but few of them are ready for production usage, and most of them lack compatibility with recent ECMAScript versions.
 
@@ -147,7 +147,7 @@ Being untyped, an obvious analysis goal is type inference: checking type correct
 
 \section{Graph Databases}
 
-Graphs are mathematically well-defined data structures being broadly used in several fields of computer science. Recent technologies and implementations made possible for even non-professional developers to easily embed graph theory into their applications. There are numerous real-world scenarios which can be represented more efficiently as graphs (\emph{nodes} connected to each other via \emph{edges}), than with the traditional, relational approach.
+Graphs are mathematically well-defined data structures being broadly used in several fields of computer science. Recent technologies and implementations made possible for developers to easily embed graph data models into their applications. There are numerous real-world scenarios which can be represented more efficiently as graphs (\emph{nodes} connected to each other via \emph{edges}), than with the traditional, relational approach.
 
 \subsection{The property graph data model}
 
@@ -183,7 +183,7 @@ The Codemodel-Rifle framework uses Neo4j for its property graph storage.
 
 \subsection{Cypher}
 
-Cypher is a query language developed especially for graph databases by Neo Technology.~\cite{neo4j-cypher} Contrary to the usage of the native API, it is usually used when Neo4j is deployed in server mode. \Cref{fig:cypher-intro} shows that the language uses a sort of ASCII art to represent nodes and relationships: nodes are in parentheses, relationships are in brackets surrounded by relationship direction information.
+Cypher is a query language developed especially for graph databases by Neo Technology.~\cite{neo4j-cypher} Contrary to the usage of the native API, it is mostly used when Neo4j is deployed in server mode. \Cref{fig:cypher-intro} shows that the language uses a sort of ASCII-art to represent nodes and relationships: nodes are in parentheses, relationships are in brackets surrounded by relationship direction information.
 
 \begin{figure}[!htb]
 	\centering
@@ -196,7 +196,7 @@ Cypher is a query language developed especially for graph databases by Neo Techn
 	\label{fig:cypher-intro}
 \end{figure}
 
-Cypher syntax is elegant and expressive, thus very readable. Besides using for representing nodes and relationships, we can utilise it to access the database's indexing capabilities and stored procedures. Since complex pattern-matching conditions can be expressed easily and intuitively in Cypher, it should be the primary way of accessing Neo4j instead of the little bit faster but less readable API.\footnote{Since the subject of this thesis mainly features Cypher queries, Cypher is detailed further in Chapter 5.}
+Cypher syntax is elegant and expressive, thus very readable. Besides using it to represent nodes and relationships, we can utilise it to access the database's indexing capabilities and stored procedures. Since complex pattern-matching conditions can be expressed easily and intuitively in Cypher, it should be the primary way of accessing Neo4j instead of the little bit faster but less readable API.\footnote{Since the subject of this thesis mainly features Cypher queries, Cypher is detailed further in Chapter 5.}
 
 
 \section{Running Example}
