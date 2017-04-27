@@ -1,0 +1,130 @@
+\chapter{Related Work}
+
+This chapter specifies the currently known approaches and related work of static analysis in general, and specifically for JavaScript.
+
+
+\section{Static analysis tools for JavaScript}
+
+This section introduces several static analysis tools for the main subject of this thesis, the JavaScript language.
+
+
+\subsection{TAJS (Type Analysis for JavaScript)}
+
+TAJS is a static data flow analysis tool for JavaScript with the capability of inferring detailed and sound type information using abstract interpretation.~\cite{jensen2009type} In the time of this writing, it fully supports the 3\textsuperscript{rd} version of ECMAScript, and partially supports the 5\textsuperscript{th} version\footnote{ECMAScript 5 is the most popular, and most broadly used version of ECMAScript, supported by most of the desktop and mobile browsers and external runtimes.~\cite{kangax-es5} This is the ECMAScript version I referred to previously as \emph{plain JavaScript}.}, including its standard library, the HTML DOM, and the browser API.~\cite{tajs-github}
+
+The abstract interpretation approach consists of the following main points:~\cite{tajs-presentation}
+
+\begin{enumerate}
+\item construct the \emph{Control-Flow Graph} of the program,
+\item define a data flow lattice~\cite{jensen2009type}, which abstracts program data flow into a mathematically interpreted format,
+\item define transfer functions, which abstracts the operations on the data flow lattice.
+\end{enumerate}
+
+There is an Eclipse plug-in for TAJS, but it is not ready for production usage, according to the creators of the framework.~\cite{tajs-website}
+
+
+\subsection{Flow}
+
+Flow is a static type checker for JavaScript developed and maintained by the Facebook Open Source community.~\cite{flow-github} Flow checks the code for defects based on \emph{static type annotations}.~\cite{flow-website} Without explicit type annotations, Flow is still able to work by attempting to infer types implicitly. Thus, into larger codebases, Flow can be introduced incrementally.
+
+Like many other static analysis tools, Flow also aims for soundness, while preventing extensive reporting of false positives. The developers of the tool identified two main goals: precision and speed. According to the very imprecise documentation~\cite{flow-docs}, Flow is made to be practically precise by modeling the language's essential characteristics accurately enough to differentiate between intentional solutions and unintentional mistakes.
+
+Flow's speediness means to be part of the editing process: the goal is to be fast enough for an IDE to show type information in real-time, during editing the code. To achieve this speed, Flow uses incremental processing with file-granularity, meaning only the changes since the last analysis need to be processed.
+
+\subsection{Tern}
+
+From the Tern website: \textquote{Tern is a stand-alone code-analysis engine for JavaScript. It is intended to be used with a code editor plugin to enhance the editor's support for intelligent JavaScript editing.}~\cite{tern-website}
+
+Tern provides features like editor auto-completion of variables and properties, function argument hints, automatic refactoring, and finding the definition of a function or variable. It is written in JavaScript, and capable of running both on node.js and in the browser.
+
+The software is maintained on GitHub~\cite{tern-github} by Marijn Haverbeke, developer of the Acorn lightweight JavaScript parser. Acorn is used as the underlying parser for the Tern infrastructure. The infrastructure itself consists of several components: the editor plugins communicate with the Tern server, which is implemented on top of the server module, which uses the inference engine to do the actual type inference.~\cite{tern-website}
+
+Editor plug-ins' list contains editors with significant or growing popularity:
+
+\begin{itemize}
+\item Emacs
+\item Vim
+\item Sublime Text
+\item Brackets
+\item Eclipse
+\end{itemize}
+
+The newest version in the time of this writing is $0.21$, implying that the tool is not yet aimed for heavyweight production usage, but for experimental purposes.
+
+
+\subsection{Shift}
+
+Shift is not a static analysis tool, but a toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{ECMAScript 7\textsuperscript{th} Edition}.~\cite{shift-ast}, and its parser and scope analyser is are foundations of \emph{Codemodel-Rifle}.
+
+It is to be mentioned here, that Shift uses its own AST format, first announced by Shape Security before the Christmas of 2014, as their first open-source contribution. According to their reasoning, a new ECMAScript AST format was needed because its predecessor, Mozilla's SpiderMonkey AST was not specifically created for static analysis purposes, but rather for an internal representation only for interpretation.
+
+Shift AST is said to comply with all aspects of a good AST-format~\cite{shift-ast-comparison}, as
+
+\begin{itemize}
+\item it minimizes the number of inhabitants that do not represent a program,
+\item it is at least partially homogenous to allow for a simple and efficient visitor,
+\item it does not impede moving, copying, or replacing subtrees,
+\item it discourages duplication in code that operates on it.~\cite{shift-ast-comparison}
+\end{itemize}
+
+\subsection{Esprima}
+
+Esprima is an ECMAScript parser with extended capabilities, like syntax validation. It supports the full standard of \emph{ECMAScript 7\textsuperscript{th} Edition}. The open-source software is created by Ariya Hidayat, engineer of \emph{Shape Security}, and is maintained on GitHub.
+
+
+\subsection{Comparison of the featured tools}
+
+\begin{table}[!h]
+	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\partialsupport}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\nosupport}{—}
+	\centering
+	\begin{tabular}{l|ccccc}
+		\toprule
+																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}   &   \textbf{Shift Java}   \\
+		\midrule
+		\textbf{ECMAScript support}           &   ES3             &   ES5             &   ES7             &   ES7                   \\
+		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey    &   Shift                 \\
+		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \fullsupport          \\
+		\textbf{number of contributors}       &   1               &   335             &   87              &   10                    \\
+		\textbf{licensing}                    &   Apache 2.0      &   BSD 3           &   MIT             &   Apache 2.0            \\
+		\textbf{current version number}       &   v0.9-10         &   v0.45.0         &   0.21.0          &   es2016-v1.1.1         \\
+		\midrule
+		\textbf{infers types}                 &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \nosupport            \\
+		\textbf{needs non-standard syntax}    &   \nosupport      &   \fullsupport    &   \nosupport      &   \nosupport            \\
+		\textbf{analyses related files}       &   \nosupport      &   \nosupport      &   \fullsupport    &   \nosupport            \\
+		\bottomrule
+	\end{tabular}
+
+	\caption{Excerpt from an ECMAScript 6 compatibility table~\cite{kangax}}
+	\label{table:javascript-tools-comparison}
+\end{table}
+
+
+
+
+\section{Static analysis tools for Java}
+
+
+\subsection{FindBugs}
+
+
+\subsection{jQAssistant}
+
+
+\subsection{SonarQube}
+
+
+\section{Static analysis tools for C and C++}
+
+
+\subsection{Clang}
+
+
+\subsection{PolySpace Verifier}
+
+
+\subsection{Coverity}
+
+
+\section{Most used general error-checking constraints}

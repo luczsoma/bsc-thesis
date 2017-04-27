@@ -89,10 +89,10 @@ A \emph{source-to-source compiler} or \emph{transpiler} is a software which tran
 
 Transpiling and compiling have a set of common processing steps.~\cite{kulkarnitranspiler} First the source code is parsed into an abstract mathematical format for effective manipulation, then, after optimisations and transformations, both methods output another kind of source code. While compilers' output, being low-level machine code, can be generally executed on a computer architecture without further transformation steps, transpilers' output need further processing. Considering transpiling interpreted languages', the main use case is to provide compatibility with older or other versions of the language.
 
-\begin{table}[htbp!]
-	\newcommand{\fullsupport}{\tikz\draw[green,fill=green] (0,0) circle (0.8ex);\xspace}
-	\newcommand{\partialsupport}{\tikz\draw[orange,fill=orange] (0,0) circle (0.8ex);\xspace}
-	\newcommand{\nosupport}{\tikz\draw[red,fill=red] (0,0) circle (0.8ex);\xspace}
+\begin{table}[!htbp]
+	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\partialsupport}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\nosupport}{—}
 	\centering
 	\begin{tabular}{l|cccc}
 		\toprule
