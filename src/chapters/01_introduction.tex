@@ -5,15 +5,15 @@
 
 Software development is a highly complex process involving many people, tools and methods. As the source code repository grows, code quality becomes an important aspect of the development procedure: the software gets more and more complex, the number of human errors in the implementation gets higher and higher. It is important to find and fix these errors as soon as possible: software defects found after deployment are 15 times more costly than if they were found during implementation.~\cite{dawson2010integrating} According to NIST, software bugs cost generally \$59.5 billion for the US government annually.~\cite{tassey2002economic}
 
-Today's developer tools in commercial and open-source projects generally include \emph{version control systems (VCS)} and \emph{continuous integration (CI)} toolsets.~\cite{hilton2016usage}~\cite{fowlerCI} Integrating code quality assurance tools into the CI platform (or into the developer's \emph{integrated development environment (IDE)}) seems to be the practical choice for enforcing project-/company-wide coding style compliance, and analysing the code deeper whether it contains defects.
+Today's developer tools in commercial and open-source projects generally include \emph{version control systems (VCS)} and \emph{continuous integration (CI)} toolsets.~\cite{hilton2016usage, fowlerCI} Integrating code quality assurance tools into the CI platform, or into the developers' \emph{integrated development environment (IDE)}, seems to be the practical choice for enforcing project-/company-wide coding style compliance, and analysing the code deeper whether it contains defects.
 
 A CI tool can be configured to scan and analyse the source code with external tools when the developer commits their code to the central code repository. A common workflow is the following:
 
 \begin{enumerate}
 \item the developer edits the code,
-\item the developer commits the modified code into the central repository,
+\item the developer commits and pushes the modified code into the central repository,
 \item the VCS triggers a hook to inform the subscribers of the hook (including the CI platform) that new code has been committed,
-\item the CI tool analyses the source code with the static analysis tools integrated and configured by the user, and creates a report about the analyses,
+\item the CI tool analyses the source code with the static analysis tools integrated and configured by the user, and creates reports about the analyses,
 \item the CI tool builds the code with its dependencies and passes on the built artifact for further testing, and finally for deployment.
 \end{enumerate}
 
@@ -28,14 +28,14 @@ Despite being the most commonly used programming language in the world~\cite{jav
 
 One solution can be modifying already existing JavaScript-projects according to the needs of the analysis toolsets. If developers annotate their objects and/or use specially extended, non-standard flavours of the JavaScript language, they can get benefits like type inference. For already existing projects being developed for a longer amount of time, this is solution is far from ideal. Since more complex projects can reach 1 million lines of code in size, utilising annotations or special, non-standard syntax flavours would involve huge refactoring costs.
 
-The ideal solution would be a general JavaScript analysis framework with a static type system and other analytical benefits based on nothing else, but the current JavaScript\footnote{Or more appropriately: ECMAScript~\cite{ecmascriptstandard}} standard.~\cite{ecmascriptstandard} This ideal solution requires a JavaScript parser complying with the latest ECMAScript standards to parse the source files into a data structure that can be processed and manipulated effectively, a database technology for storing the data structure, and an intuitive interface to manipulate the data structure for the analyses' purposes.
+The ideal solution would be a general JavaScript analysis framework with a static type system and other analytical benefits based on nothing else, but the current JavaScript standard\footnote{According to the standard~\cite{ecmascriptstandard}, the official name of the JavaScript language is ECMAScript.}.~\cite{ecmascriptstandard} This ideal solution requires a JavaScript parser complying with the latest {ECMAScript} standards to parse the source files into a data structure that can be processed and manipulated effectively, a database technology for storing the data structure, an intuitive interface to manipulate the data structure for the analyses' purposes, and, necessarily, the analyses' algorithmic descriptions themselves, which reveal the potential defects' location in the software.
 
 The solution can introduce other usability requirements as well, like incremental processing of source code repositories for speed, multi-branch data model in accordance with VCSs so the analysis framework can be used by many developers simultaneously, or even a centralized interface for collecting, storing, and presenting previous analysis results for a fine-grained, per-person or per-workgroup efficiency analytics. This thesis focuses on the source code analyses themselves instead of the usability requirements.
 
 
 \section{Objectives and Contributions}
 
-My prospective colleague and former research fellow, Dániel Stein created a graph-based static analysis framework called \emph{Codemodel-Rifle}.~\cite{stein-daniel-msc} This framework stores the parsed source code repository's each parsed file as a separate property graph, called an \emph{Abstract Semantic Graph (ASG)}, and gives us an interface to run analyses via graph queries.
+My prospective colleague and former research fellow, Dániel Stein created a graph-based static analysis framework called \emph{Codemodel-Rifle}.~\cite{stein-daniel-msc} This framework stores the parsed source code repository's each parsed file as a distinct property graph, called an \emph{Abstract Semantic Graph (ASG)}, and gives us an interface to run analyses via graph queries.
 
 My main goal is to extend \emph{Codemodel-Rifle} with several static analysis constraints. This implies providing ways for evaluating analysis queries involving multiple JavaScript modules related to each other.
 

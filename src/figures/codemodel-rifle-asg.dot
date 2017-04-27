@@ -1,0 +1,89 @@
+digraph Neo {
+  node [
+    fontsize = "8"
+    shape = "Mrecord"
+    fontname = "Noto Sans"
+  ]
+  edge [
+    fontname = "Noto Sans"
+    fontsize = "8"
+  ]
+  N5 [
+    label = "{AsgNode\nBindingIdentifier\nBinding\nVariableReference|'session' = 'test' : String\l'name' = 'PI' : String\l}"
+  ]
+  N12 [
+    label = "{AsgNode\nVariableDeclaration\nNode\nFunctionDeclarationClassDeclarationVariableDeclaration\nVariableDeclarationAssignmentTarget\n VariableDeclarationExpression|'session' = 'test' : String\l'kind' = 'const' : String\l}"
+  ]
+  N12 -> N27 [
+    label = "declarators\n"
+  ]
+  N13 [
+    label = "{AsgNode\nScope|'type' = 'Module' : String\l'session' = 'test' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N13 -> N14 [
+    label = "variables\n"
+  ]
+  N13 -> N39 [
+    label = "astNode\n"
+  ]
+  N14 [
+    label = "{AsgNode\nMap|'session' = 'test' : String\l}"
+  ]
+  N14 -> N31 [
+    label = "PI\n"
+  ]
+  N19 [
+    label = "{AsgNode\nScope\nGlobalScope|'type' = 'Global' : String\l'session' = 'test' : String\l'dynamic' = true : boolean\l}"
+  ]
+  N19 -> N39 [
+    label = "astNode\n"
+  ]
+  N19 -> N13 [
+    label = "children\n"
+  ]
+  N20 [
+    label = "{AsgNode\nReference|'accessibility' = 'Write' : String\l'session' = 'test' : String\l}"
+  ]
+  N20 -> N5 [
+    label = "node\n"
+  ]
+  N21 [
+    label = "{AsgNode\nVariableDeclarationStatement\nStatement|'session' = 'test' : String\l}"
+  ]
+  N21 -> N12 [
+    label = "declaration\n"
+  ]
+  N27 [
+    label = "{AsgNode\nNode\nVariableDeclarator|'session' = 'test' : String\l}"
+  ]
+  N27 -> N36 [
+    label = "init\n"
+  ]
+  N27 -> N5 [
+    label = "binding\n"
+  ]
+  N31 [
+    label = "{AsgNode\nVariable|'session' = 'test' : String\l'name' = 'PI' : String\l}"
+  ]
+  N31 -> N20 [
+    label = "references\n"
+  ]
+  N31 -> N37 [
+    label = "declarations\n"
+  ]
+  N36 [
+    label = "{AsgNode\nLiteralNumericExpression\nExpression|'value' = 3.141593 : double\l'session' = 'test' : String\l}"
+  ]
+  N37 [
+    label = "{\nAsgNode\nDeclaration|'kind' = 'Const' : String\l'session' = 'test' : String\l}"
+  ]
+  N37 -> N5 [
+    label = "node\n"
+  ]
+  N39 [
+    label = "{AsgNode\nModule\nProgram|'session' = 'test' : String\l}"
+  ]
+  N39 -> N21 [
+    label = "items\n"
+  ]
+}

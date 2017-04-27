@@ -1,0 +1,25 @@
+digraph Neo {
+  rankdir = LR;
+  node [
+    fontsize = "8"
+    shape = "Mrecord"
+    fontname = "Noto Sans"
+  ]
+  edge [
+    fontname = "Noto Sans"
+    fontsize = "8"
+  ]
+  N1 [
+    label = "{Alice\n:Human|'gender' = 'female' : String\l'age' = '24' : Integer\l}"
+  ]
+  N2 [
+    label = "{Bob\n:Human|'gender' = 'male' : String\l'age' = '27' : Integer}"
+  ]
+  N1 -> N2 [
+    dir = both
+    label = ":KNOWS\n"
+  ]
+  N2 -> N1 [
+    label = ":LOVES\n"
+  ]
+}

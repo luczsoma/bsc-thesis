@@ -5,6 +5,7 @@ This chapter presents the conception of static analysis, shortly summarizes the 
 
 \section{Static Analysis}
 
+
 \subsection{Introduction}
 
 Static source code analysis is a widely used, generally approved~\cite{373902} software testing approach for analysing computer programs in as early as its source code state. It is performed without actually executing the program, meaning software can be analysed during development, before getting to the testing or deployment stage.
@@ -14,6 +15,7 @@ Static analysis techniques exists for almost 50 years.~\cite{emanuelsson2008comp
 The sophistication and the generated reports' quality of static analysis tools vary: some report potential fault locations, others mathematically verify properties of a software and its specification. Besides general code quality-related applications, static analysis acquires a growing market share in safety- and mission-critical systems for exploring defects.~\cite{livshits2006improving}
 
 In comparison with \emph{dynamic analysis}, static analysis is performed without compiling and executing the program itself. Usually statically analysed software source code is represented by a mathematical data structure, generally a tree or a graph, therefore the code needs to be transformed into an abstract data structure first.
+
 
 \subsection{Source code transformation}
 
@@ -25,17 +27,21 @@ Interpreted languages' static analysis is therefore beneficial to compensate the
 
 Usually three abstract data structures are used to represent software source code in a mathematically defined form.
 
+
 \subsubsection{Abstract Syntax Tree (AST)}
 
 If the compiler or an analysis tool processes the source code and its parser transforms the source code into an abstract data structure, it usually creates an \emph{Abstract Syntax Tree}. It is the tree-representation of the code, meaning every node in the tree is a semantic element of the source code. The \emph{source code to AST transformation} is vica versa unambiguous, meaning the two structures are identical to each other regarding the program logic. It is abstract in the sense of syntax: not all elements of the syntax is preserved in its AST, meaning without the language grammar, transformation would not be possible.\footnote{compare with: Concrete Syntax Tree or Parse Tree usually created by compilers.}
+
 
 \subsubsection{Abstract Semantic Graph (ASG)}
 
 A more abstract representation of the source code (or an AST) can be an \emph{Abstract Semantic Graph}. Derived semantic information added to the AST can result in a graph which provides more insights into the structure of the program: it can reveal data about variable and function scopes, and much more to be detailed later.
 
+
 \subsubsection{Control-Flow Graph (CFG)}
 
 Control-Flow Graphs or Execution Graphs contain execution path of a program. They are essential to compiler optimizations and widely used in static analysis tools.
+
 
 \subsection{Use Cases and Limitations}
 
@@ -49,15 +55,18 @@ Regarding limitations, time and resources are also important aspects. An analysi
 
 Exploring execution paths greatly benefits static analysis proceedings, as it provides extra information about program states. Nevertheless, exploring all possible execution paths of a program is very costly: if a procedure contains $n$ branches without loops, the number of intraprocedural execution paths would be $2^n$.~\cite{anderson2008use} And even if a tool would encapsulate so much resources that it would be capable of exploring all possible executions paths, the set of possible inputs, whose cardinality is typically infinite, of the software would still not be taken into account. Since Alan Turing proved the halting problem to be generally undecidable over Turing-machines, we can conclude that, generally, some questions about a software can not be answered only by inspecting its source code.
 
+
 \section{JavaScript}
 
 JavaScript is a high-level, run-time interpreted language, featuring object-oriented capabilities. Being part of the core of the World Wide Web~\cite{flanagan2006javascript}, it is the most commonly used programming language in the world in 2016.~\cite{javascriptstackoverflow}
+
 
 \subsection{Brief history of JavaScript}
 
 Like all new technologies, JavaScript evolved very fast in the beginnings. The basics of the language was developed in 10 days by Brendan Eich, then-employee of Netscape Communications.~\cite{10.1109/MC.2012.57} The language had multiple names over the time: first it was Mocha, then LiveScript, then in December 1995, it was renamed to JavaScript as a sort-of marketing movement~\cite{webedjavascripthistory}, after seeing the then-popularity of Sun Microsystems' heavyweight Java language.
 
 Initially, non-professional programmers were aimed by the idea to provide a portable, embeddable programming language that can be interpreted in web browsers. Since the syntax was closely similar to the syntax of C / C++ / Java, JavaScript rapidly gained traction. In the time of writing this thesis being the most used programming language in the world, it features browser-based client- and separate runtime-based server-side capabilities~\cite{nodejs} as well, and extensive tooling, package management~\cite{npmjs}, testing and build systems are available for automated operations in even larger software development organisations.
+
 
 \subsection{The ECMAScript as a standard and as a language}
 
@@ -68,25 +77,48 @@ Today's growing traction of standardized JavaScript, henceforth referenced as EC
 
 \subsection{The process of transpiling}
 
-\emph{Transpiling} is a word came into existence by mixing \emph{transforming} and \emph{compiling}. It is a generally used process in the ECMAScript developer community to ensure backwards compatibility of newer ECMAScript language standards.
+\emph{Transpiling} is a word came into existence by mixing \emph{transforming} and \emph{compiling}. It is a generally used process in the ECMAScript developer community to ensure backwards compatibility of newer ECMAScript language standards, like ES6 and ES7.
 
-\subsubsection{Compiler}
+\paragraph{Compiler}
 
 A \emph{compiler} is a software with the primary goal of transforming software source code written in a high-level programming language into machine language, usually into a form of binary code called object code.~\cite{pcmagcompilers} Compiled languages, like C, C++, Java, or C\#, need to be compiled to be executed on a specific processor architecture.
 
-\subsubsection{Transpiler}
+\paragraph{Transpiler}
 
-A \emph{source-to-source compiler} or \emph{transpiler} is a software which transforms software source code written in a high-level programming language into another high-level programming language. Ideally the two source codes are logically equivalent, meaning that with given abstractions, the operation of the two software programs is the same.
+A \emph{source-to-source compiler} or \emph{transpiler} is a software which transforms software source code written in a high-level programming language into another high-level programming language. Ideally the two source codes are logically equivalent, meaning that with given abstractions, the operation of the two different software is the same.\footnote{The two executed programs need to be logically equivalent, but do not need to correspond in every technical aspects: there can be differences in machine-level operations and low-level proceedings.}
 
-Transpiling and compiling have a set of common processing steps. First the source code is parsed into an abstract mathematical format for effective manipulation, then, after optimizations and transformations, both output another kind of source code. While compilers' output can be generally executed on a computer architecture without further transformation steps, transpilers' output need further processing; or, considering interpreted languages' transpilation steps, the main use case is to provide compatibility with older or other versions of the language.
+Transpiling and compiling have a set of common processing steps.~\cite{kulkarnitranspiler} First the source code is parsed into an abstract mathematical format for effective manipulation, then, after optimizations and transformations, both methods output another kind of source code. While compilers' output, being low-level machine code, can be generally executed on a computer architecture without further transformation steps, transpilers' output need further processing. Considering transpiling interpreted languages', the main use case is to provide compatibility with older or other versions of the language.
 
-In the JavaScript scene, compatibility is a everly-present, ubiquitous problem.\footnote{See the following table about browser- and runtime-compatibility of different JavaScript versions: \texttt{http://kangax.github.io/compat-table}} Considering the slow progression of adopting JavaScript standards, the different browsers and separate runtimes, transpiling has an important role ensuring that the software works on a broad scale of platforms.
+\begin{table}[htbp!]
+	\newcommand{\fullsupport}{\tikz\draw[green,fill=green] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\partialsupport}{\tikz\draw[orange,fill=orange] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\nosupport}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
+	\centering
+	\begin{tabular}{l|cccc}
+		\toprule
+		                                    	&     \textbf{Chrome 58}     &     \textbf{IE 11}     &     \textbf{iOS 9}     &     \textbf{Android 5.1}     \\
+		\midrule
+		\textbf{default function parameters}  &     \fullsupport           &      \nosupport        &     \nosupport         &     \nosupport               \\
+		\textbf{spread (…) operator}          &     \fullsupport           &      \nosupport        &     \partialsupport    &     \nosupport               \\
+		\textbf{for..of loops}                &     \fullsupport           &      \nosupport        &     \partialsupport    &     \partialsupport          \\
+		\textbf{const}                        &     \fullsupport           &      \partialsupport   &     \partialsupport    &     \partialsupport          \\
+		\textbf{let}                          &     \fullsupport           &      \partialsupport   &     \nosupport         &     \nosupport               \\
+		\textbf{arrow functions}              &     \fullsupport           &      \nosupport        &     \nosupport         &     \nosupport               \\
+		\bottomrule
+	\end{tabular}
 
-\Cref{fig:transpiling-example} shows two logically equivalent pieces of code: the second one (plain JavaScript) is created by transpiling the first one (ECMAScript 6) with a popular, automated transpilation tool, \emph{babel}\footnote{\texttt{http://babeljs.io}}. As the example shows, new language constructs can make the mode much more concise, while the transpiled alternative provide compatibility with older desktop browsers and server runtimes.
+	\caption{Excerpt from an ECMAScript 6 compatibility table~\cite{kangax}}
+	\label{table:ecmascript-compatibility}
+\end{table}
 
+In the JavaScript scene, compatibility is a ubiquitous problem, see \Cref{table:ecmascript-compatibility} for demonstration. Considering all the different browsers and server runtimes, and the slow progression of adopting JavaScript standards, transpiling has an important role in ensuring that the software works on a broad scale of platforms: code written in a modern syntax like ES6 can easily be transpiled into an universally supported syntax like plain JavaScript.
+
+\Cref{fig:transpiling-example} shows two logically equivalent pieces of code: the second one (plain JavaScript) is created by transpiling the first one (ECMAScript 6) with a popular, automated transpilation tool, \emph{babel}\footnote{\texttt{http://babeljs.io}}. As the example shows, new language constructs can make the code much more concise, while the transpiled alternative provide compatibility with older desktop browsers and server runtimes.
+
+\vspace{1em}
 \begin{figure}[!htb]
 	\centering
-	\begin{minipage}{10cm}
+	\begin{minipage}{25em}
 		The first piece of code uses ES6 constructs for the sake of simplicity:
 
 		\begin{verbatim}
@@ -105,20 +137,103 @@ In the JavaScript scene, compatibility is a everly-present, ubiquitous problem.\
   \label{fig:transpiling-example}
 \end{figure}
 
-\subsection{JavaScript static analysis}
+
+\subsection{Looking into goals of JavaScript static analysis}
+
+As JavaScript is an interpreted language not being checked by a compiler by default at compilation time~\cite{373902}, it is sensible to apply static analysis techniques during the development of, or before deploying a JavaScript application. Due to its dynamic and untyped nature~\cite{flanagan2006javascript}, static analysis for the language is a challenging task. There are several existing approaches~\cite{madsen2013practical, livshits2010gulfstream, jensen2009type}, but few of them are ready for production usage, and most of them lack compatibility with recent ECMAScript versions.
+
+Being untyped, an obvious analysis goal is type inference: checking type correctness can eliminate several defects from software. Security demands imply that deeper, logical analysis of JavaScript code is needed. Besides security, the development procedure itself can also benefit from static analysis: there are solutions like automatic stub generation or auto-complete~\cite{madsen2013practical} in several development tools in production.~\cite{esprima-autocomplete, webstorm-autocomplete}
 
 
 \section{Graph Databases}
 
+Graphs are mathematically well-defined data structures, which are broadly used in several fields of computer science. Recent technologies and implementations made possible for even non-professional developers to embed graph theory into their applications. There are numerous scenarios in the real world, which can be represented more efficiently as graphs (\emph{nodes} connected to each other by \emph{edges}), than the traditional, relational approach.
+
 \subsection{The property graph data model}
+
+The academia teaches graphs to students as a set of objects, in which some object pairs are connected to each other. In this model, the objects are called \emph{vertices} or \emph{nodes} or \emph{points}, and the connections are called \emph{edges} or \emph{relations}. Connections can be detailed further by specifying their directionality, also they can be \emph{labeled} to define them even more. Similarly labeling vertices leads to the model of \emph{typed graphs}. If we assign properties to the nodes or relations, we get the model of \emph{property graphs}. Properties, as shown by \Cref{fig:property-graph}, are usually key-value pairs in the format of \texttt{key = `value'}. Generally, keys are strings, and values represent common data types like string, integer, float, etc.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\textwidth, trim=1cm 1cm 1cm 1cm,clip]{figures/property-graph.pdf}
+	\caption{Two people's relationship modeled with a property graph}
+	\label{fig:property-graph}
+\end{figure}
+
+The Codemodel-Rifle framework uses property graphs for its internal data storage. The parsed JavaScript source code's AST gets transformed into an ASG, and is stored as a property graph: ASG nodes become graph nodes, nested ASG nodes are connected to each other via relations. \Cref{fig:codemodel-rifle-asg} shows the Abstract Semantic Graph of the following JavaScript program: \texttt{const PI = 3.141593;} produced and visualized by the Codemodel-Rifle.\footnote{Administrative properties and labels are omitted for the sake of simplicity, e.g. no identifiers are shown.}
+
 
 \subsection{Neo4j}
 
+Amongst a handful of graph database vendors~\cite{graph-dbs}, Neo Technology's Neo4j is the most popular~\cite{graph-dbs-raking} one. It features a pure graph data model, contrary to other vendors' multi-model approaches. Besides Neo Technology, the Neo4j is backed by the open-source community as well. The database is available in a \emph{Community Edition} and an \emph{Enterprise Edition}. Interestingly, open-source licensing is available for the \emph{Enterprise Edition} as well.~\cite{neo4j-opensource} For closed-source software, commercial licensing is available.
+
+There are two access models for Neo4j:
+
+\paragraph{Embedded mode} For JVM-based languages, a native API is exposed for data operations requiring very low latency. This makes the database directly embeddable to any JVM-compatible language.
+
+\paragraph{Server mode} The database can be operated as a separate server listening on its binary \emph{Bolt} protocol as well as on its HTTP REST interface.
+
+
 \subsection{Cypher}
+
+Cypher is a query language developed especially for graph databases by Neo Technology.~\cite{neo4j-cypher} Contrary to the usage of the native API, it is usually used when Neo4j is deployed in server mode. \Cref{fig:cypher-intro} shows that the language uses a sort of ASCII art to represent nodes and relationships: nodes are in parentheses, relationships are in brackets surrounded by relationship direction information.
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{25em}
+		\begin{verbatim}
+		(Bob)-[:LOVES]->(Alice)
+		\end{verbatim}
+	\end{minipage}
+  \caption{A very basic Cypher example}
+	\label{fig:cypher-intro}
+\end{figure}
+
+Cypher syntax is elegant and expressive, thus very readable. Besides using for representing nodes and relationships, we can utilize it to access the database's indexing capabilities and stored procedures. Since complex pattern-matching conditions can be expressed easily and intuitively in Cypher, it should be the primary way of accessing Neo4j instead of the little bit faster but less readable API.\footnote{Since the subject of this thesis mainly features Cypher queries, Cypher is detailed further in Chapter 5.}
 
 
 \section{Running Example}
 
+In this section I provide an example, which accompanies the reader throughout the thesis. This example is to be used whenever a new concept is introduced. There are two files in the example: \texttt{exporter.js} and \texttt{importer.js}.
+
+The first one exports a variable which happens to be 0. The second one imports the variable and tries to divide a number with that. Through this example, I present that this and similar examples can be revealed by static analyses, even if this defect spans multiple ECMAScript modules. \Cref{fig:running-example-exporter} presents \texttt{exporter.js}. \Cref{fig:running-example-importer} presents \texttt{importer.js}.
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{25em}
+		\begin{verbatim}
+		// exporter.js
+		export default let a = function () {
+		  function b() {
+		    return 0;
+		  }
+		  return b;
+		}
+		\end{verbatim}
+	\end{minipage}
+  \caption{\texttt{exporter.js} module}
+  \label{fig:running-example-exporter}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{25em}
+		\begin{verbatim}
+		// importer.js
+		import defaultName from "exporter";
+		let test = 3 / defaultName();
+		\end{verbatim}
+	\end{minipage}
+  \caption{\texttt{importer.js} module}
+  \label{fig:running-example-importer}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[height=\textheight, trim=1cm 1cm 1cm 1cm,clip]{figures/codemodel-rifle-asg.pdf}
+	\caption{\texttt{const PI = 3.141593;} in Abstract Semantic Graph format}
+	\label{fig:codemodel-rifle-asg}
+\end{figure}
 
 %%% Local Variables:
 %%% mode: latex
