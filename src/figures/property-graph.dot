@@ -16,8 +16,7 @@ digraph Neo {
     label = "{Bob\n:Human|'gender' = 'male' : String\l'age' = '27' : Integer}"
   ]
   N1 -> N2 [
-    dir = both
-    label = ":KNOWS\n"
+    label = ":IGNORES\n"
   ]
   N2 -> N1 [
     label = ":LOVES\n"
