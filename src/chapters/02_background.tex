@@ -17,7 +17,7 @@ The sophistication and the generated reports' quality of static analysis tools v
 In comparison with \emph{dynamic analysis}, static analysis is performed without compiling and executing the program itself. Usually statically analysed software source code is represented by a mathematical data structure, generally a tree or a graph, therefore the code needs to be transformed into an abstract data structure first.
 
 
-\subsection{Source code transformation}
+\subsection{Source Code Transformation}
 
 Software source code is a text, usually consisting of human-readable characters. Characters formulate sequences of instructions by the specified grammar of the programming language. To be executed on a computer, most programming languages need to be \emph{compiled} by a \emph{compiler} first, meaning the source code has to be transformed into a \emph{binary code} or \emph{bytecode} to be executed. Other languages, called interpreted languages, do not need to be compiled, they are interpreted and executed at runtime.\footnote{JavaScript is an interpreted language.}
 
@@ -61,21 +61,21 @@ Exploring execution paths greatly benefits static analysis proceedings, as it pr
 JavaScript is a high-level, run-time interpreted language, featuring object-oriented capabilities. Being part of the core of the World Wide Web~\cite{flanagan2006javascript}, it is the most commonly used programming language in the world in 2016.~\cite{javascriptstackoverflow}
 
 
-\subsection{Brief history of JavaScript}
+\subsection{Brief History of JavaScript}
 
 Like all new technologies, JavaScript evolved very fast in the beginnings. The basics of the language was developed in 10 days by Brendan Eich, then-employee of Netscape Communications.~\cite{10.1109/MC.2012.57} The language had multiple names over the time: first it was Mocha, then LiveScript, then in December 1995, it was renamed to JavaScript as a sort-of marketing movement~\cite{webedjavascripthistory}, after seeing the then-popularity of Sun Microsystems' heavyweight Java language.
 
 Initially, non-professional programmers were aimed by the idea to provide a portable, embeddable programming language that can be interpreted in web browsers. Since the syntax was closely similar to the syntax of C / C++ / Java, JavaScript rapidly gained traction. In the time of writing this thesis being the most used programming language in the world, it features browser-based client- and separate runtime-based server-side capabilities~\cite{nodejs} as well, and extensive tooling, package management~\cite{npmjs}, testing and build systems are available for automated operations in even larger software development organisations.
 
 
-\subsection{The ECMAScript as a standard and as a language}
+\subsection{The ECMAScript as a Standard and as a Language}
 
 There is a significant aspiration to standardise the JavaScript language with its core capabilities and data structures. The first intentions of standardisation began in 1997 by Ecma International~\cite{webedjavascripthistory}, resuling in \emph{Standard ECMA-262}.~\cite{ecmascriptstandardfirstversion} The currently freshest standard is the \emph{ECMA-262, 7\textsuperscript{th} Edition (ES7)}.~\cite{ecmascriptstandard} Apart from standardisation, there are several implementations of JavaScript, e.g. Chakra\footnote{\texttt{https://github.com/Microsoft/ChakraCore}}, JScript\footnote{\texttt{https://msdn.microsoft.com/library/hbxc2t98.aspx}} and Google's V8\footnote{\texttt{https://github.com/v8/v8}}.~\cite{stein-daniel-msc}
 
 Today's growing traction of standardised JavaScript, henceforth also referenced as ECMAScript, can be explained with several reasons. Due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}, static analysis of JavaScript is difficult. The ECMAScript standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple.~\cite{es6-features} Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
 
 
-\subsection{The process of transpiling}
+\subsection{The Process of Transpiling}
 
 \emph{Transpiling} is a word came into existence by mixing \emph{transforming} and \emph{compiling}. It is a generally used process in the ECMAScript developer community to ensure backwards compatibility of newer ECMAScript language standards, like ES6 and ES7.
 
@@ -138,7 +138,7 @@ In the JavaScript scene, compatibility is a ubiquitous problem, see \Cref{table:
 \end{figure}
 
 
-\subsection{Looking into the goals of JavaScript static analysis}
+\subsection{Looking into the Goals of JavaScript Static Analysis}
 
 As JavaScript is an interpreted language not being checked by a compiler by default at compilation time~\cite{373902}, it is sensible to apply static analysis techniques during the development of, or before deploying a JavaScript application. Due to its dynamic and untyped nature~\cite{flanagan2006javascript}, static analysis for the language is a challenging task. There are several existing approaches focusing mainly on defects detection~\cite{madsen2013practical, livshits2010gulfstream, jensen2009type}, but few of them are ready for production usage, and most of them lack compatibility with recent ECMAScript versions.
 
@@ -149,7 +149,7 @@ Being untyped, an obvious analysis goal is type inference: checking type correct
 
 Graphs are mathematically well-defined data structures being broadly used in several fields of computer science. Recent technologies and implementations made possible for developers to easily embed graph data models into their applications. There are numerous real-world scenarios which can be represented more efficiently as graphs (\emph{nodes} connected to each other via \emph{edges}), than with the traditional, relational approach.
 
-\subsection{The property graph data model}
+\subsection{The Property Graph Data Model}
 
 The academia teaches graphs as a set of objects, in which some object pairs are connected to each other. In this model, an object is called \emph{vertex} or \emph{node} or \emph{point}, and a connection between two \emph{vertices} is called \emph{edge} or \emph{relation}. Connections can be detailed further by specifying their directionality, also they can be \emph{labeled} to define them even more. Similarly labeling vertices leads to the model of \emph{typed graphs}. If we assign properties to the nodes or relations, we get the model of \emph{property graphs}. Properties, as shown in \Cref{fig:property-graph}, are usually key-value pairs in the format of \texttt{key = `value'}. Generally, keys are strings, and values represent common data types like string, integer, float, etc.
 

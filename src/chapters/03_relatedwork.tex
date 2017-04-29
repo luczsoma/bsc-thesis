@@ -3,7 +3,7 @@
 This chapter specifies the currently known approaches and related work of static analysis in general, and specifically for JavaScript.
 
 
-\section{Static analysis tools for JavaScript}
+\section{Static Analysis Tools for JavaScript}
 
 This section introduces several static analysis tools for the main subject of this thesis, the JavaScript language.
 
@@ -37,7 +37,7 @@ From the Tern website: \textquote{Tern is a stand-alone code-analysis engine for
 
 Tern provides features like editor auto-completion of variables and properties, function argument hints, automatic refactoring, and finding the definition of a function or variable. It is written in JavaScript, and capable of running both on node.js and in the browser.
 
-The software is maintained on GitHub~\cite{tern-github} by Marijn Haverbeke, developer of the Acorn lightweight JavaScript parser. Acorn is used as the underlying parser for the Tern infrastructure. The infrastructure itself consists of several components: the editor plugins communicate with the Tern server, which is implemented on top of the server module, which uses the inference engine to do the actual type inference.~\cite{tern-website}
+The software is maintained on GitHub~\cite{tern-github} by Marijn Haverbeke, developer of the Acorn lightweight JavaScript parser. Acorn is used as the underlying parser for the Tern infrastructure, which consists of several components: the editor plugins communicate with the Tern server, which is implemented on top of the server module, which uses the inference engine to perform analyses.~\cite{tern-website}
 
 Editor plug-ins' list contains editors with significant or growing popularity:
 
@@ -49,22 +49,22 @@ Editor plug-ins' list contains editors with significant or growing popularity:
 \item Eclipse
 \end{itemize}
 
-The newest version in the time of this writing is $0.21$, implying that the tool is not yet aimed for heavyweight production usage, but for experimental purposes.
+At the time of this writing, the newest version of Tern is $0.21$, implying that the tool is not yet aimed for heavyweight production usage, but rather for experimental purposes.
 
 
 \subsection{Shift}
 
-Shift is not a static analysis tool, but a toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{ECMAScript 7\textsuperscript{th} Edition}.~\cite{shift-ast}, and its parser and scope analyser is are foundations of \emph{Codemodel-Rifle}.
+Shift is not a static analysis tool, but an AST toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{ECMAScript 7\textsuperscript{th} Edition}~\cite{shift-ast}, and its parser and scope analyser are foundations of \emph{Codemodel-Rifle}.
 
 It is to be mentioned here, that Shift uses its own AST format, first announced by Shape Security before the Christmas of 2014, as their first open-source contribution. According to their reasoning, a new ECMAScript AST format was needed because its predecessor, Mozilla's SpiderMonkey AST was not specifically created for static analysis purposes, but rather for an internal representation only for interpretation.
 
-Shift AST is said to comply with all aspects of a good AST-format~\cite{shift-ast-comparison}, as
+Shift AST is said to comply with all aspects of a good AST-format, as
 
 \begin{itemize}
-\item it minimizes the number of inhabitants that do not represent a program,
+\item \textquote{it minimizes the number of inhabitants that do not represent a program,
 \item it is at least partially homogenous to allow for a simple and efficient visitor,
 \item it does not impede moving, copying, or replacing subtrees,
-\item it discourages duplication in code that operates on it.~\cite{shift-ast-comparison}
+\item it discourages duplication in code that operates on it.}~\cite{shift-ast-comparison}
 \end{itemize}
 
 \subsection{Esprima}
@@ -72,7 +72,7 @@ Shift AST is said to comply with all aspects of a good AST-format~\cite{shift-as
 Esprima is an ECMAScript parser with extended capabilities, like syntax validation. It supports the full standard of \emph{ECMAScript 7\textsuperscript{th} Edition}. The open-source software is created by Ariya Hidayat, engineer of \emph{Shape Security}, and is maintained on GitHub.
 
 
-\subsection{Comparison of the featured tools}
+\subsection{Comparison of the Featured Tools}
 
 \begin{table}[!h]
 	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
@@ -87,7 +87,7 @@ Esprima is an ECMAScript parser with extended capabilities, like syntax validati
 		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey    &   Shift                 \\
 		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \fullsupport          \\
 		\textbf{number of contributors}       &   1               &   335             &   87              &   10                    \\
-		\textbf{licensing}                    &   Apache 2.0      &   BSD 3           &   MIT             &   Apache 2.0            \\
+		\textbf{license}                      &   Apache 2.0      &   BSD 3           &   MIT             &   Apache 2.0            \\
 		\textbf{current version number}       &   v0.9-10         &   v0.45.0         &   0.21.0          &   es2016-v1.1.1         \\
 		\midrule
 		\textbf{infers types}                 &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \nosupport            \\
@@ -101,7 +101,7 @@ Esprima is an ECMAScript parser with extended capabilities, like syntax validati
 \end{table}
 
 
-\section{Static analysis tools for Java}
+\section{Static Analysis Tools for Java}
 
 This section introduces static analysis tools for Java, mainly for earning new ideas regarding static analysis.
 
@@ -120,24 +120,24 @@ Similar to FindBugs, PMD performs syntactic analysis on Java programs, but is do
 
 A German technology firm, Buschmais developed a component-based static analysis tool for Java, called jQAssistant.~\cite{jqassistant-website} Similarly to the Codemodel-Rifle framework, jQAssistant is built upon the Neo4j graph database. According to the documentation~\cite{jqassistant-documentation}, the tool is to be integrated into the build process to detect constraint violations and generate reports about user defined concepts and metrics.
 
-Analysis rules can be expressed in Neo4j's graph query language, Cypher. However, instead of the semantics of the source code itself, jQAssistant focuses on the components and their connections. Its features include validating dependencies between modules in a project, enforcing naming conventions e.g. for test classes, packages, JPA entities, and detecting common architectural problems like cyclic dependencies.~\cite{jqassistant-documentation} The products is licensed under GNU General Public License, v3, allowing developers to use it in open-source projects.~\cite{gplv3}
+Analysis rules can be expressed in Neo4j's graph query language, Cypher. However, instead of the semantics of the source code itself, jQAssistant focuses on the software components and their connections. Its features include validating dependencies between modules in a project, enforcing naming conventions e.g. for test classes, packages, JPA entities, and detecting common architectural problems like cyclic dependencies.~\cite{jqassistant-documentation} The products is licensed under GNU General Public License, v3, allowing developers to use it in open-source projects.~\cite{gplv3}
 
 
-\section{Static analysis tools for C and C++}
+\section{Static Analysis Tools for C and C++}
 
 This section introduces static analysis tools for C and C++, mainly for earning new ideas regarding static analysis.
 
 
 \subsection{Clang}
 
-Besides serving as a compiler front-end for LLVM, Clang has a static analyser tool for finding bugs in C, C++, Objective-C programs.~\cite{clang-analyser-website} The tool can be used either as a standalone command-line tool, or as an Xcode\footnote{Xcode is Apple's integrated development environment only available for Apple's macOS, containing a suite of development tools for Apple platforms: macOS, iOS, watchOS and tvOS} plugin.
+Besides serving as a compiler front-end for LLVM, Clang has a static analyser component for finding bugs in C, C++, and Objective-C programs.~\cite{clang-analyser-website} The tool can be used either as a standalone command-line tool, or as an Xcode\footnote{Xcode is Apple's integrated development environment only available for Apple's macOS, containing a suite of development tools for Apple platforms: macOS, iOS, watchOS and tvOS.} plugin.
 
 Clang uses static analysis based on compiler techniques. It is designed to report much more information than GCC, using control-flow graph analysis. It features flow- and path-sensitive analyses while preserving the overall form of the original source code.~\cite{kremenek2008finding} The tool can be integrated into IDEs, and supports automated refactoring.
 
 
 \subsection{PolySpace}
 
-PolySpace Technologies, which first developed the PolySpace Verifier, was later acquired by MathWorks. PolySpace Verifier has been reorganised into a suite, which now features static analysis for C and C++. Similar to TAJS's approach, PolySpace uses the classic lattice-theoretic abstract interpretation technique. The underlying analyser relies on a sound approximation of the set of all reachable states.~\cite{emanuelsson2008comparative} The tool features a data structure named \emph{convex polyhedron}, multiple \emph{convex polyhedra} encodes the sets of states.~\cite{cousot1978automatic} A convex polyhedron is an n-dimensional geometric shape where for any pair of points inside the shape the straight line connecting the points is also inside the shape.~\cite{emanuelsson2008comparative}
+PolySpace Technologies, which first developed the PolySpace Verifier static analysis tool, was later acquired by MathWorks. PolySpace Verifier has been reorganised into a suite, which now features static analysis for C and C++. Similar to TAJS's approach, PolySpace uses the classic lattice-theoretic abstract interpretation technique. The underlying analyser relies on a sound approximation of the set of all reachable states.~\cite{emanuelsson2008comparative} The tool features a mathematical data structure named \emph{convex polyhedron}\footnote{A convex polyhedron is an $n$-dimensional geometric shape where for any pair of points inside the shape the straight line connecting the points is also inside the shape.~\cite{emanuelsson2008comparative}}, multiple \emph{convex polyhedra} encodes the sets of states.~\cite{cousot1978automatic}
 
 The tool is sound in the meaning that, given the full code base of the project, it computes the superset of every reachable state. It is flow-sensitive, context-sensitive, features inter-procedural analyses, and supports aliasing. \textquote{The properties checked by PolySpace Verifier are in many cases similar as those checked e.g. by other commercial systems, but the analysis is more sophisticated taking account of non-trivial relationships between variables (taking advantage of convex polyhedra) while other static analysis tools seem to cater only for simple relationships (e.g. equalities between variables and variables being bound to constant values or intervals of values).}~\cite{emanuelsson2008comparative}
 
@@ -152,6 +152,6 @@ Coverity Prevent, now part of Synopsys~\cite{coverity-website}, is a static anal
 
 The tool itself is a data-flow analysis tool featuring inter-procedural analyses. The analysis is neither sound nor complete, that is, there may be both defects which are not reported and there may be false alarms. A substantial effort has however been put on eliminating false positives, and the rate of these is clearly low (reportedly around 20 per cent).}~\cite{emanuelsson2008comparative}
 
-Coverity features a different set of C and C++ checkers. For C, there are checks for resource leaks, dereferencing/deallocating already deallocated memory, uninitialised variables, unused pointer values, dead code, null pointer dereferences, misuse of negative integers and functions that may return negative integers, and null returns, amongst others. For C++, there are checks for errors in overriding virtual functions, resource leaks because of missing destructors, past-the-end STL iterators, and uncaught exceptions, amongst others.
+Coverity features a different set of C and C++ checkers. For C, Coverity checks for resource leaks, dereferencing/deallocating already deallocated memory, uninitialised variables, unused pointer values, dead code, null pointer dereferences, misuse of negative integers and functions that may return negative integers, and null returns, amongst others. For C++, Coverity checks for errors in overriding virtual functions, resource leaks because of missing destructors, past-the-end STL iterators, and uncaught exceptions, amongst others.
 
 Coverity has concurrency and security checkers as well, such as checks for double locks and missing releases, dangerous function calls like \texttt{gets} or \texttt{strcpy}, string overflows, and incorrect usage of the \texttt{chroot} system call.~\cite{emanuelsson2008comparative}

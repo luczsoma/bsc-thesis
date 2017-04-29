@@ -1,1 +1,25 @@
 \chapter{Overview of the Approach}
+
+This chapter gives an overview of my approach of JavaScript static analysis using the \emph{Codemodel-Rifle} framework.
+
+
+\section{Refactoring the Codemodel-Rifle Framework}
+
+Dániel Stein, creator of the Codemodel-Rifle framework, gives a high-level overview of the architecture of the framework in his Master's Thesis.~\cite{stein-daniel-msc} The framework was notably refactored since then. While following his thesis, I introduce why refactoring was necessary, and present the details and the results of the process.
+
+
+\subsection{Open-Sourcing and Licensing Problems}
+
+Development of the Codemodel-Rifle framework was supported by the Fault-Tolerant Systems Research Group (FTSRG) of the Budapest University of Technology and Economics. FTSRG's decision (with the support of Dániel Stein) was to open-source the framework under FTSRG's name. According to an agreement with the university, FTSRG can only release open-source code under the Eclipse Public License, version 1.0 (EPLv1)~\cite{eplv1}. As it is maintained by the FTSRG, the Codemodel-Rifle framework is required to be released under EPLv1, if open-sourced. This introduced several licensing problems.~\cite{codemodel-rifle-licensing}
+
+The framework uses Neo4j as its internal graph data storage; more appropriately, Neo4j is (was) embedded into Codemodel-Rifle.~\cite{stein-daniel-msc} From the point of licensing, there is an important difference between \emph{using} the database \emph{via a network connection} and \emph{embedding} the database \emph{into software}. Since Neo4j's Community Edition, used by Codemodel-Rifle, is licensed under GPLv3~\cite{neo4j-licensing}, it can be used remotely via a network connection with practically any license because of the so-called \emph{application service provider loophole}~\cite{asp-loophole}, but it can not be embedded into applications which do not comply with GPLv3. As EPLv1 and GPLv3 are incompatible, Neo4j can not be embedded into the open-sourced Codemodel-Rifle.
+
+Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j accessed via a driver. But, as native API-calls, which are (were) extensively used by Codemodel-Rifle, can not be used with driver-accessed Neo4j, this caused further problems; these are subjects of the next sections.
+
+
+\subsection{Optimizing for Testing Purposes}
+
+The framework used embedded Neo4j as a persistent storage. This is slow and circuitous for testing purposes, as the database has to be flushed between every test case to ensure the necessary level of independence. After converting from embedded to remote Neo4j, Codemodel-Rifle's \texttt{DbServicesManager} class was transformed to be use an \texttt{ImpermanentGraphDatabase} instance via an \texttt{EmbeddedTestkitDriver} instance developed by Gábor Szárnyas.~\cite{neo4j-drivers}
+
+
+\subsection{Optimizing for Speed}
