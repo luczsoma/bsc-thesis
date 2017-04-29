@@ -19,7 +19,7 @@ Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j
 
 \subsection{Optimizing for Testing Purposes}
 
-The framework used embedded Neo4j as a persistent storage. This is slow and circuitous for testing purposes, as the database has to be flushed between every test case to ensure the necessary level of independence. After converting from embedded to remote Neo4j, Codemodel-Rifle's \texttt{DbServicesManager} class was transformed to be use an \texttt{ImpermanentGraphDatabase} instance via an \texttt{EmbeddedTestkitDriver} instance developed by Gábor Szárnyas.~\cite{neo4j-drivers}
+The framework used embedded Neo4j as a persistent storage. This is slow and circuitous for testing purposes, as the database has to be flushed between every test case to ensure the necessary level of independence. After converting from embedded to remote Neo4j, Codemodel-Rifle's \texttt{DbServicesManager} class was transformed to be use an in-memory \texttt{ImpermanentGraphDatabase} instance via an \texttt{EmbeddedTestkitDriver} instance developed by Gábor Szárnyas.~\cite{neo4j-drivers}
 
 
 \subsection{Optimizing for Speed}
