@@ -17,9 +17,24 @@ The framework uses Neo4j as its internal graph data storage; more appropriately,
 Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j accessed via a driver. But, as native API-calls, which are (were) extensively used by Codemodel-Rifle, can not be used with driver-accessed Neo4j, this caused further problems; these are subjects of the next sections.
 
 
-\subsection{Optimizing for Testing Purposes}
+\subsection{Separating the Application Logic from the Access Layer}
+
+eliminating the web interface, putting visualisation into a separate package, etc.
+
+
+\subsection{Optimising for Testing Purposes}
+
+fel kellett lőni egy külön Neo4j-t, amihez le kellett tölteni, külön folder, felesleges perzisztencia, stb.
 
 The framework used embedded Neo4j as a persistent storage. This is slow and circuitous for testing purposes, as the database has to be flushed between every test case to ensure the necessary level of independence. After converting from embedded to remote Neo4j, Codemodel-Rifle's \texttt{DbServicesManager} class was transformed to be use an in-memory \texttt{ImpermanentGraphDatabase} instance via an \texttt{EmbeddedTestkitDriver} instance developed by Gábor Szárnyas.~\cite{neo4j-drivers}
 
 
-\subsection{Optimizing for Speed}
+\subsection{Optimising for Speed: Object-Graph Mapping}
+
+
+\subsection{Optimising for Speed: the Cypher Query Builder}
+
+
+\subsection{Summary of Refactoring}
+
+jó kis komponens-diagram szerű ábra ide
