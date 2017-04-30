@@ -54,9 +54,9 @@ At the time of this writing, the newest version of Tern is $0.21$, implying that
 
 \subsection{Shift}
 
-Shift is not a static analysis tool, but an AST toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{ECMAScript 7\textsuperscript{th} Edition}~\cite{shift-ast}, and its parser and scope analyser are foundations of \emph{Codemodel-Rifle}.
+Shift is not a static analysis tool, but an AST toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{ECMAScript 7\textsuperscript{th} Edition}~\cite{shift-ast}, and its parser and scope analyser are foundations of the Codemodel-Rifle framework.
 
-It is to be mentioned here, that Shift uses its own AST format, first announced by Shape Security before the Christmas of 2014, as their first open-source contribution. According to their reasoning, a new ECMAScript AST format was needed because its predecessor, Mozilla's SpiderMonkey AST was not specifically created for static analysis purposes, but rather for an internal representation only for interpretation.
+It is to be mentioned here, that Shift uses its own AST format, first announced by Shape Security in late 2014, as their first open-source contribution. According to their reasoning, a new ECMAScript AST format was needed because its predecessor, Mozilla's SpiderMonkey AST was not specifically created for static analysis purposes, but rather for an internal representation only for interpretation.
 
 Shift AST is said to comply with all aspects of a good AST-format, as
 
@@ -74,7 +74,7 @@ Esprima is an ECMAScript parser with extended capabilities, like syntax validati
 
 \subsection{Comparison of the Featured Tools}
 
-\begin{table}[!h]
+\begin{table}[!htb]
 	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
 	\newcommand{\partialsupport}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
 	\newcommand{\nosupport}{—}
@@ -83,7 +83,7 @@ Esprima is an ECMAScript parser with extended capabilities, like syntax validati
 		\toprule
 																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}   &   \textbf{Shift Java}   \\
 		\midrule
-		\textbf{ECMAScript support}           &   ES3             &   ES5             &   ES7             &   ES7                   \\
+		\textbf{ECMAScript support}           &   ES3             &   ES5             &   ES6             &   ES7                   \\
 		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey    &   Shift                 \\
 		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \fullsupport          \\
 		\textbf{number of contributors}       &   1               &   335             &   87              &   10                    \\
@@ -96,7 +96,7 @@ Esprima is an ECMAScript parser with extended capabilities, like syntax validati
 		\bottomrule
 	\end{tabular}
 
-	\caption{Excerpt from an ECMAScript 6 compatibility table~\cite{kangax}}
+	\caption{Comparison of the featured JavaScript static analysis tools}
 	\label{table:javascript-tools-comparison}
 \end{table}
 
@@ -113,7 +113,7 @@ FindBugs is a static analysis tool for detecting bug patterns in Java code.~\cit
 
 \subsection{PMD}
 
-Similar to FindBugs, PMD performs syntactic analysis on Java programs, but is does not have a data flow component. \textquote{In addition to some detection of clearly erroneous code, many of the \textquote{bugs} PMD looks for are stylistic conventions whose violation might be suspicious under some circumstances. For example, having a try statement with an empty catch block might indicate that the caught error is incorrectly discarded. Because PMD includes many detectors for bugs that depend on programming style, PMD includes support for selecting which detectors or groups of detectors should be run.}~\cite{rutar2004comparison}
+Similarly to FindBugs, PMD performs syntactic analysis on Java programs, but is does not have a data flow component. \textquote{In addition to some detection of clearly erroneous code, many of the \textquote{bugs} PMD looks for are stylistic conventions whose violation might be suspicious under some circumstances. For example, having a try statement with an empty catch block might indicate that the caught error is incorrectly discarded. Because PMD includes many detectors for bugs that depend on programming style, PMD includes support for selecting which detectors or groups of detectors should be run.}~\cite{rutar2004comparison}
 
 
 \subsection{jQAssistant}
