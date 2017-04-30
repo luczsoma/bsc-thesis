@@ -179,7 +179,7 @@ Neo4j provides two access models, detailed in the following paragraphs.
 
 \paragraph{Embedded mode} For JVM-based languages, a native API is exposed for data operations with a very low latency. This makes the database directly embeddable to any software written in a JVM-compatible language, but provides less scalability than the \emph{server mode}.
 
-\paragraph{Server mode} The database can be operated as a separate server listening on its binary \emph{Bolt} protocol as well as on its HTTP REST interface. From scalability aspects, the Enterprise Edition's master-slave database replication\footnote{At the time of this writing, multi-master replication is not offered by Neo4j.~\cite{neo4j-clustering-architecture}} is only available in server mode.
+\paragraph{Server/Remote mode} The database can be operated as a separate server listening on its binary \emph{Bolt} protocol as well as on its HTTP REST interface. From scalability aspects, the Enterprise Edition's master-slave database replication\footnote{At the time of this writing, multi-master replication is not offered by Neo4j.~\cite{neo4j-clustering-architecture}} is only available in server mode.
 
 The Codemodel-Rifle framework uses Neo4j for its property graph storage. At first, the database was embedded into the software, but due to licensing issues, the framework had to be refactored to use Neo4j in server mode.\footnote{The licensing issues and the details and results of the refactoring are described in Section 3.1.}
 

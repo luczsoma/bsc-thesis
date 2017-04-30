@@ -5,21 +5,63 @@ This chapter gives an overview of my approach of JavaScript static analysis usin
 
 \section{Refactoring the Codemodel-Rifle Framework}
 
-Dániel Stein, creator of the Codemodel-Rifle framework, gives a high-level overview of the architecture of the framework in his Master's Thesis.~\cite{stein-daniel-msc} The framework was notably refactored since then. While following his thesis, I introduce why refactoring was necessary, and present the details and the results of the process.
+Dániel Stein, creator of the Codemodel-Rifle framework, details the design of the framework in his Master's Thesis.~\cite{stein-daniel-msc} Following his thesis and my experiences with the framework, the summary of the software's architecture is the following:
+
+\begin{itemize}
+\item A source code file is to be delivered to Codemodel-Rifle via the HTTP REST API of the framework's embedded webserver as a text.
+\item The framework parses the incoming source file into an AST model with Shape Security's Shift parser.
+\item The framework performs scope analysis on the AST model with Shape Security's scope analyser, transforming the AST model into an ASG model.
+\item The ASG model is transformed to a property graph and is stored in the framework's embedded Neo4j graph database.
+\item Apart from importing a file, the framework is able to perform analyses on or visualisation of a graph stored in its database if requested over its REST API.
+\item Analysing multiple ECMAScript files are minimally supported by interconnecting related modules' subgraphs along the \emph{export} and \emph{import} ECMAScript statements, but not all use cases and combinations are implemented.
+\item The result of the analyses or the visualisation is returned via the REST API in JSON or in a visual file format.
+\end{itemize}
+
+Codemodel-Rifle was notably refactored since the state of the above summarised architecture. This section introduces why refactoring was necessary, and presents the details and the results of the process.
 
 
-\subsection{Open-Sourcing and Licensing Problems}
+\subsection{Open-Sourcing and Licensing Issues}
 
 Development of the Codemodel-Rifle framework was supported by the Fault-Tolerant Systems Research Group (FTSRG) of the Budapest University of Technology and Economics. FTSRG's decision (with the support of Dániel Stein) was to open-source the framework under FTSRG's name. According to an agreement with the university, FTSRG can only release open-source code under the Eclipse Public License, version 1.0 (EPLv1)~\cite{eplv1}. As it is maintained by the FTSRG, the Codemodel-Rifle framework is required to be released under EPLv1, if open-sourced. This introduced several licensing problems.~\cite{codemodel-rifle-licensing}
 
-The framework uses Neo4j as its internal graph data storage; more appropriately, Neo4j is (was) embedded into Codemodel-Rifle.~\cite{stein-daniel-msc} From the point of licensing, there is an important difference between \emph{using} the database \emph{via a network connection} and \emph{embedding} the database \emph{into software}. Since Neo4j's Community Edition, used by Codemodel-Rifle, is licensed under GPLv3~\cite{neo4j-licensing}, it can be used remotely via a network connection with practically any license because of the so-called \emph{application service provider loophole}~\cite{asp-loophole}, but it can not be embedded into applications which do not comply with GPLv3. As EPLv1 and GPLv3 are incompatible, Neo4j can not be embedded into the open-sourced Codemodel-Rifle.
+The framework uses Neo4j as its internal graph data storage, and Neo4j was embedded into Codemodel-Rifle.~\cite{stein-daniel-msc} From the point of licensing, there is an important difference between \emph{using} the database \emph{via a network connection} and \emph{embedding} the database \emph{into software}. Since Neo4j's Community Edition, used by Codemodel-Rifle, is licensed under GPLv3~\cite{neo4j-licensing}, it can be used remotely via a network connection with practically any license because of the so-called \emph{application service provider loophole}~\cite{asp-loophole}, but it can not be embedded into applications which do not comply with GPLv3. As EPLv1 and GPLv3 are incompatible, Neo4j can not be embedded into the open-sourced Codemodel-Rifle.
 
-Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j accessed via a driver. But, as native API-calls, which are (were) extensively used by Codemodel-Rifle, can not be used with driver-accessed Neo4j, this caused further problems; these are subjects of the next sections.
+Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j accessed via a driver. But, as native API-calls, which were extensively used by Codemodel-Rifle, can not be used with driver-accessed Neo4j, this caused further problems; these are subjects of the next sections.
 
 
-\subsection{Separating the Application Logic from the Access Layer}
+\subsection{Decomposing the Architecture}
 
-eliminating the web interface, putting visualisation into a separate package, etc.
+Codemodel-Rifle's first architecture was a monolith. It \emph{embedded} four key modules:
+
+\begin{itemize}
+\item a Neo4j graph \textbf{database},
+\item a \textbf{webserver} exposing an HTTP REST API for interactions,
+\item the \textbf{core module} responsible for transforming source code into an ASG and performing analyses on the graph,
+\item and \textbf{other application logic}, e.g. for displaying and exporting AGSs into visual file formats like PDF or PNG.
+\end{itemize}
+
+Decoupling, or minimising direct interdependencies between components is an important aspect of software engineering. If a software is decomposed into smaller components along well-defined interfaces, it becomes modular: any module's inner functioning can be changed without affecting other modules, as long as the module implements the interface it was bound to. Motivations to alter a module include performance issues, scalability efforts, or changed domain logic. Codemodel-Rifle's first architecture was well-designed for easy manual testing and seemed to be an obvious solution for creating a small-scale graph-based analysis software. However, demands like simultaneous usage of multiple users, or having dedicated hardware resources to run analysis queries over large repositories, required the Codemodel-Rifle framework to become modular to adapt.
+
+
+\subsubsection{Detaching the Database}
+
+Apart from the licensing issues detailed above, using a remote Neo4j server as a database instead of the embedded version comes with several benefits. The database can be outsourced onto a separate hardware or infrastructure: since analyses and graph maintenance queries can be demanding over a large code repository, providing dedicated resources for the database is an obvious solution for possible performance issues and scalability.
+
+With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level\footnote{Gábor Szárnyas is developing a graph database driver \emph{ingraph} with the goal of evaluating openCypher queries incrementally.~\cite{ingraph-github}}, or it can provide testing support with providing an in-memory database via a driver instance\footnote{The default configuration of the framework is to use an in-memory Neo4j database currently. This is to be detailed in the next subsection.}.
+
+An architectural decision resulted in converting to the remote mode of Neo4j. This means native API-calls are no longer possible, interacting with the database is restricted to the use of Cypher queries provided via the database driver. The Codemodel-Rifle framework extensively used native API-calls, since it was a practical and fast way. All API function calls had to be rewritten into distinct Cypher queries. As Cypher queries turned out to be notably slower than the API, when executed many queries at once, this introduced performance issues. Solutions to these issues are described in the next sections.
+
+
+\subsubsection{Eliminating the Web Interface}
+
+The framework contained an embedded GlassFish~\cite{glassfish-website} web server to expose an HTTP REST API for interactions. This was a convenient way for manual testing and a sensible approach for operating the software in a prospective production environment as well. All communication with the Codemodel-Rifle framework (operating as a server) could be achieved via its HTTP REST API with tool like curl~\cite{curl-website} or Postman~\cite{postman-website} (in development), or with an IDE or CI plugin (in production).
+
+For automated testing however, an HTTP REST API is inconvenient: issues like exception handling and logging are not straightforward. Since the framework is not yet intended for in-production usage at all, but is heavily under development, an architectural decision was to eliminate the web server, and focus on the core functionality: the analyses. After removing the webserver from the architecture, the in-development way to supply code repositories to the framework for analysis is via unit tests: each test has separate test resources shipped along with the framework's source code.
+
+
+\subsubsection{Separating the Visualisation Logic into a Separate Project}
+
+Visualising the ASG of an imported JavaScript source code is key for getting acquainted with Codemodel-Rifle's ASG-semantics, as well as for developing new analyses. \Cref{fig:codemodel-rifle-asg} displays an example of an ASG created and visualised by Codemodel-Rifle. However, the framework does not explicitly need this feature to function as an analysis software. Therefore it was a rational step to separate the visualisation logic into a separate project, called \emph{Codemodel-Visualization}\footnote{The project name uses US English, while this thesis aims to be written in UK English.}.
 
 
 \subsection{Optimising for Testing Purposes}
@@ -31,6 +73,8 @@ deprecated!!!!!!!!! The framework used embedded Neo4j as a persistent storage. T
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
+API-call vs cypher calls, etc.
+indexing
 ids generation, etc.
 
 
