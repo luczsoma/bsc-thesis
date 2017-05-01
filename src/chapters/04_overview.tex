@@ -198,25 +198,30 @@ Building new analyses basically consists of three steps. The steps are detailed 
 
 \subsection{Visualising the Defect with Codemodel-Visualisation}
 
-Firstly, the defect has to be visualised with the ASG-semantics of Codemodel-Rifle. For visualising a defect pattern, a new unit test has to be implemented for the Codemodel-Visualization project with a test resource including one (or more) JavaScript module containing the defect.
+First, the defect has to be inspected with the ASG-semantics of Codemodel-Rifle. For visualising a defect pattern, a new unit test has to be implemented in the Codemodel-Visualization project. The JavaScript module or modules containing the defect should be included as test resources.
 
-Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the file (files) and converts it (them) to separate property graphs. If multiple source files are imported, their graphs are connected along the export and import semantics of ECMAScript.\footnote{The process of connecting ECMAScript modules along export and import statements is one of the key subjects of this thesis. It will be detailed in Chapter 5.} Finally, the full property graph model gets exported into visual file format, like PDF or PNG.
+Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the file (files) and translates it (them) to separate property graphs. If multiple source files are imported, their graphs are connected along the export and import semantics of ECMAScript.\footnote{The process of connecting ECMAScript modules along export and import statements is one of the key subjects of this thesis. It will be detailed in Chapter 5.} Finally, the full property graph model gets exported into visual file format, like PDF or PNG.
 
 
 \subsection{Describing the Defect Pattern}
 
-The file exported by Codemodel-Visualization precisely mirrors the property graph instance model transformed by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \texttt{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen on the visualised graph can be matched later by Codemodel-Rifle with a Cypher query.
+The file exported by Codemodel-Visualization precisely mirrors the property graph instance model transformed by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \texttt{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen on the visualised graph can be directly matched by Codemodel-Rifle.
 
-If a complex analysis requires to manipulate the graph model, it is also possible with Cypher. This will be detailed in Chapter 5.
 
 \subsection{Implementing the Analysis}
 
-Analyses are Cypher queries. If a defect pattern can be expressed as a Cypher query (after the necessary manipulations of the graph), it can be detected by the framework. If the analysis matches the specified pattern, my implementations returns the following:
+Analyses are basically Cypher queries. If a defect's pattern can be expressed with a Cypher query in some way, it can be detected by the framework.
+
+Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these may require to extensively manipulate the graph to dredge defect patterns for matching. In cases involving \emph{transitive} defects, like in the running example\footnote{The running example is to detect a division by zero scenario. But zero is not a numeric literal $0$, but the indirectly referenced return value of a nested function stack with variable assignments and also a module boundary in between.} presented in Chapter 2, a flag like \texttt{EqualsZero} has to be propagated through the graph along specified edges: variable assignments, variable references, function call and function return statements, etc.
+
+Transitive graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis. Implementing and using qualifiers for analyses will be described in detail in Chapter 5.
+
+If the analysis matches the specified pattern, my implementation returns the following:
 
 \begin{itemize}
 \item a \textbf{message} to explain the type of the defect for a human reader,
 \item an \textbf{entity name} (or an empty string) to identify defects bound to named entities,
-\item the path of the containing \textbf{module},
+\item the \textbf{path} of the containing module,
 \item the \textbf{line} in which the defect was found,
 \item the \textbf{column} of the line at which the defect begins.
 \end{itemize}
@@ -229,16 +234,16 @@ In my current implementation, these items are uniformly\footnote{Exactly these i
 The prospective live operation of the framework basically consists of three steps, which are managed by the framework. Ideally, the operation should be automatic and transparent: if a change is done in the IDE, or a new commit is pushed to a central repository, the framework should perform an analysis over the changed code repository. The steps of a full analysis procedure are detailed in the following subsections.
 
 
-\subsection{Synchronising a Repository into the Framework}
+\subsection{Synchronising the Repository into the Framework}
 
-First, a code repository is imported into the framework. This involves listing and parsing all files with the configured extensions (currently only \texttt{.js}), then saving the created property graph models into the database.
+First, the code repository is imported into the framework. This involves listing and parsing all files with configured extensions (currently only \texttt{.js}), then saving the created property graph models into the database.
 
-The word synchronising expresses that Codemodel-Rifle aims to be incremental; but while it does so, its capabilities are still very limited. According to the plans, the framework will cooperate with VCSs to detect changes, thus it will be able to import only those files that changed since the last import process.
+The word synchronising expresses that Codemodel-Rifle aims to be incremental; but while it does so, its capabilities are still very limited. According to plans, the framework will cooperate with VCSs to detect changes, thus it will be able to import only those files that changed since the last import process.
 
 
 \subsection{Connecting the Related ECMAScript Modules}
 
-To evaluate analyses over multiple ECMAScript modules, the related modules' separate property graphs have to be connected along the import and export semantics of ECMAScript. This process is described in detail in Chapter 5.
+To evaluate analyses over multiple ECMAScript modules, the related modules' separate property graphs are interconnected along the export and import semantics of ECMAScript. This process is described in detail in Chapter 5.
 
 
 \subsection{Performing Analyses}
@@ -248,11 +253,17 @@ Performing analyses can be broken down into two substeps.
 
 \subsubsection{Manipulating the Graph}
 
-Complex analyses may require to extensively manipulate the graph. In cases like the running example presented in Chapter 2 – detecting a division by zero scenario, but zero is not a numeric literal, but the return value of a nested function variable –, a flag like \texttt{EqualsZero} has to be propagated through the graph along specified edges.
-
-Graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis procedure. Implementing and using qualifiers for analyses will be described in detail in Chapter 5.
+Complex analyses may require to extensively manipulate the graph. These manipulations involving qualifiers are processed first.
 
 
 \subsubsection{Querying the Graph}
 
-The graph can be queried with Cypher, with matching predefined graph patterns developed with the above-mentioned steps. If a defect pattern matches, the above described items are returned and logged.
+The graph is queried with Cypher, with matching predefined graph patterns developed with the aforementioned steps. If a defect pattern matches, the defect gets logged onto the console in the format seen in \Cref{fig:defect-found-logger}.
+
+\vspace{0.5em}
+\begin{figure}[!htb]
+	\centering
+	\texttt{\textbf{message}: \textbf{entityname} at \textbf{line}:\textbf{column} in \textbf{path}}
+  \caption{The framework's console output if a defect was found}
+  \label{fig:defect-found-logger}
+\end{figure}
