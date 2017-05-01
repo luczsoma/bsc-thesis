@@ -59,9 +59,9 @@ The framework contained an embedded Grizzly~\cite{grizzly-website} web server to
 For automated testing however, an HTTP REST API is inconvenient: solutions for important testing issues like exception handling and logging do not come straightforward. Since the framework is not yet intended for in-production usage at all, but is heavily under development, an architectural decision was to eliminate the web server, and focus on the core functionality: the analyses. After removing the webserver from the architecture, the in-development way to supply code repositories to the framework for analysis is via unit tests: each test has its resources shipped along with the framework's source code.
 
 
-\subsubsection{Separating the Visualisation Logic into a Separate Project}
+\subsubsection{Separating the Visualisation Logic into an Isolated Project}
 
-Visualising the ASG of an imported JavaScript source code is key for getting acquainted with Codemodel-Rifle's ASG-semantics, as well as for developing new analyses. \Cref{fig:codemodel-rifle-asg} displays an example of an ASG created and visualised by Codemodel-Rifle. However, the framework does not explicitly need this feature to function as an analysis software. Therefore it was a rational step to separate the visualisation logic into a separate project, called \emph{Codemodel-Visualization}\footnote{The project name uses US English, while this thesis aims to be written in UK English.}.
+Visualising the ASG of an imported JavaScript source code is key for getting acquainted with Codemodel-Rifle's ASG-semantics, as well as for developing new analyses. \Cref{fig:codemodel-rifle-asg} displays an example of an ASG created and visualised by Codemodel-Rifle. However, the framework does not explicitly need this feature to function as an analysis software. Therefore it was a rational step to separate the visualisation logic into an isolated project, called \emph{Codemodel-Visualization}\footnote{The project name uses US English, while this thesis aims to be in UK English.}.
 
 
 \subsection{Optimising for Testing Purposes}
@@ -104,17 +104,17 @@ Converting from embedded Neo4j to driver-accessed Neo4j, involving converting fr
 	\label{table:embedded-vs-in-memory-remote-table}
 \end{table}
 
-Seeing the results of \Cref{table:embedded-vs-in-memory-remote-table}, it was necessary to optimise the framework's performance with the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations will benefit the in-production performance as well, since the two environments share the same interface: in both scenario, the database is accessed via a Neo4j driver interface. Ideally, the optimisations should be configurable to adapt to both the testing and also the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
+Seeing measurement results in \Cref{table:embedded-vs-in-memory-remote-table}, it was necessary to optimise the framework's performance for the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations will benefit the in-production performance as well, since the two environments share the same interface: in both scenario, the database is accessed via a Neo4j driver. Ideally, the optimisations should be configurable to adapt to both the testing and the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
 
-In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG model to the property graph model happens simultaneously with actually storing the property graph model in the database. If an element of the ASG model has been successfully translated into the property graph model, it is stored in the database immediately. This can be optimised by creating a property graph model stored in Java objects first, and then implementing a storage logic to manage saving the objects in the database. The storage logic's operative parameters can be optimised directly to the currently used database driver.
+In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG model to the property graph model happens simultaneously with actually storing the property graph model in the database. If an element of the ASG model has been successfully translated into the property graph model, it is stored in the database immediately. This can be optimised: by creating a property graph model stored in Java objects, and then implementing a storage logic to perform saving the objects into the database, the operative parameters of the storage logic can be optimised directly to the currently used database driver.
 
 \subsubsection{Creating a specialised Object-Graph Mapping (OGM) Layer}
 
-Importing a repository can be summarised by two types of actions on the database level:
+Importing a repository can be summarised by two types of database-level action:
 
 \begin{enumerate}
-\item The ASG nodes gets created as Neo4j property graph nodes.
-\item The ASG relations get set as Neo4j property graph relations.
+\item The ASG \emph{nodes get created} as Neo4j property graph nodes.
+\item The ASG \emph{relations get set} as Neo4j property graph relations.
 \end{enumerate}
 
 Therefore, a mapping layer basically needs to translate two object types: \emph{ASG nodes} and \emph{ASG relations}. I mapped these two object types with the \texttt{AsgNode} and \texttt{AsgRelation} Java classes. An \texttt{AsgNode} stores its properties in a \texttt{HashMap}, and its labels and relations in two separate \texttt{List} members. An \texttt{AsgRelation} has a \emph{fromNode}, a \emph{toNode}, and a \emph{relationshipLabel} member. Storing relationship properties was omitted, since the Codemodel-Rifle framework semantics does not contain relationship properties.
@@ -124,9 +124,16 @@ Identifying nodes is achieved with a universally unique identifier (UUID), inste
 
 \subsubsection{The Cypher Query Builder}
 
-A main bottleneck identified with the \texttt{ImpermanentGraphDatabase} interface of the \texttt{EmbeddedTestkitDriver} was the speed of parsing queries. Since the example presented in \Cref{table:embedded-vs-in-memory-remote-table} requires $201$ distinct property graph nodes and $340$ relationships to be created, it normally requires $541$ distinct Cypher queries to be run. If multiple distinct queries are merged into one, it increases speed with nearly 50\% in some cases. Accordingly, it is a reasonable step to implement a configurable, specialised query builder, which manages to store the property graph model with a coarser query-granularity (by creating multiple nodes or setting multiple relationships within one executed database query).
+A main bottleneck identified with the \texttt{ImpermanentGraphDatabase} interface of the \texttt{EmbeddedTestkitDriver} was the speed of parsing queries. Since the example presented in \Cref{table:embedded-vs-in-memory-remote-table} requires $201$ property graph nodes and $340$ relationships to be created, it normally requires $541$ distinct Cypher queries to be run. If multiple distinct queries are merged into one, it increases speed with nearly 50\% in some cases. Accordingly, it is a reasonable step to implement a configurable, specialised query builder, which manages storing the property graph model with a coarser query-granularity (by creating multiple nodes or setting multiple relationships within one executed database query).
 
 The implemented query builder is capable of creating Cypher queries specially for the aforementioned OGM layer, following its internal configuration about how many \emph{ASG node creation} queries and how many \emph{ASG relation setting} queries should be merged (compressed) into one. The builder assembles and prepares the queries, and then returns them in a list. Each query in the list is a compressed query according to the configuration, ready to be executed without further modifications.
+
+
+\subsubsection{Refactoring the Core Logic to Utilise the OGM and the Query Builder}
+
+After implementing and testing the mapping layer and the query builder, I modified the core import logic of the framework in the \texttt{ASTScopeProcessor} class to utilise the new components. Instead of immediately storing the translated ASG model as a property graph model in the database, the processor first stores the property graph model in Java objects with my custom OGM layer. Then, benefiting from the query builder, the model is sent to the database in optimally sized chunks following the query builder's configuration.
+
+\Cref{table:query-builder-config} shows the optimal configuration values of the query builder in testing environment (with the \texttt{EmbeddedTestkitDriver}), and in a prospective production environment (with the official Bolt driver of Neo4j) for test cases run on my computer.
 
 \begin{table}[!htb]
 	\centering
@@ -134,21 +141,14 @@ The implemented query builder is capable of creating Cypher queries specially fo
 		\toprule
 																								&   \textbf{testing}   &   \textbf{production}   \\
 		\midrule
-		\textbf{node created in one query}          &   16                 &   20                    \\
-		\textbf{relationship set in one query}      &   1                  &   4                     \\
+		\textbf{nodes created in one query}         &   16                 &   20                    \\
+		\textbf{relationships set in one query}     &   1                  &   2                     \\
 		\bottomrule
 	\end{tabular}
 
 	\caption{Optimal configuration of the query builder for my computer}
 	\label{table:query-builder-config}
 \end{table}
-
-\Cref{table:query-builder-config} shows the optimal configuration values of the query builder in testing environment (with the \texttt{EmbeddedTestkitDriver}), and in a prospective production environment (with the official Bolt driver of Neo4j) for test cases run on my computer.
-
-
-\subsubsection{Refactoring the Core Logic to Utilise the OGM and the Query Builder}
-
-After implementing and testing the mapping layer and the query builder, I modified the core import logic of the framework to utilise the new components. Instead of immediately storing the translated ASG model as a property graph model in the database, the processor first stores the property graph model in Java data structures with my custom OGM. Then, benefiting from the query builder, the model is sent to the database in optimally sized chunks following the query builder's configuration.
 
 
 \subsubsection{Results of Speed-Related Refactorings}
@@ -164,7 +164,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 		\textbf{importing, transforming, storing}   &   14816ms                          &   7031ms                        \\
 		\textbf{visualization}                      &   2456ms                           &   2432ms                        \\
 		\midrule
-		\textbf{altogether}                         &   17272ms                          &   9463ms                        \\
+		\textbf{total}                              &   17272ms                          &   9463ms                        \\
 		\bottomrule
 	\end{tabular}
 
@@ -193,7 +193,7 @@ The final version of Dániel Stein's framework used the \texttt{v2.2.0} version 
 
 \section{In Development: Steps of Building New Analyses}
 
-Building new analyses basically consists of three steps. The steps are detailed in the following subsections.
+Building new analyses to catch new software defects basically consists of three steps. The steps are detailed in the following subsections.
 
 
 \subsection{Visualising the Defect with Codemodel-Visualisation}
@@ -205,7 +205,7 @@ Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the
 
 \subsection{Describing the Defect Pattern}
 
-The file exported by Codemodel-Visualization precisely mirrors the property graph instance model transformed by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \texttt{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen on the visualised graph can be directly matched by Codemodel-Rifle.
+The file exported by Codemodel-Visualization precisely mirrors the property graph instance model transformed by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \texttt{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
 
 
 \subsection{Implementing the Analysis}
@@ -214,7 +214,7 @@ Analyses are basically Cypher queries. If a defect's pattern can be expressed wi
 
 Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these may require to extensively manipulate the graph to dredge defect patterns for matching. In cases involving \emph{transitive} defects, like in the running example\footnote{The running example is to detect a division by zero scenario. But zero is not a numeric literal $0$, but the indirectly referenced return value of a nested function stack with variable assignments and also a module boundary in between.} presented in Chapter 2, a flag like \texttt{EqualsZero} has to be propagated through the graph along specified edges: variable assignments, variable references, function call and function return statements, etc.
 
-Transitive graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis. Implementing and using qualifiers for analyses will be described in detail in Chapter 5.
+Transitive graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis. The concept of qualifiers will be described in detail in Chapter 5.
 
 If the analysis matches the specified pattern, my implementation returns the following:
 
@@ -226,12 +226,12 @@ If the analysis matches the specified pattern, my implementation returns the fol
 \item the \textbf{column} of the line at which the defect begins.
 \end{itemize}
 
-In my current implementation, these items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect type.} returned from the database as elements of a Neo4j \texttt{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible, extensible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be represented as instances of the \texttt{Defect} Java class. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it cloud also produce machine-readable output for other software.
+In my current implementation, these items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect type.} returned from the database as elements of a Neo4j \texttt{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible, extensible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be represented as instances of the \texttt{Defect} Java class. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output for other software.
 
 
 \section{In Production: Steps of Operating Live}
 
-The prospective live operation of the framework basically consists of three steps, which are managed by the framework. Ideally, the operation should be automatic and transparent: if a change is done in the IDE, or a new commit is pushed to a central repository, the framework should perform an analysis over the changed code repository. The steps of a full analysis procedure are detailed in the following subsections.
+The prospective live operation of the framework basically consists of three steps, which are managed by the framework. Ideally, the operation should be automatic and transparent: if a change is done in the IDE, or a new commit is pushed to the central repository, the framework should perform an analysis over the changed code repository. The steps of a full analysis procedure are detailed in the following subsections.
 
 
 \subsection{Synchronising the Repository into the Framework}
