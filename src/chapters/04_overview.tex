@@ -37,7 +37,7 @@ Codemodel-Rifle's first architecture was a monolith. It \emph{embedded} four key
 \item a Neo4j graph \textbf{database},
 \item a \textbf{webserver} exposing an HTTP REST API for interactions,
 \item the \textbf{core module} responsible for transforming source code into an ASG and performing analyses on the graph,
-\item and \textbf{other application logic}, e.g. for displaying and exporting AGSs into visual file formats like PDF or PNG.
+\item and \textbf{other application logic}, e.g.\ for displaying and exporting AGSs into visual file formats like PDF or PNG.
 \end{itemize}
 
 Decoupling, or minimising direct interdependencies between components is an important aspect of software engineering. If a software is decomposed into smaller components along well-defined interfaces, it becomes modular: any module's inner functioning can be changed without affecting other modules, as long as the module implements the interface it was bound to. Motivations to alter a module include performance issues, scalability efforts, or changed domain logic. Codemodel-Rifle's first architecture was well-designed for easy manual testing and seemed to be an obvious solution for creating a small-scale graph-based analysis software. However, demands like simultaneous usage of multiple users, or having dedicated hardware resources to run analysis queries over large repositories, required the Codemodel-Rifle framework to become modular to adapt.
@@ -54,7 +54,7 @@ An architectural decision resulted in converting to the remote mode of Neo4j. Th
 
 \subsubsection{Eliminating the Web Interface}
 
-The framework contained an embedded GlassFish~\cite{glassfish-website} web server to expose an HTTP REST API for interactions. This was a convenient way for manual testing and a sensible approach for operating the software in a prospective production environment as well. All communication with the Codemodel-Rifle framework (operating as a server) could be achieved via its HTTP REST API with tool like curl~\cite{curl-website} or Postman~\cite{postman-website} (in development), or with an IDE or CI plugin (in production).
+The framework contained an embedded Grizzly~\cite{grizzly-website} web server to expose an HTTP REST API for interactions. This was a convenient way for manual testing and a sensible approach for operating the software in a prospective production environment as well. All communication with the Codemodel-Rifle framework (operating as a server) could be achieved via its HTTP REST API with tool like curl~\cite{curl-website} or Postman~\cite{postman-website} (in development), or with an IDE or CI plugin (in production).
 
 For automated testing however, an HTTP REST API is inconvenient: solutions for important testing issues like exception handling and logging do not come straightforward. Since the framework is not yet intended for in-production usage at all, but is heavily under development, an architectural decision was to eliminate the web server, and focus on the core functionality: the analyses. After removing the webserver from the architecture, the in-development way to supply code repositories to the framework for analysis is via unit tests: each test has its resources shipped along with the framework's source code.
 
@@ -66,29 +66,132 @@ Visualising the ASG of an imported JavaScript source code is key for getting acq
 
 \subsection{Optimising for Testing Purposes}
 
-fel kellett lőni egy külön Neo4j-t, amihez le kellett tölteni, külön folder, felesleges perzisztencia, stb.
+The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \texttt{database}, in which the full Neo4j embedded graph database was stored. After refactoring the framework to use a remote Neo4j database server because of the aforementioned licensing issues, testing became circuitous. Using a remote Neo4j server with the framework meant the following steps were needed to run unit tests:
 
-deprecated!!!!!!!!! The framework used embedded Neo4j as a persistent storage. This is circuitous for testing purposes, as the database has to be flushed between every test case to ensure the necessary level of independence. After converting from embedded to remote Neo4j, Codemodel-Rifle's \texttt{DbServicesManager} class was transformed to be use an in-memory \texttt{ImpermanentGraphDatabase} instance via an \texttt{EmbeddedTestkitDriver} instance developed by Gábor Szárnyas.~\cite{neo4j-drivers}
+\begin{itemize}
+\item the Neo4j Community Edition server software needed to be downloaded,
+\item the designated directory to hold the database data needed to be selected,
+\item the Neo4j server software needed to be started,
+\item after the tests, the software needed to be stopped,
+\item the database needed to be flushed between the tests to ensure the necessary level of independence of the test cases.
+\end{itemize}
+
+This process can be partially automated with scripts, but it is still not a clean way to perform automated unit tests of Codemodel-Rifle.
+
+As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers and decorators for the Neo4j Java driver: with an \texttt{EmbeddedTestkitDriver} instance it is possible to use an embedded, in-memory \texttt{ImpermanentGraphDatabase} exposed as a remote database, thus being accessible via the Neo4j Java database driver. This solution is convenient for testing, since no external Neo4j database needs to be installed and run. It is also easily reconfigurable in Codemodel-Rifle by changing the framework's driver configuration in the \texttt{DbServicesManager} class only to either Neo4j's in-production Bolt driver for Java, or in the future, to an incremental driver like ingraph~\cite{ingraph-github}.
 
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
-API-call vs cypher calls, etc.
-indexing
-ids generation, etc.
+Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} shows a comparison between the duration of visualising a simple JavaScript program (the runnning example's \texttt{exporter.js} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.\footnote{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of Chapter 6.}
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{l|cc}
+		\toprule
+																								& \shortstack{\textbf{embedded} \\ \textbf{database}}
+																								& \shortstack{\textbf{in-memory} \\ \textbf{driver-accessed database}}
+																								\\
+		\midrule
+		\textbf{importing, transforming, storing}   &   82ms     &   14816ms    \\
+		\textbf{visualization}                      &   1832ms   &   2456ms    \\
+		\midrule
+		\textbf{altogether}                         &   1914ms   &   17272ms   \\
+		\bottomrule
+	\end{tabular}
+
+	\caption{Speed comparison between the two database approach}
+	\label{table:embedded-vs-in-memory-remote-table}
+\end{table}
+
+Seeing the results of \Cref{table:embedded-vs-in-memory-remote-table}, it was necessary to optimise the framework's performance with the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations will benefit the in-production performance as well, since the two environments share the same interface: in both scenario, the database is accessed via a Neo4j driver interface. Ideally, the optimisations should be configurable to adapt to both the testing and also the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
+
+In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG model to the property graph model happens simultaneously with actually storing the property graph model in the database. If an element of the ASG model has been successfully translated into the property graph model, it is stored in the database immediately. This can be optimised by creating a property graph model stored in Java objects first, and then implementing a storage logic to manage saving the objects in the database. The storage logic's operative parameters can be optimised directly to the currently used database driver.
+
+\subsubsection{Creating a specialised Object-Graph Mapping (OGM) Layer}
+
+Importing a repository can be summarised by two types of actions on the database level:
+
+\begin{enumerate}
+\item The ASG nodes gets created as Neo4j property graph nodes.
+\item The ASG relations get set as Neo4j property graph relations.
+\end{enumerate}
+
+Therefore, a mapping layer basically needs to translate two object types: \emph{ASG nodes} and \emph{ASG relations}. I mapped these two object types with the \texttt{AsgNode} and \texttt{AsgRelation} Java classes. An \texttt{AsgNode} stores its properties in a \texttt{HashMap}, and its labels and relations in two separate \texttt{List} members. An \texttt{AsgRelation} has a \emph{fromNode}, a \emph{toNode}, and a \emph{relationshipLabel} member. Storing relationship properties was omitted, since the Codemodel-Rifle framework semantics does not contain relationship properties.
+
+Identifying nodes is achieved with a universally unique identifier (UUID), instead of the earlier approach of using Neo4j's discouraged \texttt{id()} function to get the nodes' built-in identifier. Each \texttt{AsgNode} object has an \texttt{id} member, which contains a value generated using the \texttt{java.util.UUID} package. The \texttt{id} member gets automatically translated into the property graph as well as all other properties. With a mapping layer like the above, it is possible to customise the procedure of storing the model in the database e.g.\ by optimising query granularity.
+
+
+\subsubsection{The Cypher Query Builder}
+
+A main bottleneck identified with the \texttt{ImpermanentGraphDatabase} interface of the \texttt{EmbeddedTestkitDriver} was the speed of parsing queries. Since the example presented in \Cref{table:embedded-vs-in-memory-remote-table} requires $201$ distinct property graph nodes and $340$ relationships to be created, it normally requires $541$ distinct Cypher queries to be run. If multiple distinct queries are merged into one, it increases speed with nearly 50\% in some cases. Accordingly, it is a reasonable step to implement a configurable, specialised query builder, which manages to store the property graph model with a coarser query-granularity (by creating multiple nodes or setting multiple relationships within one executed database query).
+
+The implemented query builder is capable of creating Cypher queries specially for the aforementioned OGM layer, following its internal configuration about how many \emph{ASG node creation} queries and how many \emph{ASG relation setting} queries should be merged (compressed) into one. The builder assembles and prepares the queries, and then returns them in a list. Each query in the list is a compressed query according to the configuration, ready to be executed without further modifications.
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{l|cc}
+		\toprule
+																								&   \textbf{testing}   &   \textbf{production}   \\
+		\midrule
+		\textbf{node created in one query}          &   16                 &   20                    \\
+		\textbf{relationship set in one query}      &   1                  &   4                     \\
+		\bottomrule
+	\end{tabular}
+
+	\caption{Optimal configuration of the query builder for my computer}
+	\label{table:query-builder-config}
+\end{table}
+
+\Cref{table:query-builder-config} shows the optimal configuration values of the query builder in testing environment (with the \texttt{EmbeddedTestkitDriver}), and in a prospective production environment (with the official Bolt driver of Neo4j) for test cases run on my computer.
+
+
+\subsubsection{Refactoring the Core Logic to Utilise the OGM and the Query Builder}
+
+After implementing and testing the mapping layer and the query builder, I modified the core import logic of the framework to utilise the new components. Instead of immediately storing the translated ASG model as a property graph model in the database, the processor first stores the property graph model in Java data structures with my custom OGM. Then, benefiting from the query builder, the model is sent to the database in optimally sized chunks following the query builder's configuration.
+
+
+\subsubsection{Results of Speed-Related Refactorings}
+
+\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \texttt{exporter.js} module of the running example, presented on \Cref{fig:running-example-exporter}. Both versions presented here uses the in-memory driver-accessed database, but the first does not use optimisations (the mapping layer and the query builder), while the second one does.\footnote{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of Chapter 6.}
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{l|cc}
+		\toprule
+																								&   \textbf{without optimisations}   &   \textbf{with optimisations}   \\
+		\midrule
+		\textbf{importing, transforming, storing}   &   14816ms                          &   7031ms                        \\
+		\textbf{visualization}                      &   2456ms                           &   2432ms                        \\
+		\midrule
+		\textbf{altogether}                         &   17272ms                          &   9463ms                        \\
+		\bottomrule
+	\end{tabular}
+
+	\caption{Speed comparison with and without optimisations}
+	\label{table:results-of-query-optimisations}
+\end{table}
 
 
 \subsection{Other Performances}
 
-new version of the shift parser, etc.
+After the aforesaid refactoring, the framework's package structure looked confusing. Several main features of the software – like source code parsing and actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \texttt{actions} contains features to be exposed to the user, \texttt{database} contains database-related operations, \texttt{tasks} contains internal features not to be exposed, and \texttt{utils} contains utilities.
 
+The final version of Dániel Stein's framework used the \texttt{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version supports the 6\textsuperscript{th} Version of ECMAScript only. Since then, version \texttt{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security.~\cite{shift-ast, shift-java-github} I updated the framework's dependencies to use the new version of the parser and scope analyser.
 
 \subsection{Summary of Refactoring}
 
-jó kis komponens-diagram szerű ábra ide
+\Cref{fig:codemodel-rifle-refactored-architecture} presents a high-level overview of the refactored architecture of the Codemodel-Rifle framework. Besides becoming somewhat modular, the framework has gone through a series of optimisations to simplify testing and developing new analyses.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\textwidth, trim=3mm 3mm 3mm 3mm,clip]{figures/codemodel-rifle-refactored-architecture.pdf}
+	\caption{The refactored architecture of the Codemodel-Rifle framework}
+	\label{fig:codemodel-rifle-refactored-architecture}
+\end{figure}
 
 
-\section{In Development: Planning New Analysis Patterns}
+\section{In Development: Steps of Building New Analyses}
 
 annak a folyamatnak a leírása, hogyan tervezek meg egy analízismintát: repo importálása majd vizualizáció
 
