@@ -12,7 +12,7 @@ Dániel Stein, creator of the Codemodel-Rifle framework, details the design of t
 \item The framework parses the incoming source file into an AST model with Shape Security's Shift parser.
 \item The framework performs scope analysis on the AST model with Shape Security's scope analyser, transforming the AST model into an ASG model.
 \item The ASG model is transformed to a property graph and is stored in the framework's embedded Neo4j graph database.
-\item Apart from importing a file, the framework is able to perform analyses on or visualisation of a graph stored in its database if requested over its REST API.
+\item Apart from importing a file, the framework is able to perform analyses on or visualisation of a graph stored in its database, if requested over its REST API.
 \item Analysing multiple ECMAScript files are minimally supported by interconnecting related modules' subgraphs along the \emph{export} and \emph{import} ECMAScript statements, but not all use cases and combinations are implemented.
 \item The result of the analyses or the visualisation is returned via the REST API in JSON or in a visual file format.
 \end{itemize}
@@ -26,7 +26,7 @@ Development of the Codemodel-Rifle framework was supported by the Fault-Tolerant
 
 The framework uses Neo4j as its internal graph data storage, and Neo4j was embedded into Codemodel-Rifle.~\cite{stein-daniel-msc} From the point of licensing, there is an important difference between \emph{using} the database \emph{via a network connection} and \emph{embedding} the database \emph{into software}. Since Neo4j's Community Edition, used by Codemodel-Rifle, is licensed under GPLv3~\cite{neo4j-licensing}, it can be used remotely via a network connection with practically any license because of the so-called \emph{application service provider loophole}~\cite{asp-loophole}, but it can not be embedded into applications which do not comply with GPLv3. As EPLv1 and GPLv3 are incompatible, Neo4j can not be embedded into the open-sourced Codemodel-Rifle.
 
-Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j accessed via a driver. But, as native API-calls, which were extensively used by Codemodel-Rifle, can not be used with driver-accessed Neo4j, this caused further problems; these are subjects of the next sections.
+Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j accessed via a driver. But, as native API-calls, which were extensively used by Codemodel-Rifle, can not be used with driver-accessed remote Neo4j, this caused further problems; these are subjects of the next subsections.
 
 
 \subsection{Decomposing the Architecture}
@@ -45,16 +45,16 @@ Decoupling, or minimising direct interdependencies between components is an impo
 
 \subsubsection{Detaching the Database}
 
-Apart from the licensing issues detailed above, using a remote Neo4j server as a database instead of the embedded version comes with several benefits. The database can be outsourced onto a separate hardware or infrastructure: since analyses and graph maintenance queries can be demanding over a large code repository, providing dedicated resources for the database is an obvious solution for possible performance issues and scalability.
+Apart from the licensing issues detailed above, using a remote Neo4j server as a database instead of the embedded version comes with several benefits. The database can be outsourced onto a separate hardware or infrastructure: since analyses and graph maintenance can be demanding over large code repositories, providing dedicated resources for the database is an obvious solution for possible performance issues and scalability.
 
-With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level\footnote{Gábor Szárnyas is developing a graph database driver \emph{ingraph} with the goal of evaluating openCypher queries incrementally.~\cite{ingraph-github}}, or it can provide testing support with providing an in-memory database via a driver instance\footnote{The default configuration of the framework is to use an in-memory Neo4j database currently. This is to be detailed in the next subsection.}.
+With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level\footnote{Gábor Szárnyas is developing a graph database driver \emph{ingraph} with the goal of evaluating openCypher queries incrementally.~\cite{ingraph-github}}, or it can support testing by providing an in-memory database instance via a driver\footnote{The default configuration of the framework is to use an in-memory Neo4j database currently. This is to be detailed in the next subsection.}.
 
-An architectural decision resulted in converting to the remote mode of Neo4j. This means native API-calls are no longer possible, interacting with the database is restricted to the use of Cypher queries provided via the database driver. The Codemodel-Rifle framework extensively used native API-calls, since it was a practical and fast way. All API function calls had to be rewritten into distinct Cypher queries. As Cypher queries turned out to be notably slower than the API, when executed many queries at once, this introduced performance issues. Solutions to these issues are described in the next sections.
+As a result of the aforementioned benefits and licensing issues, the framework was refactored to use a remote Neo4j server via a driver. This meant native API-calls were no longer possible: interacting with the database has been restricted to Cypher queries provided via the database driver. The Codemodel-Rifle framework extensively used native API-calls, so all these function calls had to be rewritten into distinct Cypher queries. As Cypher queries turned out to be notably slower than the API, when executed many queries at once, this introduced performance issues. Solutions to these issues are described in the next sections.
 
 
 \subsubsection{Eliminating the Web Interface}
 
-The framework contained an embedded Grizzly~\cite{grizzly-website} web server to expose an HTTP REST API for interactions. This was a convenient way for manual testing and a sensible approach for operating the software in a prospective production environment as well. All communication with the Codemodel-Rifle framework (operating as a server) could be achieved via its HTTP REST API with tool like curl~\cite{curl-website} or Postman~\cite{postman-website} (in development), or with an IDE or CI plugin (in production).
+The framework contained an embedded Grizzly~\cite{grizzly-website} web server to expose an HTTP REST API for user interactions. This was a convenient way for manual testing and a sensible approach for operating the software in a prospective production environment as well. All communication with the Codemodel-Rifle framework (operating as a server) could be achieved via its HTTP REST API with tool like curl~\cite{curl-website} or Postman~\cite{postman-website} (in development), or with an IDE or CI plugin (in production).
 
 For automated testing however, an HTTP REST API is inconvenient: solutions for important testing issues like exception handling and logging do not come straightforward. Since the framework is not yet intended for in-production usage at all, but is heavily under development, an architectural decision was to eliminate the web server, and focus on the core functionality: the analyses. After removing the webserver from the architecture, the in-development way to supply code repositories to the framework for analysis is via unit tests: each test has its resources shipped along with the framework's source code.
 
