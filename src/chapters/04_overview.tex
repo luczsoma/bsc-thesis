@@ -1,4 +1,5 @@
 \chapter{Overview of the Approach}
+\label{chapter:overview}
 
 This chapter gives an overview of my approach of JavaScript static analysis using the \emph{Codemodel-Rifle} framework.
 
@@ -66,24 +67,24 @@ Visualising the ASG of an imported JavaScript source code is key for getting acq
 
 \subsection{Optimising for Testing Purposes}
 
-The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \texttt{database}, in which the full Neo4j embedded graph database was stored. After refactoring the framework to use a remote Neo4j database server because of the aforementioned licensing issues, testing became circuitous. Using a remote Neo4j server with the framework meant the following steps were needed to run unit tests:
+The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \texttt{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use a remote Neo4j database server because of the aforementioned licensing issues, testing became circuitous. The following database-related steps were needed to run unit tests:
 
 \begin{itemize}
 \item the Neo4j Community Edition server software needed to be downloaded,
 \item the designated directory to hold the database data needed to be selected,
 \item the Neo4j server software needed to be started,
-\item after the tests, the software needed to be stopped,
-\item the database needed to be flushed between the tests to ensure the necessary level of independence of the test cases.
+\item after the tests, the server needed to be stopped,
+\item the database needed to be flushed after each test to ensure the necessary level of independence amongst the test cases.
 \end{itemize}
 
 This process can be partially automated with scripts, but it is still not a clean way to perform automated unit tests of Codemodel-Rifle.
 
-As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers and decorators for the Neo4j Java driver: with an \texttt{EmbeddedTestkitDriver} instance it is possible to use an embedded, in-memory \texttt{ImpermanentGraphDatabase} exposed as a remote database, thus being accessible via the Neo4j Java database driver. This solution is convenient for testing, since no external Neo4j database needs to be installed and run. It is also easily reconfigurable in Codemodel-Rifle by changing the framework's driver configuration in the \texttt{DbServicesManager} class only to either Neo4j's in-production Bolt driver for Java, or in the future, to an incremental driver like ingraph~\cite{ingraph-github}.
+As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers and decorators for the Neo4j Java driver: \texttt{EmbeddedTestkitDriver} makes possible to use an embedded, in-memory \texttt{ImpermanentGraphDatabase} exposed as a remote database, thus being accessible via the Neo4j Java database driver. This solution is convenient for testing, since no external Neo4j database needs to be installed and run. It is also easily reconfigurable in Codemodel-Rifle by changing the framework's driver configuration in the \texttt{DbServicesManager} class only, to either Neo4j's in-production Bolt driver for Java, or in the future, to an incremental driver like ingraph~\cite{ingraph-github}.
 
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
-Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} shows a comparison between the duration of visualising a simple JavaScript program (the runnning example's \texttt{exporter.js} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.\footnote{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of Chapter 6.}
+Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} shows a comparison between the duration of visualising a simple JavaScript program (the runnning example's \texttt{exporter.js} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.\footnote{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}
 
 \begin{table}[!htb]
 	\centering
@@ -110,14 +111,14 @@ In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG m
 
 \subsubsection{Creating a specialised Object-Graph Mapping (OGM) Layer}
 
-Importing a repository can be summarised by two types of database-level action:
+Importing a repository can be summarised by two types of database-level action.
 
 \begin{enumerate}
-\item The ASG \emph{nodes get created} as Neo4j property graph nodes.
-\item The ASG \emph{relations get set} as Neo4j property graph relations.
+\item \emph{Creating nodes} – the property graph model's nodes get created in Neo4j.
+\item \emph{Setting relationships} – the property graph model's relationships get set in Neo4j.
 \end{enumerate}
 
-Therefore, a mapping layer basically needs to translate two object types: \emph{ASG nodes} and \emph{ASG relations}. I mapped these two object types with the \texttt{AsgNode} and \texttt{AsgRelation} Java classes. An \texttt{AsgNode} stores its properties in a \texttt{HashMap}, and its labels and relations in two separate \texttt{List} members. An \texttt{AsgRelation} has a \emph{fromNode}, a \emph{toNode}, and a \emph{relationshipLabel} member. Storing relationship properties was omitted, since the Codemodel-Rifle framework semantics does not contain relationship properties.
+Therefore, a mapping layer basically needs to translate two object types: \emph{nodes} and \emph{relationships}. I mapped these two object types with the \texttt{AsgNode} and \texttt{AsgRelation} Java classes. An \texttt{AsgNode} stores its properties in a \texttt{HashMap}, and its labels and relations in two separate \texttt{List} members. An \texttt{AsgRelation} has a \texttt{fromNode}, a \texttt{toNode}, and a \texttt{relationshipLabel} member. Storing relationship properties was omitted, since the Codemodel-Rifle framework semantics does not contain relationship properties.
 
 Identifying nodes is achieved with a universally unique identifier (UUID), instead of the earlier approach of using Neo4j's discouraged \texttt{id()} function to get the nodes' built-in identifier. Each \texttt{AsgNode} object has an \texttt{id} member, which contains a value generated using the \texttt{java.util.UUID} package. The \texttt{id} member gets automatically translated into the property graph as well as all other properties. With a mapping layer like the above, it is possible to customise the procedure of storing the model in the database e.g.\ by optimising query granularity.
 
@@ -126,7 +127,7 @@ Identifying nodes is achieved with a universally unique identifier (UUID), inste
 
 A main bottleneck identified with the \texttt{ImpermanentGraphDatabase} interface of the \texttt{EmbeddedTestkitDriver} was the speed of parsing queries. Since the example presented in \Cref{table:embedded-vs-in-memory-remote-table} requires $201$ property graph nodes and $340$ relationships to be created, it normally requires $541$ distinct Cypher queries to be run. If multiple distinct queries are merged into one, it increases speed with nearly 50\% in some cases. Accordingly, it is a reasonable step to implement a configurable, specialised query builder, which manages storing the property graph model with a coarser query-granularity (by creating multiple nodes or setting multiple relationships within one executed database query).
 
-The implemented query builder is capable of creating Cypher queries specially for the aforementioned OGM layer, following its internal configuration about how many \emph{ASG node creation} queries and how many \emph{ASG relation setting} queries should be merged (compressed) into one. The builder assembles and prepares the queries, and then returns them in a list. Each query in the list is a compressed query according to the configuration, ready to be executed without further modifications.
+The implemented query builder is capable of creating Cypher queries specially for the aforementioned OGM layer, following its internal configuration of how many \emph{node creator} queries and how many \emph{relation setter} queries should be merged (compressed) into one. The builder assembles and prepares the queries, and then returns them in a list. Each query in the list is a compressed query according to the configuration, ready to be executed without further modifications.
 
 
 \subsubsection{Refactoring the Core Logic to Utilise the OGM and the Query Builder}
@@ -153,7 +154,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsubsection{Results of Speed-Related Refactorings}
 
-\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \texttt{exporter.js} module of the running example, presented on \Cref{fig:running-example-exporter}. Both versions presented here uses the in-memory driver-accessed database, but the first does not use optimisations (the mapping layer and the query builder), while the second one does.\footnote{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of Chapter 6.}
+\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \texttt{exporter.js} module of the running example, presented in \Cref{fig:running-example-exporter}. Both versions presented here uses the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.\footnote{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}
 
 \begin{table}[!htb]
 	\centering
@@ -175,7 +176,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsection{Other Performances}
 
-After the aforesaid refactoring, the framework's package structure looked confusing. Several main features of the software – like source code parsing and actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \texttt{actions} contains features to be exposed to the user, \texttt{database} contains database-related operations, \texttt{tasks} contains internal features not to be exposed, and \texttt{utils} contains utilities.
+After the aforesaid refactoring, the framework's package structure looked confusing. Several main features of the software – like source code parsing and other actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \texttt{actions} contains features to be exposed to the user, \texttt{database} contains database-related operations, \texttt{tasks} contains internal features not to be exposed, and \texttt{utils} contains utilities.
 
 The final version of Dániel Stein's framework used the \texttt{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version supports the 6\textsuperscript{th} Version of ECMAScript only. Since then, version \texttt{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security.~\cite{shift-ast, shift-java-github} I updated the framework's dependencies to use the new version of the parser and scope analyser.
 
@@ -200,23 +201,24 @@ Building new analyses to catch new software defects basically consists of three 
 
 First, the defect has to be inspected with the ASG-semantics of Codemodel-Rifle. For visualising a defect pattern, a new unit test has to be implemented in the Codemodel-Visualization project. The JavaScript module or modules containing the defect should be included as test resources.
 
-Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the file (files) and translates it (them) to separate property graphs. If multiple source files are imported, their graphs are connected along the export and import semantics of ECMAScript.\footnote{The process of connecting ECMAScript modules along export and import statements is one of the key subjects of this thesis. It will be detailed in Chapter 5.} Finally, the full property graph model gets exported into visual file format, like PDF or PNG.
+Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the file (files) and translates it (them) to separate property graphs. If multiple source files are imported, their graphs are connected along the export and import semantics of ECMAScript.\footnote{The process of connecting ECMAScript modules along export and import statements is one of the key subjects of this thesis. It will be detailed in \Cref{chapter:elaboration}.} Finally, the full property graph model gets exported into a visual file format, like PDF or PNG. The export format is configurable in the unit test itself.
 
 
 \subsection{Describing the Defect Pattern}
 
-The file exported by Codemodel-Visualization precisely mirrors the property graph instance model transformed by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \texttt{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
+The file exported by Codemodel-Visualization precisely mirrors the property graph instance model translated by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \texttt{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
 
 
 \subsection{Implementing the Analysis}
+\label{subsection:implementing-analyses}
 
 Analyses are basically Cypher queries. If a defect's pattern can be expressed with a Cypher query in some way, it can be detected by the framework.
 
-Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these may require to extensively manipulate the graph to dredge defect patterns for matching. In cases involving \emph{transitive} defects, like in the running example\footnote{The running example is to detect a division by zero scenario. But zero is not a numeric literal $0$, but the indirectly referenced return value of a nested function stack with variable assignments and also a module boundary in between.} presented in Chapter 2, a flag like \texttt{EqualsZero} has to be propagated through the graph along specified edges: variable assignments, variable references, function call and function return statements, etc.
+Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these may require to extensively manipulate the graph to dredge defect patterns for matching. In cases involving \emph{transitive} defects, like in the running example\footnote{The running example is to detect a division by zero scenario. But zero is not a numeric literal $0$, but the indirectly referenced return value of a nested function stack with variable assignments and also a module boundary in between.} presented in \Cref{chapter:background}, a flag like \texttt{EqualsZero} has to be propagated through the graph along specified edges: variable assignments, variable references, function call and function return statements, etc.
 
-Transitive graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis. The concept of qualifiers will be described in detail in Chapter 5.
+Transitive graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis. The concept of qualifiers will be described in detail in \Cref{chapter:elaboration}.
 
-If the analysis matches the specified pattern, my implementation returns the following:
+If the analysis matches the specified pattern, it returns the following:
 
 \begin{itemize}
 \item a \textbf{message} to explain the type of the defect for a human reader,
@@ -226,12 +228,12 @@ If the analysis matches the specified pattern, my implementation returns the fol
 \item the \textbf{column} of the line at which the defect begins.
 \end{itemize}
 
-In my current implementation, these items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect type.} returned from the database as elements of a Neo4j \texttt{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible, extensible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be represented as instances of the \texttt{Defect} Java class. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output for other software.
+In my current implementation, these items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect type.} returned from the database as elements of a Neo4j \texttt{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible, extensible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be easily parsed into a Java class named \texttt{Defect}. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output for cooperating with other software.
 
 
 \section{In Production: Steps of Operating Live}
 
-The prospective live operation of the framework basically consists of three steps, which are managed by the framework. Ideally, the operation should be automatic and transparent: if a change is done in the IDE, or a new commit is pushed to the central repository, the framework should perform an analysis over the changed code repository. The steps of a full analysis procedure are detailed in the following subsections.
+The prospective live operation of the framework basically consists of three steps, which are managed by the framework. Ideally, the operation should be automatic and transparent: if a change is done in the IDE, or a new commit is pushed to the central repository, the framework should perform analyses over the changed code repository. The steps of a full analysis procedure are detailed in the following subsections.
 
 
 \subsection{Synchronising the Repository into the Framework}
@@ -243,7 +245,7 @@ The word synchronising expresses that Codemodel-Rifle aims to be incremental; bu
 
 \subsection{Connecting the Related ECMAScript Modules}
 
-To evaluate analyses over multiple ECMAScript modules, the related modules' separate property graphs are interconnected along the export and import semantics of ECMAScript. This process is described in detail in Chapter 5.
+To evaluate analyses over multiple ECMAScript modules, the related modules' separate property graphs are interconnected along the export and import semantics of ECMAScript. This process is described in detail in \Cref{chapter:elaboration}.
 
 
 \subsection{Performing Analyses}
@@ -258,7 +260,7 @@ Complex analyses may require to extensively manipulate the graph. These manipula
 
 \subsubsection{Querying the Graph}
 
-The graph is queried with Cypher, with matching predefined graph patterns developed with the aforementioned steps. If a defect pattern matches, the defect gets logged onto the console in the format seen in \Cref{fig:defect-found-logger}.
+The graph is queried with Cypher, with matching predefined graph patterns developed with the aforementioned steps. If a defect pattern matches, the defect gets logged onto the console with the semantics described in \Cref{subsection:implementing-analyses}, in the format seen in \Cref{fig:defect-found-logger}.
 
 \vspace{0.5em}
 \begin{figure}[!htb]
