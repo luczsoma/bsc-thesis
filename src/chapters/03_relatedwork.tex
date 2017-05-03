@@ -11,7 +11,7 @@ This section introduces several static analysis tools for the main subject of th
 
 \subsection{TAJS (Type Analysis for JavaScript)}
 
-TAJS is a static data flow analysis tool for JavaScript with the capability of inferring detailed and sound type information using abstract interpretation.~\cite{jensen2009type} In the time of this writing, it fully supports the 3\textsuperscript{rd} version of ECMAScript, and partially supports the 5\textsuperscript{th} version\footnote{ECMAScript 5 is the most popular, and most broadly used version of ECMAScript, supported by most of the desktop and mobile browsers and external runtimes.~\cite{kangax-es5} This is the ECMAScript version I referred to previously as \emph{plain JavaScript}.}, including its standard library, the HTML DOM, and the browser API.~\cite{tajs-github}
+TAJS is a static data flow analysis tool for JavaScript with the capability of inferring detailed and sound type information using abstract interpretation.~\cite{jensen2009type} In the time of this writing, it fully supports the 3\textsuperscript{rd} version of \es, and partially supports the 5\textsuperscript{th} version\footnote{\es 5 is the most popular, and most broadly used version of \es, supported by most of the desktop and mobile browsers and external runtimes.~\cite{kangax-es5} This is the \es version I referred to previously as \emph{plain JavaScript}.}, including its standard library, the HTML DOM, and the browser API.~\cite{tajs-github}
 
 The abstract interpretation approach consists of the following main points:~\cite{tajs-presentation}
 
@@ -55,9 +55,9 @@ At the time of this writing, the newest version of Tern is $0.21$, implying that
 
 \subsection{Shift}
 
-Shift is not a static analysis tool, but an AST toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{ECMAScript 7\textsuperscript{th} Edition}~\cite{shift-ast}, and its parser and scope analyser are foundations of the Codemodel-Rifle framework.
+Shift is not a static analysis tool, but an AST toolset created and developed by Shape Security, consisting of several tools.~\cite{shift-ast} Besides others, Shift features a parser, a code generator, and a scope analyser. It supports the full \emph{\es 7\textsuperscript{th} Edition}~\cite{shift-ast}, and its parser and scope analyser are foundations of the Codemodel-Rifle framework.
 
-It is to be mentioned here, that Shift uses its own AST format, first announced by Shape Security in late 2014, as their first open-source contribution. According to their reasoning, a new ECMAScript AST format was needed because its predecessor, Mozilla's SpiderMonkey AST was not specifically created for static analysis purposes, but rather for an internal representation only for interpretation.
+It is to be mentioned here, that Shift uses its own AST format, first announced by Shape Security in late 2014, as their first open-source contribution. According to their reasoning, a new \es AST format was needed because its predecessor, Mozilla's SpiderMonkey AST was not specifically created for static analysis purposes, but rather for an internal representation only for interpretation.
 
 Shift AST is said to comply with all aspects of a good AST-format, as
 
@@ -70,7 +70,7 @@ Shift AST is said to comply with all aspects of a good AST-format, as
 
 \subsection{Esprima}
 
-Esprima is an ECMAScript parser with extended capabilities, like syntax validation. It supports the full standard of \emph{ECMAScript 7\textsuperscript{th} Edition}. The open-source software is created by Ariya Hidayat, engineer of \emph{Shape Security}, and is maintained on GitHub.
+Esprima is an \es parser with extended capabilities, like syntax validation. It supports the full standard of \emph{\es 7\textsuperscript{th} Edition}. The open-source software is created by Ariya Hidayat, engineer of \emph{Shape Security}, and is maintained on GitHub.
 
 
 \subsection{Comparison of the Featured Tools}
@@ -84,7 +84,7 @@ Esprima is an ECMAScript parser with extended capabilities, like syntax validati
 		\toprule
 																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}   &   \textbf{Shift Java}   \\
 		\midrule
-		\textbf{ECMAScript support}           &   ES3             &   ES5             &   ES6             &   ES7                   \\
+		\textbf{\es support}           &   ES3             &   ES5             &   ES6             &   ES7                   \\
 		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey    &   Shift                 \\
 		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \fullsupport          \\
 		\textbf{number of contributors}       &   1               &   335             &   87              &   10                    \\

@@ -69,16 +69,16 @@ Like all new technologies, JavaScript evolved very fast in the beginnings. The b
 Initially, non-professional programmers were aimed by the idea to provide a portable, embeddable programming language that can be interpreted in web browsers. Since the syntax was closely similar to the syntax of C / C++ / Java, JavaScript rapidly gained traction: in the time of writing this thesis, it is the most used programming language in the world.~\cite{javascriptstackoverflow} It features browser-based client- and separate runtime-based server-side capabilities~\cite{nodejs} as well, and extensive tooling, package management~\cite{npmjs}, testing and build systems are available for automated operations in even larger software development organisations.
 
 
-\subsection{The ECMAScript as a Standard and as a Language}
+\subsection{The \es as a Standard and as a Language}
 
 There is a significant aspiration to standardise the JavaScript language with its core capabilities and data structures. The first intentions of standardisation began in 1997 by Ecma International~\cite{webedjavascripthistory}, resuling in \emph{Standard ECMA-262}.~\cite{ecmascriptstandardfirstversion} The newest standard currently is the \emph{ECMA-262, 7\textsuperscript{th} Edition (ES7)}.~\cite{ecmascriptstandard} Apart from standardisation, there are several implementations of JavaScript in interpreters, e.g. Chakra\footnote{\texttt{https://github.com/Microsoft/ChakraCore}}, JScript\footnote{\texttt{https://msdn.microsoft.com/library/hbxc2t98.aspx}} and Google's V8\footnote{\texttt{https://github.com/v8/v8}}.~\cite{stein-daniel-msc}
 
-Today's growing traction of standardised JavaScript, henceforth also referenced as ECMAScript, can be explained with several reasons. Due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}, static analysis of JavaScript is difficult. The ECMAScript standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple.~\cite{es6-features} Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
+Today's growing traction of standardised JavaScript, henceforth also referenced as \es, can be explained with several reasons. Due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}, static analysis of JavaScript is difficult. The \es standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple.~\cite{es6-features} Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
 
 
 \subsection{The Process of Transpiling}
 
-\emph{Transpiling} is a word came into existence by mixing \emph{transforming} and \emph{compiling}. It is a generally used process in the ECMAScript developer community to ensure backwards compatibility of newer ECMAScript language standards, like ES6 and ES7.
+\emph{Transpiling} is a word came into existence by mixing \emph{transforming} and \emph{compiling}. It is a generally used process in the \es developer community to ensure backwards compatibility of newer \es language standards, like ES6 and ES7.
 
 \paragraph{Compiler}
 
@@ -108,13 +108,13 @@ Transpiling and compiling have a set of common processing steps.~\cite{kulkarnit
 		\bottomrule
 	\end{tabular}
 
-	\caption{Excerpt from an ECMAScript 6 compatibility table~\cite{kangax}}
+	\caption{Excerpt from an \es 6 compatibility table~\cite{kangax}}
 	\label{table:ecmascript-compatibility}
 \end{table}
 
 In the JavaScript scene, compatibility is a ubiquitous problem, see \Cref{table:ecmascript-compatibility}. Considering all the different browsers and server runtimes, and the slow progression of adopting JavaScript standards, transpiling has an important role in ensuring that the software works on a broad scale of platforms: code written in a modern syntax like ES6 can easily be transpiled into an universally supported syntax like plain JavaScript.
 
-\Cref{fig:transpiling-example} shows two logically equivalent pieces of code: the second one (plain JavaScript) is created by transpiling the first one (ECMAScript 6) with a popular, automated transpilation tool, \emph{babel}\footnote{\texttt{http://babeljs.io}}. As the example shows, new language constructs can make the code much more concise, while the transpiled alternative provide compatibility with older desktop browsers and server runtimes.
+\Cref{fig:transpiling-example} shows two logically equivalent pieces of code: the second one (plain JavaScript) is created by transpiling the first one (\es 6) with a popular, automated transpilation tool, \emph{babel}\footnote{\texttt{http://babeljs.io}}. As the example shows, new language constructs can make the code much more concise, while the transpiled alternative provide compatibility with older desktop browsers and server runtimes.
 
 \vspace{1em}
 \begin{figure}[!htb]
@@ -141,7 +141,7 @@ In the JavaScript scene, compatibility is a ubiquitous problem, see \Cref{table:
 
 \subsection{Looking into the Goals of JavaScript Static Analysis}
 
-As JavaScript is an interpreted language not being checked by a compiler by default at compilation time~\cite{373902}, it is recommended to apply static analysis during the development of, or before deploying a JavaScript application. Due to its dynamic and untyped\footnote{TypeScript, a strict superset of JavaScript adds static typing to the language.~\cite{typescript-website}} nature~\cite{flanagan2006javascript}, static analysis for the language is a challenging task. There are several existing approaches focusing mainly on defects detection~\cite{madsen2013practical, livshits2010gulfstream, jensen2009type}, but few of them are ready for production usage, and most of them lack compatibility with recent ECMAScript versions.
+As JavaScript is an interpreted language not being checked by a compiler by default at compilation time~\cite{373902}, it is recommended to apply static analysis during the development of, or before deploying a JavaScript application. Due to its dynamic and untyped\footnote{TypeScript, a strict superset of JavaScript adds static typing to the language.~\cite{typescript-website}} nature~\cite{flanagan2006javascript}, static analysis for the language is a challenging task. There are several existing approaches focusing mainly on defects detection~\cite{madsen2013practical, livshits2010gulfstream, jensen2009type}, but few of them are ready for production usage, and most of them lack compatibility with recent \es versions.
 
 Being untyped, an obvious analysis goal is type inference: checking type correctness can eliminate several defects from software. Security demands imply that deeper, logical analysis of JavaScript code is needed. Besides security, the development procedure itself can also benefit from static analysis: there are features like automatic stub generation or auto-complete~\cite{madsen2013practical} in several development tools.~\cite{esprima-autocomplete, webstorm-autocomplete}
 
@@ -200,9 +200,9 @@ Cypher syntax is elegant and expressive, thus very readable. Besides using it to
 
 \section{Running Example}
 
-In this section I provide a set of ECMAScript codes as a software defect example, which accompanies the reader throughout the thesis. This example is to be used whenever a new static analysis concept is introduced. There are two files in the example: \texttt{exporter.js} and \texttt{importer.js}.
+In this section I provide a set of \es codes as a software defect example, which accompanies the reader throughout the thesis. This example is to be used whenever a new static analysis concept is introduced. There are two files in the example: \texttt{exporter.js} and \texttt{importer.js}.
 
-The first one exports a function, which happens to return $0$, as a variable. The second one imports the variable and tries to divide a number with the return value of the imported function variable. Through this example, I present that this and similar software defect cases can be revealed by static analysis, even if the defect spans multiple ECMAScript modules (source files), and includes patterns which can not be matched by one generalised pattern description. \Cref{fig:running-example-exporter} presents \texttt{exporter.js}. \Cref{fig:running-example-importer} presents \texttt{importer.js}.
+The first one exports a function, which happens to return $0$, as a variable. The second one imports the variable and tries to divide a number with the return value of the imported function variable. Through this example, I present that this and similar software defect cases can be revealed by static analysis, even if the defect spans multiple \es modules (source files), and includes patterns which can not be matched by one generalised pattern description. \Cref{fig:running-example-exporter} presents \texttt{exporter.js}. \Cref{fig:running-example-importer} presents \texttt{importer.js}.
 
 \vspace{2em}
 \begin{figure}[!htb]

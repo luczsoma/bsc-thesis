@@ -14,7 +14,7 @@ Dániel Stein, creator of the Codemodel-Rifle framework, details the design of t
 \item The framework performs scope analysis on the AST model with Shape Security's scope analyser, transforming the AST model into an ASG model.
 \item The ASG model is transformed to a property graph and is stored in the framework's embedded Neo4j graph database.
 \item Apart from importing a file, the framework is able to perform analyses on or visualisation of a graph stored in its database, if requested over its REST API.
-\item Analysing multiple ECMAScript files are minimally supported by interconnecting related modules' subgraphs along the \emph{export} and \emph{import} ECMAScript statements, but not all use cases and combinations are implemented.
+\item Analysing multiple \es files are minimally supported by interconnecting related modules' subgraphs along the \emph{export} and \emph{import} \es statements, but not all use cases and combinations are implemented.
 \item The result of the analyses or the visualisation is returned via the REST API in JSON or in a visual file format.
 \end{itemize}
 
@@ -178,7 +178,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 After the aforesaid refactoring, the framework's package structure looked confusing. Several main features of the software – like source code parsing and other actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \texttt{actions} contains features to be exposed to the user, \texttt{database} contains database-related operations, \texttt{tasks} contains internal features not to be exposed, and \texttt{utils} contains utilities.
 
-The final version of Dániel Stein's framework used the \texttt{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version supports the 6\textsuperscript{th} Version of ECMAScript only. Since then, version \texttt{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security.~\cite{shift-ast, shift-java-github} I updated the framework's dependencies to use the new version of the parser and scope analyser.
+The final version of Dániel Stein's framework used the \texttt{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version supports the 6\textsuperscript{th} Version of \es only. Since then, version \texttt{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security.~\cite{shift-ast, shift-java-github} I updated the framework's dependencies to use the new version of the parser and scope analyser.
 
 \subsection{Summary of Refactoring}
 
@@ -201,7 +201,7 @@ Building new analyses to catch new software defects basically consists of three 
 
 First, the defect has to be inspected with the ASG-semantics of Codemodel-Rifle. For visualising a defect pattern, a new unit test has to be implemented in the Codemodel-Visualization project. The JavaScript module or modules containing the defect should be included as test resources.
 
-Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the file (files) and translates it (them) to separate property graphs. If multiple source files are imported, their graphs are connected along the export and import semantics of ECMAScript.\footnote{The process of connecting ECMAScript modules along export and import statements is one of the key subjects of this thesis. It will be detailed in \Cref{chapter:elaboration}.} Finally, the full property graph model gets exported into a visual file format, like PDF or PNG. The export format is configurable in the unit test itself.
+Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the file (files) and translates it (them) to separate property graphs. If multiple source files are imported, their graphs are connected along the export and import semantics of \es.\footnote{The process of connecting \es modules along export and import statements is one of the key subjects of this thesis. It will be detailed in \Cref{chapter:elaboration}.} Finally, the full property graph model gets exported into a visual file format, like PDF or PNG. The export format is configurable in the unit test itself.
 
 
 \subsection{Describing the Defect Pattern}
@@ -243,9 +243,9 @@ First, the code repository is imported into the framework. This involves listing
 The word synchronising expresses that Codemodel-Rifle aims to be incremental; but while it does so, its capabilities are still very limited. According to plans, the framework will cooperate with VCSs to detect changes, thus it will be able to import only those files that changed since the last import process.
 
 
-\subsection{Connecting the Related ECMAScript Modules}
+\subsection{Connecting the Related \es Modules}
 
-To evaluate analyses over multiple ECMAScript modules, the related modules' separate property graphs are interconnected along the export and import semantics of ECMAScript. This process is described in detail in \Cref{chapter:elaboration}.
+To evaluate analyses over multiple \es modules, the related modules' separate property graphs are interconnected along the export and import semantics of \es. This process is described in detail in \Cref{chapter:elaboration}.
 
 
 \subsection{Performing Analyses}
