@@ -1,4 +1,96 @@
 \chapter{Elaboration of the Workflow}
 \label{chapter:elaboration}
 
-.
+This chapter details the implementation of the analyses and the additional proceedings about analysing more than one \es modules coherently. Thus, this chapter encompasses all \emph{semantic} changes of the framework.
+
+Following Dániel Stein~\cite{stein-daniel-msc} and \Cref{chapter:overview} of this thesis, a full analysis procedure of the Codemodel-Rifle framework can be broken down to three distinct phases:
+
+\begin{enumerate}
+\item \textsc{\textbf{Import:}} The analysed code repository's \es source files (meaning \es \emph{modules}) are imported into Codemodel-Rifle. After parsing the modules, they get translated to Abstract Semantic Graph models. The ASGs are stored as distinct, per-module property graphs in the underlying Neo4j graph database.
+\item \textsc{\textbf{Interconnect:}} The related modules' separate graphs are interconnected along the \emph{export} and \emph{import} semantics of \es. This makes possible to evaluate analyses over more than one modules coherently.
+\item \textsc{\textbf{Analyse:}} The predefined analyses are executed.
+	\begin{enumerate}
+	\item The necessary graph manipulations of the \emph{Qualifier System} are performed.
+	\item The defect patterns are matched.
+	\end{enumerate}
+\end{enumerate}
+
+Since I have not made any semantic changes to the \textsc{Import} process, this chapter focuses to the \textsc{Interconnect} and the \textsc{Analyse} phases.
+
+
+\section{Interconnecting Related \es Modules}
+
+This section describes the work I made to support analysing more than one \es modules coherently. The approach follows~\cite{stein-daniel-msc}, and completes it by implementing missing use cases. To shorty summarise: in order to coherently analyse several related \es modules with the Codemodel-Rifle framework, the related modules' separate property graphs are interconnected by well-defined rules. As previously already mentioned, these rules are built upon the \emph{export} and \emph{import} semantics of \es~\cite{exploringes6}. Equivalently, \es modules are considered to be \emph{related}, if they refer to each other by using \emph{export} and \emph{import} statements.
+
+
+\subsection{The \es Module System}
+
+As the language gained traction, JavaScript projects rapidly grown to a size where modularisation became critical in order to keep the code logically organised. Today's largest \es code bases include Google's Gmail\footnote{https://www.gmail.com} with approx. 400~000 lines of code~\cite{gmail-loc}, Ruben Daniels' Cloud9 IDE\footnote{https://c9.io} with approx. 300~000 lines of code~\cite{cloud9-loc}, and Lucidchart\footnote{https://www.lucidchart.com} with approx. 200 000 lines of code~\cite{lucidchart-loc}. The product of Tresorit featured in this thesis consists of approx. 35~000 lines of \es code.
+
+Plain JavaScript does not have built-in support for modules~\cite{exploringes6}, there are only community-provided solutions like \emph{RequireJS}\footnote{http://requirejs.org}. In contrary, the 6\textsuperscript{th} version of \es has language-level support for modules: each source file represents exactly one module. Entities like variables and functions defined in one module, or even complete modules themselves can be \emph{exported} to be later \emph{imported} to a different module. By default, modules are referred by their relative pathname, without the file extension. Entities that are not exported remain \emph{private}, meaning they can not be imported to other modules.
+
+In \es 6, there are several ways of exporting and importing entities~\cite{exploringes6}, these are detailed in the next subsections. The Codemodel-Rifle framework had only minimal demonstrative support for interconnecting several \es modules; I extended Dániel Stein's work by covering the most used \emph{export-import cases}.
+
+
+\subsection{Export Syntaxes and Cases}
+
+By default, each entity can only be accessed in the scope of the module it was declared in. To be accessed from other modules, the entity has to be explicitly exported first. \Cref{fig:export-syntaxes} presents export syntax examples of \es 6, based on~\cite{export-syntaxes}. Since these statements can be almost arbitrarily combined, and the number of exported variables is not limited in theory, the list of export syntaxes of \es 6 is practically endless.
+
+Therefore, \emph{export syntaxes} need to be distinguished from \emph{export cases}. An \emph{export case} is identified by the \emph{basic form} of an \emph{export syntax}. \Cref{fig:export-syntaxes} displays all syntaxes in \emph{basic form}, meaning only one entity is exported by one export statement, and no syntaxes are combined. Each different \emph{export case} represents a unique graph pattern in the ASG.
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{31em}
+		\begin{verbatim}
+		export { name1, … };
+		export { name1 as exportedName1, … };
+		export let name1, … ;
+		export var name1, … ;
+		export let name1 = …, … ;
+		export var name1 = …, … ;
+		export const name1 = …, … ;
+		export expression;
+		export default expression;
+		export default class { … }
+		export default function (…) { … }
+		export default function* (…) { … }
+		export default class name1 { … }
+		export default function name1(…) { … }
+		export default function* name1(…) { … }
+		export { name1 as default, … };
+		export * from …;
+		export { name1, … } from … ;
+		export { import1 as importedName1, … } from …;
+		\end{verbatim}
+	\end{minipage}
+  \caption{Export syntax examples of \es 6}
+  \label{fig:export-syntaxes}
+\end{figure}
+
+%These pattern description generalisations need to be very carefully performed, since the interconnections have to be sound regarding the semantics of the \es language. The patterns have to be specific enough to match only those cases which they were intended to, but they have to be general enough to handle
+
+%	the following: at the implementation of interconnecting module graphs in Codemodel-Rifle, each syntax's pattern was distinctly inspected, and if several syntaxes' could be matched by one pattern. The list on \Cref{fig:export-syntaxes} contains \emph{basic forms} of export : e.g.\ there is no difference between one variable or several variables exported with the same syntax. At the implementation of interconnecting module graphs in Codemodel-Rifle, cases were differentiated by their ASG-signatures: two cases were marked equal if they displayed significantly similar graph patterns.
+
+
+
+\subsection{Import Syntaxes and Cases}
+
+An entity declared in module \textbf{A} can be accessed in module \textbf{B}, if \textbf{A} exports, and \textbf{B} imports the entity. All exported entities of a module can be imported as well: in this case an object is created with the name of the imported module's alias, and with members listing the exported entities of the imported module. \Cref{fig:import-syntaxes} present import syntax examples of \es 6, based on~\cite{import-syntaxes}. Like the exports, these statements can also be combined with each other, making the list of the possible import syntax combinations endless.
+
+Thus, \emph{import syntaxes} need to be distinguished from \emph{import cases}, similarly to the exports. An \emph{import case} is identified by the \emph{basic form} of an \emph{import syntax}. \Cref{fig:import-syntaxes} displays all syntaxes in \emph{basic form}. Each \emph{import case} has a unique graph pattern in the ASG.
+
+\vspace{1em}
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{35em}
+		\begin{verbatim}
+		import defaultName from "exporter";
+		import * as exportedModule from "exporter";
+		import { name1, … } from "exporter";
+		import { name1 as importedName1, … } from "exporter";
+		import "exporter";
+		\end{verbatim}
+	\end{minipage}
+  \caption{Import syntaxes of \es 6}
+  \label{fig:import-syntaxes}
+\end{figure}

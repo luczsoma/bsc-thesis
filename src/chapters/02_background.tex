@@ -22,7 +22,7 @@ Software source code is a text, usually consisting of human-readable characters.
 
 Compiled languages' are always analysed, at least at compilation time by the compiler. If the software contains severe errors (like type association errors in strongly typed languages), the compiler will abort its operation, thus the software can not be run, since it has not been compiled. Considering interpreted languages do not need to be compiled, they are not analysed by a compiler before running, and — generally — not analysed at all. Interpreted languages' static analysis is therefore beneficial to compensate the lack of a compiler-like component in the software processing chain.
 
-Multiple static analysis methods can be run simultaneously on a project. As static analysis inspects the source code without modifying the original, the operations of several such tools are independent from each other. Therefore at compiled languages, added static analyses can only compliment the compiler's necessary analysis.
+More than one static analysis methods can be run simultaneously on a project. As static analysis inspects the source code without modifying the original, the operations of several such tools are independent from each other. Therefore at compiled languages, added static analyses can only compliment the compiler's necessary analysis.
 
 Usually three abstract data structures are used to represent software source code in a mathematically defined form.
 
@@ -200,7 +200,7 @@ Cypher syntax is elegant and expressive, thus very readable. Besides using it to
 
 In this section I provide a set of \es codes as a software defect example, which accompanies the reader throughout the thesis. This example is to be used whenever a new static analysis concept is introduced. There are two files in the example: \texttt{exporter.js} and \texttt{importer.js}.
 
-The first one exports a function, which happens to return $0$, as a variable. The second one imports the variable and tries to divide a number with the return value of the imported function variable. Through this example, I present that this and similar software defect cases can be revealed by static analysis, even if the defect spans multiple \es modules (source files), and includes patterns which can not be matched by one generalised pattern description. \Cref{fig:running-example-exporter} presents \texttt{exporter.js}. \Cref{fig:running-example-importer} presents \texttt{importer.js}.
+The first one exports a function, which happens to return $0$, as a variable. The second one imports the variable and tries to divide a number with the return value of the imported function variable. Through this example, I present that this and similar software defect cases can be revealed by static analysis, even if the defect spans more than one \es modules (source files), and includes patterns which can not be matched by one generalised pattern description. \Cref{fig:running-example-exporter} presents \texttt{exporter.js}. \Cref{fig:running-example-importer} presents \texttt{importer.js}.
 
 \vspace{2em}
 \begin{figure}[!htb]
