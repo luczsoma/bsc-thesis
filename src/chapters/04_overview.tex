@@ -9,7 +9,7 @@ This chapter gives an overview of my approach of JavaScript static analysis usin
 Dániel Stein, creator of the Codemodel-Rifle framework, details the design of the framework in his Master's Thesis~\cite{stein-daniel-msc}. Following his thesis and my experiences with the framework, the summary of the software's architecture was the following:
 
 \begin{itemize}
-\item A source code file is to be delivered to Codemodel-Rifle via the HTTP REST API of the framework's embedded webserver as a text.
+\item A source code file is delivered to Codemodel-Rifle via the HTTP REST API of the framework's embedded webserver as a text.
 \item The framework parses the incoming source file into an AST model with Shape Security's Shift parser.
 \item The framework performs scope analysis on the AST model with Shape Security's scope analyser, transforming the AST model into an ASG model.
 \item The ASG model is transformed to a property graph and is stored in the framework's embedded Neo4j graph database.
@@ -23,7 +23,7 @@ Codemodel-Rifle was notably refactored since then. This section introduces why r
 
 \subsection{Open-Sourcing and Licensing Issues}
 
-Development of the Codemodel-Rifle framework was supported by the Fault-Tolerant Systems Research Group (FTSRG) of the Budapest University of Technology and Economics. FTSRG's decision (with the support of Dániel Stein) was to open-source the framework under FTSRG's name. According to an agreement with the university, FTSRG can only release open-source code under the Eclipse Public License, version 1.0 (EPLv1)~\cite{eplv1}. As it is maintained by the FTSRG, the Codemodel-Rifle framework is required to be released under EPLv1, if open-sourced. This introduced several licensing problems~\cite{codemodel-rifle-licensing}.
+Development of the Codemodel-Rifle framework was supported by the Fault-Tolerant Systems Research Group (FTSRG) of the Budapest University of Technology and Economics. FTSRG's decision (with the support of Dániel Stein) was to open-source the framework under FTSRG's name. According to an agreement with the university, FTSRG can only release open-source code under the Eclipse Public License, version 1.0 (EPLv1)~\cite{eplv1}. As it is maintained by the FTSRG, the Codemodel-Rifle framework is required to be released under EPLv1, if open-sourced. This introduced licensing problems as follows~\cite{codemodel-rifle-licensing}.
 
 The framework uses Neo4j as its internal graph data storage, and Neo4j was embedded into Codemodel-Rifle~\cite{stein-daniel-msc}. From the point of licensing, there is an important difference between \emph{using} the database \emph{via a network connection} and \emph{embedding} the database \emph{into software}. Since Neo4j's Community Edition, used by Codemodel-Rifle, is licensed under GPLv3~\cite{neo4j-licensing}, it can be used remotely via a network connection with practically any license because of the so-called \emph{application service provider loophole}~\cite{asp-loophole}, but it can not be embedded into applications which do not comply with GPLv3. As EPLv1 and GPLv3 are incompatible, Neo4j can not be embedded into the open-sourced Codemodel-Rifle.
 
@@ -32,7 +32,7 @@ Consequently, a necessary step was to switch from embedded Neo4j to remote Neo4j
 
 \subsection{Decomposing the Architecture}
 
-Codemodel-Rifle's first architecture was a monolith. It \emph{embedded} four key modules:
+Codemodel-Rifle's first architecture was monolith. It \emph{embedded} four key modules:
 
 \begin{itemize}
 \item a Neo4j graph \textbf{database},
@@ -41,33 +41,33 @@ Codemodel-Rifle's first architecture was a monolith. It \emph{embedded} four key
 \item and \textbf{other application logic}, e.g.\ for displaying and exporting AGSs into visual file formats like PDF or PNG.
 \end{itemize}
 
-Decoupling, or minimising direct interdependencies between components is an important aspect of software engineering. If a software is decomposed into smaller components along well-defined interfaces, it becomes modular: any module's inner functioning can be changed without affecting other modules, as long as the module implements the interface it was bound to. Motivations to alter a module include performance issues, scalability efforts, or changed domain logic. Codemodel-Rifle's first architecture was well-designed for easy manual testing and seemed to be an obvious solution for creating a small-scale graph-based analysis software. However, demands like simultaneous usage of several users, or having dedicated hardware resources to run analysis queries over large repositories, required the Codemodel-Rifle framework to become modular to adapt.
+Decoupling, or minimising direct interdependencies between components is an important aspect of software engineering. If a software is decomposed into smaller components along well-defined interfaces, it becomes modular: any module's inner functionality can be changed without affecting other modules, as long as the module implements the interface it was bound to. Motivations to alter a module include performance issues, scalability efforts, or changed domain logic. Codemodel-Rifle's first architecture was well-designed for easy manual testing and seemed to be an obvious solution for creating a small-scale graph-based analysis software. However, requirements like simultaneous usage of several users, or having dedicated hardware resources to run analysis queries over large repositories, required the Codemodel-Rifle framework to become modular to adapt.
 
 
 \subsubsection{Detaching the Database}
 
 Apart from the licensing issues detailed above, using a remote Neo4j server as a database instead of the embedded version comes with several benefits. The database can be outsourced onto a separate hardware or infrastructure: since analyses and graph maintenance can be demanding over large code repositories, providing dedicated resources for the database is an obvious solution for possible performance issues and scalability.
 
-With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level\footnote{Gábor Szárnyas is developing a graph database driver \emph{ingraph} with the goal of evaluating openCypher queries incrementally~\cite{ingraph-github}.}, or it can support testing by providing an in-memory database instance via a driver\footnote{The default configuration of the framework is to use an in-memory Neo4j database currently. This is to be detailed in the next subsection.}.
+With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level\footnote{Gábor Szárnyas et al. are developing a graph database driver \emph{ingraph} with the goal of evaluating openCypher queries incrementally~\cite{ingraph-github}.}, or it can support testing by providing an in-memory database instance via a driver\footnote{The default configuration of the framework is to use an in-memory Neo4j database currently. This is to be detailed in the next subsection.}.
 
-As a result of the aforementioned benefits and licensing issues, the framework was refactored to use a remote Neo4j server via a driver. This meant native API-calls were no longer possible: interacting with the database has been restricted to Cypher queries provided via the database driver. The Codemodel-Rifle framework extensively used native API-calls, so all these function calls had to be rewritten into distinct Cypher queries. As Cypher queries turned out to be notably slower than the API, when executed many queries at once, this introduced performance issues. Solutions to these issues are described in the next sections.
+As a result of the aforementioned benefits and licensing issues, the framework was refactored to use a remote Neo4j server via a driver. This meant native API-calls were no longer possible: interacting with the database has been restricted to Cypher queries provided via the database driver. The Codemodel-Rifle framework extensively used native API-calls, so all these function calls had to be rewritten into distinct Cypher queries. As Cypher queries turned out to be notably slower than the API, when executed many queries at once, this introduced \emph{performance issues}. Solutions to these issues are described in the next sections.
 
 
 \subsubsection{Eliminating the Web Interface}
 
 The framework contained an embedded Grizzly~\cite{grizzly-website} web server to expose an HTTP REST API for user interactions. This was a convenient way for manual testing and a sensible approach for operating the software in a prospective production environment as well. All communication with the Codemodel-Rifle framework (operating as a server) could be achieved via its HTTP REST API with tool like curl~\cite{curl-website} or Postman~\cite{postman-website} (in development), or with an IDE or CI plugin (in production).
 
-For automated testing however, an HTTP REST API is inconvenient: solutions for important testing issues like exception handling and logging do not come straightforward. Since the framework is not yet intended for in-production usage at all, but is heavily under development, an architectural decision was to eliminate the web server, and focus on the core functionality: the analyses. After removing the webserver from the architecture, the in-development way to supply code repositories to the framework for analysis is via unit tests: each test has its resources shipped along with the framework's source code.
+For automated testing, however, an HTTP REST API is inconvenient: solutions for important testing issues like exception handling are not straightforward. Since the framework is not yet ready for production use at all, but is heavily under development, an architectural decision was to eliminate the web server, and focus on the core functionality: the analyses. After removing the webserver from the architecture, the in-development way to supply code repositories to the framework for analysis is via unit tests: each test has its resources shipped along with the framework's source code.
 
 
 \subsubsection{Separating the Visualisation Logic into an Isolated Project}
 
-Visualising the ASG of an imported JavaScript source code is key for getting acquainted with Codemodel-Rifle's ASG-semantics, as well as for developing new analyses. \Cref{fig:codemodel-rifle-asg} displays an example of an ASG created and visualised by Codemodel-Rifle. However, the framework does not explicitly need this feature to function as an analysis software. Therefore it was a rational step to separate the visualisation logic into an isolated project, called \emph{Codemodel-Visualization}\footnote{The project name uses US English, while this thesis aims to be in UK English.}.
+Visualising the ASG of an imported JavaScript source code is key to get familiar with Codemodel-Rifle's ASG-semantics, as well as for developing new analyses. \Cref{fig:codemodel-rifle-asg} displays an example of an ASG created and visualised by Codemodel-Rifle. However, the framework does not explicitly need this feature to perform analyses. Therefore it was a rational step to separate the visualisation logic into an isolated project, called \emph{Codemodel-Visualization}.
 
 
 \subsection{Optimising for Testing Purposes}
 
-The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \lstinline{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use a remote Neo4j database server because of the aforementioned licensing issues, testing became circuitous. The following database-related steps were needed to run unit tests:
+The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \lstinline{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use a remote Neo4j database server accessed via a database driver for Java because of the aforementioned licensing issues, testing became difficult. The following database-related steps were needed to run unit tests:
 
 \begin{itemize}
 \item the Neo4j Community Edition server software needed to be downloaded,
@@ -84,7 +84,7 @@ As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
-Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} shows a comparison between the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter.js} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.\footnote{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}
+Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table}\footnote{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.} shows a comparison between the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter.js} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.
 
 \begin{table}[!htb]
 	\centering
@@ -154,7 +154,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsubsection{Results of Speed-Related Refactorings}
 
-\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \lstinline{exporter.js} module of the running example, presented in \Cref{fig:running-example-exporter}. Both versions presented here uses the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.\footnote{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}
+\Cref{table:results-of-query-optimisations}\footnote{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.} shows a comparison between the speed of two versions of the framework when importing the \lstinline{exporter.js} module of the running example, presented in \Cref{fig:running-example-exporter}. Both versions presented here uses the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.
 
 \begin{table}[!htb]
 	\centering
@@ -176,13 +176,13 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsection{Other Performances}
 
-After the aforesaid refactoring, the framework's package structure looked confusing. Several main features of the software – like source code parsing and other actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \lstinline{actions} contains features to be exposed to the user, \lstinline{database} contains database-related operations, \lstinline{tasks} contains internal features not to be exposed, and \lstinline{utils} contains utilities.
+After the refactoring, the framework's package structure got very complex. Several main features of the software – like source code parsing and other actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \lstinline{actions} contains features to be exposed to the user, \lstinline{database} contains database-related operations, \lstinline{tasks} contains internal features not to be exposed, and \lstinline{utils} contains utilities.
 
-The final version of Dániel Stein's framework used the \lstinline{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version supports the 6\textsuperscript{th} Version of \es only. Since then, version \lstinline{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security~\cite{shift-ast, shift-java-github}. I updated the framework's dependencies to use the new version of the parser and scope analyser.
+The final version of Dániel Stein's framework used the \lstinline{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version only supports the 6\textsuperscript{th} Version of \es. Since then, version \lstinline{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security~\cite{shift-ast, shift-java-github}. I updated the framework's dependencies to use the new version of the parser and scope analyser.
 
 \subsection{Summary of Refactoring}
 
-\Cref{fig:codemodel-rifle-refactored-architecture} presents a high-level overview of the refactored architecture of the Codemodel-Rifle framework. Besides becoming somewhat modular, the framework has gone through a series of optimisations to simplify testing and developing new analyses.
+\Cref{fig:codemodel-rifle-refactored-architecture} presents a high-level overview of the refactored architecture of the Codemodel-Rifle framework. Besides becoming modular, the framework has gone through a series of optimisations to simplify testing and developing new analyses.
 
 \begin{figure}[!htb]
 	\centering
@@ -206,13 +206,13 @@ Using Codemodel-Rifle as a dependency, Codemodel-Visualization first imports the
 
 \subsection{Describing the Defect Pattern}
 
-The file exported by Codemodel-Visualization precisely mirrors the property graph instance model translated by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \lstinline{GraphWalker} class as filtered entities from the underlying visitor pattern implementation.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
+The file exported by Codemodel-Visualization precisely mirrors the property graph instance model translated by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \lstinline{GraphWalker} class as filtered entities from the underlying visitor pattern implementation. As an earlier architectural decision, it is not configurable externally.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
 
 
 \subsection{Implementing the Analysis}
 \label{subsection:implementing-analyses}
 
-Analyses are basically Cypher queries. If a defect's pattern can be expressed with a Cypher query in some way, it can be detected by the framework.
+Analyses are basically Cypher queries. If a defect's pattern can be expressed with a Cypher query, it can be detected by the framework.
 
 Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these may require to extensively manipulate the graph to dredge defect patterns for matching. In cases involving \emph{transitive} defects, like in the running example\footnote{The running example is to detect a division by zero scenario. But zero is not a numeric literal $0$, but the indirectly referenced return value of a nested function stack with variable assignments and also a module boundary in between.} presented in \Cref{chapter:background}, a flag like \lstinline{EqualsZero} has to be propagated through the graph along specified edges: variable assignments, variable references, function call and function return statements, etc.
 
@@ -260,7 +260,7 @@ Complex analyses may require to extensively manipulate the graph. These manipula
 
 \subsubsection{Querying the Graph}
 
-The graph is queried with Cypher, with matching predefined graph patterns developed with the aforementioned steps. If a defect pattern matches, the defect gets logged onto the console with the semantics described in \Cref{subsection:implementing-analyses}, in the format seen in \Cref{fig:defect-found-logger}.
+The graph is queried with Cypher, with matching predefined graph patterns developed with the aforementioned steps. If a defect pattern matches, it gets logged onto the console with the semantics described in \Cref{subsection:implementing-analyses}, in the format seen in \Cref{fig:defect-found-logger}.
 
 \begin{figure}[!htb]
 	\centering
