@@ -25,52 +25,64 @@ This section describes the work I made to support analysing more than one \es mo
 
 \subsection{The \es Module System}
 
-As the language gained traction, JavaScript projects rapidly grown to a size where modularisation became critical in order to keep the code logically organised. Today's largest \es code bases include Google's Gmail\footnote{https://www.gmail.com} with approx. 400~000 lines of code~\cite{gmail-loc}, Ruben Daniels' Cloud9 IDE\footnote{https://c9.io} with approx. 300~000 lines of code~\cite{cloud9-loc}, and Lucidchart\footnote{https://www.lucidchart.com} with approx. 200 000 lines of code~\cite{lucidchart-loc}. The product of Tresorit featured in this thesis consists of approx. 35~000 lines of \es code.
+As the language gained traction, JavaScript projects rapidly grown to a size where modularisation became critical in order to keep the code logically organised. Today's largest \es code bases include Google's Gmail\footnote{\texttt{https://www.gmail.com}} with approx. 400~000 lines of code~\cite{gmail-loc}, Ruben Daniels' Cloud9 IDE\footnote{\texttt{https://c9.io}} with approx. 300~000 lines of code~\cite{cloud9-loc}, and Lucidchart\footnote{\texttt{https://www.lucidchart.com}} with approx. 200 000 lines of code~\cite{lucidchart-loc}. The product of Tresorit featured in this thesis consists of approx. 35~000 lines of \es code.
 
-Plain JavaScript does not have built-in support for modules~\cite{exploringes6}, there are only community-provided solutions like \emph{RequireJS}\footnote{http://requirejs.org}. In contrary, the 6\textsuperscript{th} version of \es has language-level support for modules: each source file represents exactly one module. Entities like variables and functions defined in one module, or even complete modules themselves can be \emph{exported} to be later \emph{imported} to a different module. By default, modules are referred by their relative pathname, without the file extension. Entities that are not exported remain \emph{private}, meaning they can not be imported to other modules.
+Plain JavaScript does not have built-in support for modules~\cite{exploringes6}, there are only community-provided solutions like \emph{RequireJS}\footnote{\texttt{http://requirejs.org}}. In contrary, the 6\textsuperscript{th} version of \es has language-level support for modules: each source file represents exactly one module. Entities like variables and functions defined in one module, or even complete modules themselves can be \emph{exported} to be later \emph{imported} to a different module. By default, modules are referred by their relative pathname, without the file extension. Entities that are not exported remain \emph{private}, meaning they can not be imported to other modules.
 
 In \es 6, there are several ways of exporting and importing entities~\cite{exploringes6}, these are detailed in the next subsections. The Codemodel-Rifle framework had only minimal demonstrative support for interconnecting several \es modules; I extended Dániel Stein's work by covering the most used \emph{export-import cases}.
 
 
 \subsection{Export Syntaxes and Cases}
 
-By default, each entity can only be accessed in the scope of the module it was declared in. To be accessed from other modules, the entity has to be explicitly exported first. \Cref{fig:export-syntaxes} presents export syntax examples of \es 6, based on~\cite{export-syntaxes}. Since these statements can be almost arbitrarily combined, and the number of exported variables is not limited in theory, the list of export syntaxes of \es 6 is practically endless.
+By default, each entity can only be accessed in the scope of the module it was declared in. To be accessed from other modules, the entity has to be explicitly exported first. \Cref{fig:export-syntaxes} presents export syntax examples of \es 6, based on~\cite{export-syntaxes}. Since these statements can be almost arbitrarily combined, and the number of exported variables is not limited in theory, the list of differing export syntaxes of \es 6 is practically endless.
 
-Therefore, \emph{export syntaxes} need to be distinguished from \emph{export cases}. An \emph{export case} is identified by the \emph{basic form} of an \emph{export syntax}. \Cref{fig:export-syntaxes} displays all syntaxes in \emph{basic form}, meaning only one entity is exported by one export statement, and no syntaxes are combined. Each different \emph{export case} represents a unique graph pattern in the ASG.
+Therefore, \emph{export syntaxes} need to be distinguished from \emph{export cases}. An \emph{export case} is identified by the \emph{basic form} of an \emph{export syntax}. An \emph{export syntax} written in \emph{basic form} does not combine divers syntaxes, and exports only one entity per export statement. \Cref{fig:export-syntaxes} displays all syntaxes in \emph{basic form}, thus it lists all members of the \emph{export cases'} finite set. Each different \emph{export case} represents a unique graph pattern in the ASG.
 
-\begin{figure}[!htb]
+\begin{figure}[!p]
 	\centering
-	\begin{minipage}{31em}
-		\begin{verbatim}
-		export { name1, … };
-		export { name1 as exportedName1, … };
-		export let name1, … ;
-		export var name1, … ;
-		export let name1 = …, … ;
-		export var name1 = …, … ;
-		export const name1 = …, … ;
-		export expression;
-		export default expression;
-		export default class { … }
-		export default function (…) { … }
-		export default function* (…) { … }
-		export default class name1 { … }
-		export default function name1(…) { … }
-		export default function* name1(…) { … }
-		export { name1 as default, … };
-		export * from …;
-		export { name1, … } from … ;
-		export { import1 as importedName1, … } from …;
-		\end{verbatim}
-	\end{minipage}
+	\begin{lstlisting}[language=JavaScript]
+			// exportName
+			export { name1, ... };
+			// exportAlias
+			export { name1 as exportedName1, ... };
+			// exportEmptyLetDeclaration
+			export let name1, ... ;
+			// exportEmptyVarDeclaration
+			export var name1, ... ;
+			// exportLetDeclaration
+			export let name1 = ..., ... ;
+			// exportVarDeclaration
+			export var name1 = ..., ... ;
+			// exportConstDeclaration
+			export const name1 = ..., ... ;
+			// exportAsDefault
+			export { name1 as default, ... };
+			// exportDefaultExpression
+			export default expression;
+			// exportDefaultAnonymousClass
+			export default class { ... }
+			// exportDefaultAnonymousFunction
+			export default function (...) { ... }
+			// exportDefaultAnonymousGenerator
+			export default function* (...) { ... }
+			// exportDefaultClass
+			export default class name1 { ... }
+			// exportDefaultFunction
+			export default function name1(...) { ... }
+			// exportDefaultGenerator
+			export default function* name1(...) { ... }
+			// exportExpression
+			export expression;
+			// reexportNamespace
+			export * from ...;
+			// reexportName
+			export { name1, ... } from ... ;
+			// reexportAlias
+			export { import1 as importedName1, ... } from ...;
+	\end{lstlisting}
   \caption{Export syntax examples of \es 6}
   \label{fig:export-syntaxes}
 \end{figure}
-
-%These pattern description generalisations need to be very carefully performed, since the interconnections have to be sound regarding the semantics of the \es language. The patterns have to be specific enough to match only those cases which they were intended to, but they have to be general enough to handle
-
-%	the following: at the implementation of interconnecting module graphs in Codemodel-Rifle, each syntax's pattern was distinctly inspected, and if several syntaxes' could be matched by one pattern. The list on \Cref{fig:export-syntaxes} contains \emph{basic forms} of export : e.g.\ there is no difference between one variable or several variables exported with the same syntax. At the implementation of interconnecting module graphs in Codemodel-Rifle, cases were differentiated by their ASG-signatures: two cases were marked equal if they displayed significantly similar graph patterns.
-
 
 
 \subsection{Import Syntaxes and Cases}
@@ -79,18 +91,115 @@ An entity declared in module \textbf{A} can be accessed in module \textbf{B}, if
 
 Thus, \emph{import syntaxes} need to be distinguished from \emph{import cases}, similarly to the exports. An \emph{import case} is identified by the \emph{basic form} of an \emph{import syntax}. \Cref{fig:import-syntaxes} displays all syntaxes in \emph{basic form}. Each \emph{import case} has a unique graph pattern in the ASG.
 
-\vspace{1em}
 \begin{figure}[!htb]
-	\centering
-	\begin{minipage}{35em}
-		\begin{verbatim}
+	\begin{lstlisting}[language=JavaScript]
+		// importName
+		import { name1, ... } from "exporter";
+		// importAlias
+		import { name1 as importedName1, ... } from "exporter";
+		// importDefault
 		import defaultName from "exporter";
+		// importNamespace
 		import * as exportedModule from "exporter";
-		import { name1, … } from "exporter";
-		import { name1 as importedName1, … } from "exporter";
+		// importModule
 		import "exporter";
-		\end{verbatim}
-	\end{minipage}
-  \caption{Import syntaxes of \es 6}
+	\end{lstlisting}
+  \caption{Import syntax examples of \es 6}
   \label{fig:import-syntaxes}
 \end{figure}
+
+
+\subsection{Number of Export-Import Combinations}
+
+Let $\mathbb{E}$ be the distinct export cases' set, and let $\mathbb{I}$ be the distinct import cases' set. As \Cref{fig:export-syntaxes} and \Cref{fig:import-syntaxes} show, $|\mathbb{E}| = 19$, and $|\mathbb{I}| = 5$. If all export cases would be compatible with all import cases according to the \es grammar, set $\mathbb{C}$ containing all combinations would be $\mathbb{C} = \mathbb{E} \times \mathbb{I}$ with the cardinality of $|\mathbb{C}| = |\mathbb{E}| * |\mathbb{I}| = 19 * 5 = 95$.
+
+\begin{figure}[!htb]
+	\begin{lstlisting}[language=JavaScript]
+					// exporter.js
+					export let name1 = ...;
+					// importer.js
+					import defaultName from "exporter";
+	\end{lstlisting}
+  \caption{An example of incompatible export-import cases}
+  \label{fig:incompatible-export-import-example}
+\end{figure}
+
+Let $\mathbb{S}$ be the set of the export-import combinations supported by Codemodel-Rifle, and let $\alpha$ be the number of distinct algorithms needed to be implemented for supporting every element of $\mathbb{S}$. The following applies: $\alpha \leq |\mathbb{S}|$, since the framework needs one separate algorithm for each export-import case at most. Since not all export cases are compatible with all import cases (a counterexample is displayed on \Cref{fig:incompatible-export-import-example}), the set of \emph{semantically valid} export-import combinations is narrower than $\mathbb{C}$. Codemodel-Rifle should interconnect only semantically valid export-import cases, so $\mathbb{S} \subset \mathbb{C}$. Also, $\alpha$ can be reduced further by involving ASG-specific knowledge: with graph pattern generalisation techniques, several export cases can be handled as one at implementing the interconnections, while preserving semantics. Therefore several export cases can be covered by one algorithm, so $\alpha < |\mathbb{S}|$. In addition, by choosing particular export and import cases not to be supported by Codemodel-Rifle, $\alpha$ can be lowered even further. Case compatibility, unsupported cases and pattern generalisation techniques are detailed in the following subsections.
+
+
+\subsection{Compatibility of the Export-Import Cases}
+
+An export-import combination is considered to be \emph{semantically valid}, if it complies with the \es grammar~\cite{export-grammar, import-grammar}. Accordingly, semantically valid export-import combinations consist of \emph{compatible} export-import cases: export case \textbf{E} and import case \textbf{I} are considered to be \emph{compatible} with each other, if the entity exported by \textbf{E} can be imported by \textbf{I}, following the \es grammar. \Cref{fig:incompatible-export-import-example} shows an example of incompatible export-import cases. \Cref{table:export-import-compatibility} displays a compatibility matrix for \es export-import cases.
+
+As only semantically valid export-import combinations are required to be supported by Codemodel-Rifle to evaluate analyses over several \es modules coherently, incompatible cases do not need to be covered. This reduces $\alpha$ from $95$ to $67$ (see \Cref{table:export-import-compatibility}).
+
+
+\subsection{Unsupported Cases}
+
+There are export and import cases which I chosen not be supported by Codemodel-Rifle because of implementation difficulties, or the cases' irrelevant usage.
+
+The unsupported export and import cases are the following:
+
+\begin{itemize}
+\item \textbf{\lstinline{exportExpression}}: Unnamed expressions (e.g.\ \lstinline{export 1 + 2;}) can not be imported, because they can not be referenced.
+\item \textbf{\lstinline{reexportName}}: According to my experiences, re-exporting is used very little.
+\item \textbf{\lstinline{reexportAlias}}: According to my experiences, re-exporting is used very little.
+\item \textbf{\lstinline{reexportNamespace}}: According to my experiences, re-exporting is used very little.
+\item \textbf{\lstinline{importNamespace}}: There is no clear solution for including all exported variable of the imported module as an object into the ASG.
+\item \textbf{\lstinline{importModule}}: It only loads the module, does not import anything. The first such import in a program executes the body of the module~\cite{exploringes6}.
+\end{itemize}
+
+Excluding these cases from the interconnection process reduces $\alpha$ from $67$ to $28$.
+
+\Cref{table:export-import-compatibility} displays unsupported export and import cases with a grey background. With excluding the incompatible and the unsupported cases from the interconnection process, $\alpha$ is reduced by $68$\%, from $95$ to $28$. This saves a significant amount of work without notable loss of the analyses' credibility — unsupported cases were mostly chosen because of their unpopularity. Nevertheless, these cases need to be covered later as well, in order to provide a full-scale solution for analysing multiple \es modules coherently.
+
+\vspace{2em}
+\begin{table}[!htb]
+	\newcommand{\yep}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
+	\newcommand{\nop}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
+
+	\definecolor{grey}{gray}{0.85}
+	\newcolumntype{g}{>{\columncolor{grey}}c}
+
+	\centering
+	\begin{tabular}{l|cccgg}
+		\hline
+																				& \rotatebox{90}{importName}
+																				& \rotatebox{90}{importAlias}
+																				& \rotatebox{90}{importDefault}
+																				& \rotatebox{90}{importNamespace~~}
+																				& \rotatebox{90}{importModule}
+																				\\
+		\hline
+		{exportName}												& \yep & \yep & \nop & \yep & \yep \\
+		{exportAlias}												& \yep & \yep & \nop & \yep & \yep \\
+		{exportEmptyLetDeclaration}					& \yep & \yep & \nop & \yep & \yep \\
+		{exportEmptyVarDeclaration}					& \yep & \yep & \nop & \yep & \yep \\
+		{exportLetDeclaration}							& \yep & \yep & \nop & \yep & \yep \\
+		{exportVarDeclaration}							& \yep & \yep & \nop & \yep & \yep \\
+		{exportConstDeclaration}						& \yep & \yep & \nop & \yep & \yep \\
+		{exportAsDefault}										& \nop & \nop & \yep & \nop & \yep \\
+		{exportDefaultExpression}						& \nop & \nop & \yep & \nop & \yep \\
+		{exportDefaultAnonymousClass}				& \nop & \nop & \yep & \nop & \yep \\
+		{exportDefaultAnonymousFunction}		& \nop & \nop & \yep & \nop & \yep \\
+		{exportDefaultAnonymousGenerator}		& \nop & \nop & \yep & \nop & \yep \\
+		{exportDefaultClass}								& \yep & \yep & \yep & \yep & \yep \\
+		{exportDefaultFunction}							& \yep & \yep & \yep & \yep & \yep \\
+		{exportDefaultGenerator}						& \yep & \yep & \yep & \yep & \yep \\
+		\rowcolor{grey}
+		{exportExpression}									& \nop & \nop & \nop & \nop & \yep \\
+		\rowcolor{grey}
+		{reexportName}											& \yep & \yep & \nop & \yep & \yep \\
+		\rowcolor{grey}
+		{reexportAlias}											& \yep & \yep & \nop & \yep & \yep \\
+		\rowcolor{grey}
+		{reexportNamespace}									& \yep & \yep & \yep & \yep & \yep \\
+		\hline
+	\end{tabular}
+
+	\caption{Export-import compatibility matrix with unsupported cases in grey}
+	\label{table:export-import-compatibility}
+\end{table}
+
+
+\subsection{Pattern Generalisation Techniques}

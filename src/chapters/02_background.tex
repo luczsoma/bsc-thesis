@@ -6,7 +6,6 @@ This chapter presents the concept of static analysis, shortly summarises the Jav
 
 \section{Static Analysis}
 
-
 \subsection{Introduction}
 
 Static source code analysis is a software testing approach performed without compiling and executing the program itself. Usually the source code of the analysed software first gets transformed to a mathematical data structure — which is mostly a tree or a different form of graph —, then the data structure is inspected by automated tools with the goal of finding software defects. As static analysis is performed without actually executing the program, software can be analysed in as early as its source code state, before getting to testing or deployment.
@@ -71,7 +70,7 @@ Initially, non-professional programmers were aimed by the idea to provide a port
 
 There is a significant aspiration to standardise the JavaScript language with its core capabilities and data structures. The first intentions of standardisation began in 1997 by Ecma International~\cite{webedjavascripthistory}, resuling in \emph{Standard ECMA-262}~\cite{ecmascriptstandardfirstversion}. The newest standard currently is the \emph{ECMA-262, 7\textsuperscript{th} Edition (ES7)}~\cite{ecmascriptstandard}. Apart from standardisation, there are several implementations of JavaScript in interpreters, like Chakra\footnote{\texttt{https://github.com/Microsoft/ChakraCore}}, JScript\footnote{\texttt{https://msdn.microsoft.com/library/hbxc2t98.aspx}} and Google's V8\footnote{\texttt{https://github.com/v8/v8}}~\cite{stein-daniel-msc}.
 
-Today's growing traction of standardised JavaScript, henceforth also referenced as \es, can be explained with several reasons. Due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \texttt{eval()} function to execute source code at run-time.}, static analysis of JavaScript is difficult. The \es standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple~\cite{es6-features}. Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
+Today's growing traction of standardised JavaScript, henceforth also referenced as \es, can be explained with several reasons. Due to being untyped\footnote{In JavaScript, no static types are assigned to entities.} and dynamic\footnote{Meaning of dynamic here: contrary to static languages where compilation time checks play an important role in verifying various properties of the program, dynamic languages' several common programming behaviours are executed only at run-time. Considering a common example: in JavaScript we have the \lstinline{eval()} function to execute source code at run-time.}, static analysis of JavaScript is difficult. The \es standard enhances plain JavaScript with several new programming structures making the language more expressive and sometimes more simple~\cite{es6-features}. Users of the language can write more coherent code by applying these new language constructs as well as best practices making it easier to interpret the program by a static analysis tool.
 
 
 \subsection{The Process of Transpiling}
@@ -120,17 +119,17 @@ In the JavaScript scene, compatibility is a ubiquitous problem, see \Cref{table:
 	\begin{minipage}{25em}
 		The first piece of code uses ES6 constructs for simplicity:
 
-		\begin{verbatim}
+		\begin{lstlisting}[language=JavaScript]
 		[1, 2, 3].map(n => n ** 2);
-		\end{verbatim}
+		\end{lstlisting}
 
 		The second piece of code uses widely-supported plain JavaScript constructs only, and is created by transpiling the first piece of code with \emph{babel}:
 
-		\begin{verbatim}
+		\begin{lstlisting}[language=JavaScript]
 		[1, 2, 3].map(function (n) {
 		  return Math.pow(n, 2);
 		});
-		\end{verbatim}
+		\end{lstlisting}
 	\end{minipage}
   \caption{A transpilation example}
   \label{fig:transpiling-example}
@@ -152,7 +151,7 @@ Graphs are mathematically well-defined data structures being broadly used in sev
 
 \subsection{The Property Graph Data Model}
 
-It is a common way to define graphs as a set of objects, in which some object pairs are connected to each other. In this model, an object is called \emph{vertex} or \emph{node} or \emph{point}, and a connection between two \emph{vertices} is called \emph{edge} or \emph{relation}. Connections can be detailed further by specifying their directionality, also they can be \emph{labeled} to define them even more. Similarly labeling vertices leads to the model of \emph{typed graphs}. If we assign properties to the nodes or relations, we get the model of \emph{property graphs}. Properties, as shown in \Cref{fig:property-graph}, are usually key-value pairs in the format of \texttt{key = `value'}. Generally, keys are strings, and values represent common data types like string, integer, float, etc.
+It is a common way to define graphs as a set of objects, in which some object pairs are connected to each other. In this model, an object is called \emph{vertex} or \emph{node} or \emph{point}, and a connection between two \emph{vertices} is called \emph{edge} or \emph{relation}. Connections can be detailed further by specifying their directionality, also they can be \emph{labeled} to define them even more. Similarly labeling vertices leads to the model of \emph{typed graphs}. If we assign properties to the nodes or relations, we get the model of \emph{property graphs}. Properties, as shown in \Cref{fig:property-graph}, are usually key-value pairs in the format of \lstinline{key = `value'}. Generally, keys are strings, and values represent common data types like string, integer, float, etc.
 
 \begin{figure}[!htb]
 	\centering
@@ -161,12 +160,12 @@ It is a common way to define graphs as a set of objects, in which some object pa
 	\label{fig:property-graph}
 \end{figure}
 
-The Codemodel-Rifle framework uses property graphs for its internal data storage. The parsed source code's AST is transformed into an ASG, and is stored as a property graph: nodes in the AST become property graph nodes, nested AST nodes are connected to each other via labeled graph relations. \Cref{fig:codemodel-rifle-asg} shows the ASG of the following JavaScript program: \texttt{const PI = 3.141593;} produced and visualised by Codemodel-Rifle.\footnote{Administrative properties and labels are omitted for the sake of simplicity, e.g. no identifiers are shown.}
+The Codemodel-Rifle framework uses property graphs for its internal data storage. The parsed source code's AST is transformed into an ASG, and is stored as a property graph: nodes in the AST become property graph nodes, nested AST nodes are connected to each other via labeled graph relations. \Cref{fig:codemodel-rifle-asg} shows the ASG of the following JavaScript program: \lstinline{const PI = 3.141593;} produced and visualised by Codemodel-Rifle.\footnote{Administrative properties and labels are omitted for the sake of simplicity, e.g. no identifiers are shown.}
 
 \begin{figure}[!p]
 	\centering
 	\includegraphics[height=\textheight, trim=1cm 1cm 1cm 1cm,clip]{figures/codemodel-rifle-asg.pdf}
-	\caption{\texttt{const PI = 3.141593;} in Abstract Semantic Graph format}
+	\caption{\lstinline{const PI = 3.141593;} in Abstract Semantic Graph format}
 	\label{fig:codemodel-rifle-asg}
 \end{figure}
 
@@ -188,7 +187,7 @@ Cypher is a query language developed especially for graph databases by Neo Techn
 
 \begin{figure}[!htb]
 	\centering
-	\texttt{(Bob)-[:LOVES]->(Alice)}
+	\lstinline{(Bob)-[:LOVES]->(Alice)}
   \caption{A basic Cypher example}
 	\label{fig:cypher-intro}
 \end{figure}
@@ -198,41 +197,33 @@ Cypher syntax is elegant and expressive, thus very readable. Besides using it to
 
 \section{Running Example}
 
-In this section I provide a set of \es codes as a software defect example, which accompanies the reader throughout the thesis. This example is to be used whenever a new static analysis concept is introduced. There are two files in the example: \texttt{exporter.js} and \texttt{importer.js}.
+In this section I provide a set of \es codes as a software defect example, which accompanies the reader throughout the thesis. This example is to be used whenever a new static analysis concept is introduced. There are two files in the example: \lstinline{exporter.js} and \lstinline{importer.js}.
 
-The first one exports a function, which happens to return $0$, as a variable. The second one imports the variable and tries to divide a number with the return value of the imported function variable. Through this example, I present that this and similar software defect cases can be revealed by static analysis, even if the defect spans more than one \es modules (source files), and includes patterns which can not be matched by one generalised pattern description. \Cref{fig:running-example-exporter} presents \texttt{exporter.js}. \Cref{fig:running-example-importer} presents \texttt{importer.js}.
+The first one exports a function, which happens to return $0$, as a variable. The second one imports the variable and tries to divide a number with the return value of the imported function variable. Through this example, I present that this and similar software defect cases can be revealed by static analysis, even if the defect spans more than one \es modules (source files), and includes patterns which can not be matched by one generalised pattern description. \Cref{fig:running-example-exporter} presents \lstinline{exporter.js}. \Cref{fig:running-example-importer} presents \lstinline{importer.js}.
 
-\vspace{2em}
 \begin{figure}[!htb]
-	\centering
-	\begin{minipage}{25em}
-		\begin{verbatim}
-		var a = 0;
+	\begin{lstlisting}[language=JavaScript]
+					var a = 0;
 
-		export default function b() {
-		  let c = function d() {
-		    return a;
-		  };
+					export default function b() {
+					  let c = function d() {
+					    return a;
+					  };
 
-		  return c();
-		};
-		\end{verbatim}
-	\end{minipage}
-  \caption{\texttt{exporter.js} module}
+					  return c();
+					};
+	\end{lstlisting}
+  \caption{\lstinline{exporter.js} module}
   \label{fig:running-example-exporter}
 \end{figure}
 
-\vspace{2em}
 \begin{figure}[!htb]
-	\centering
-	\begin{minipage}{25em}
-		\begin{verbatim}
-		import defaultName from "exporter";
+	\begin{lstlisting}[language=JavaScript]
+					import defaultName from "exporter";
 
-		let a = 5 / defaultName();
-		\end{verbatim}
-	\end{minipage}
-  \caption{\texttt{importer.js} module}
+					let a = 5 / defaultName();
+	\end{lstlisting}
+  \caption{\lstinline{importer.js} module}
   \label{fig:running-example-importer}
 \end{figure}
 

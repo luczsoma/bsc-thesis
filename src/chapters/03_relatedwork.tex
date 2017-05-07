@@ -80,11 +80,11 @@ Esprima is an \es parser with extended capabilities, like syntax validation. It 
 	\newcommand{\partialsupport}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
 	\newcommand{\nosupport}{—}
 	\centering
-	\begin{tabular}{l|ccccc}
+	\begin{tabular}{l|cccc}
 		\toprule
 																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}   &   \textbf{Shift Java}   \\
 		\midrule
-		\textbf{\es support}           &   ES3             &   ES5             &   ES6             &   ES7                   \\
+		\textbf{\es support}                  &   ES3             &   ES5             &   ES6             &   ES7                   \\
 		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey    &   Shift                 \\
 		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \fullsupport          \\
 		\textbf{number of contributors}       &   1               &   335             &   87              &   10                    \\
@@ -109,7 +109,7 @@ This section introduces static analysis tools for Java, mainly for earning new i
 
 \subsection{FindBugs}
 
-FindBugs is a static analysis tool for detecting bug patterns in Java code~\cite{findbugs-website}. One of its main techniques is to syntactically match source code to programming constructs marked as suspicious programming practise. \textquote{For example, FindBugs checks that calls to \texttt{wait()}, used in multi-threaded Java programs, are always within a loop–which is the correct usage in most cases. In some cases, FindBugs also uses dataflow analysis to check for bugs. For example, FindBugs uses a simple, intraprocedural (within one method) dataflow analysis to check for null pointer dereferences. FindBugs can be expanded by writing custom bug detectors in Java. We set FindBugs to report \textquote{medium} priority warnings, which is the recommended setting.}~\cite{rutar2004comparison}
+FindBugs is a static analysis tool for detecting bug patterns in Java code~\cite{findbugs-website}. One of its main techniques is to syntactically match source code to programming constructs marked as suspicious programming practise. \textquote{For example, FindBugs checks that calls to \lstinline{wait()}, used in multi-threaded Java programs, are always within a loop–which is the correct usage in most cases. In some cases, FindBugs also uses dataflow analysis to check for bugs. For example, FindBugs uses a simple, intraprocedural (within one method) dataflow analysis to check for null pointer dereferences. FindBugs can be expanded by writing custom bug detectors in Java. We set FindBugs to report \textquote{medium} priority warnings, which is the recommended setting.}~\cite{rutar2004comparison}
 
 
 \subsection{PMD}
@@ -155,7 +155,7 @@ The tool itself is a data-flow analysis tool featuring inter-procedural analyses
 
 Coverity features a different set of C and C++ checkers. For C, Coverity checks for resource leaks, dereferencing/deallocating already deallocated memory, uninitialised variables, unused pointer values, dead code, null pointer dereferences, misuse of negative integers and functions that may return negative integers, and null returns, amongst others. For C++, Coverity checks for errors in overriding virtual functions, resource leaks because of missing destructors, past-the-end STL iterators, and uncaught exceptions, amongst others.
 
-Coverity has concurrency and security checkers as well, such as checks for double locks and missing releases, dangerous function calls like \texttt{gets} or \texttt{strcpy}, string overflows, and incorrect usage of the \texttt{chroot} system call~\cite{emanuelsson2008comparative}.
+Coverity has concurrency and security checkers as well, such as checks for double locks and missing releases, dangerous function calls like \lstinline{gets} or \lstinline{strcpy}, string overflows, and incorrect usage of the \lstinline{chroot} system call~\cite{emanuelsson2008comparative}.
 
 
 \section{Most Used Error-Checking Constraints}
