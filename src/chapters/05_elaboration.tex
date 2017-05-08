@@ -15,7 +15,7 @@ Following Dániel Stein~\cite{stein-daniel-msc} and \Cref{chapter:overview} of t
 	\end{enumerate}
 \end{enumerate}
 
-Since I have not made any semantic changes to the \textsc{Import} process, this chapter focuses to the \textsc{Interconnect} and the \textsc{Analyse} phases.
+Since I have not made any semantic changes to the \textsc{Import} phase, this chapter focuses to the \textsc{Interconnect} and the \textsc{Analyse} phases.
 
 
 \section{Interconnecting Related \es Modules}
@@ -25,7 +25,7 @@ This section describes the work I made to support analysing more than one \es mo
 
 \subsection{The \es Module System}
 
-As the language gained traction, JavaScript projects rapidly grown to a size where modularisation became critical in order to keep the code logically organised. Today's largest \es code bases include Google's Gmail\footnote{\texttt{https://www.gmail.com}} with approx. 400~000 lines of code~\cite{gmail-loc}, Ruben Daniels' Cloud9 IDE\footnote{\texttt{https://c9.io}} with approx. 300~000 lines of code~\cite{cloud9-loc}, and Lucidchart\footnote{\texttt{https://www.lucidchart.com}} with approx. 200 000 lines of code~\cite{lucidchart-loc}. The product of Tresorit featured in this thesis consists of approx. 35~000 lines of \es code.
+As the language gained traction, JavaScript projects rapidly grown to a size where modularisation became critical in order to keep the code logically organised. Today's largest \es code bases include Google's Gmail\footnote{\texttt{https://www.gmail.com}} with approx. 400,000 lines of code~\cite{gmail-loc}, Ruben Daniels' Cloud9 IDE\footnote{\texttt{https://c9.io}} with approx. 300,000 lines of code~\cite{cloud9-loc}, and Lucidchart\footnote{\texttt{https://www.lucidchart.com}} with approx. 200,000 lines of code~\cite{lucidchart-loc}. The product of Tresorit featured in this thesis consists of approx. 35,000 lines of \es code.
 
 Plain JavaScript does not have built-in support for modules~\cite{exploringes6}, there are only community-provided solutions like \emph{RequireJS}\footnote{\texttt{http://requirejs.org}}. In contrary, the 6\textsuperscript{th} version of \es has language-level support for modules: each source file represents exactly one module. Entities like variables and functions defined in one module, or even complete modules themselves can be \emph{exported} to be later \emph{imported} to a different module. By default, modules are referred by their relative pathname, without the file extension. Entities that are not exported remain \emph{private}, meaning they can not be imported to other modules.
 
@@ -215,7 +215,7 @@ There are export and import cases which I chosen not be supported by Codemodel-R
 
 \subsection{Pattern Generalisation Techniques}
 
-After excluding the incompatible and the unsupported cases, $30$ different import-export combinations still need to be covered by the interconnection process. This could imply that $\alpha = 30$ algorithms are needed for all combinations, but $\alpha$ can be reduced further by involving ASG-specific knowledge: at interconnecting modules, several export cases' graph patterns can be matched by one, somehow generalised pattern description, and thus several export cases can be interconnected with the same algorithm. For import cases, generalisation is neither possible nor necessary, since only three, semantically different import cases are supported by Codemodel-Rifle. To proceed, two concepts are defined.
+After excluding the incompatible and the unsupported cases, $30$ different import-export combinations still need to be covered by the interconnection process. This could imply that $\alpha = 30$ algorithms are needed for all combinations, but $\alpha$ can be reduced further by involving ASG-specific knowledge. At interconnecting modules, several export cases' graph patterns can be matched by one, somehow generalised pattern description, and thus several export cases can be interconnected with the same algorithm. For import cases, generalisation is neither possible nor necessary, since only three, semantically different import cases are supported by Codemodel-Rifle. To proceed, two concepts are defined.
 
 \paragraph{Semantically correct interconnection}
 
@@ -229,14 +229,14 @@ Applying the two definitions, my workflow was the following for finding the isom
 
 \begin{enumerate}
 \item I inspected the similarly looking export cases whether they can be described by one, somehow generalised graph pattern description.
-\item If yes, I examined if the two cases can be interconnected with imports following the same semantics.
+\item If yes, I examined if the two cases can be interconnected with imports with the same nodes and edges, with the same algorithm.
 \item If yes, I performed the interconnections, and inspected them whether they are semantically correct.
 \item If yes, the two export cases are isomorphic.
 \end{enumerate}
 
-The process of pattern generalisation needs to be performed very carefully. The generalised patterns must match only those export cases' patterns that can be interconnected in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting in semantically incorrect interconnections. In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
+The process of pattern generalisation needs to be performed very carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting in semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
 
-In the following, I list all isomorphic export cases in groups. Each group's name implies why the elements are isomorphic in the group. Since each group's elements can be interconnected with imports using the same algorithm per group, an isomorphic group with its elements can be considered as one generalised export case regarding the ASG interconnection process of the Codemodel-Rifle framework.
+In the following, I list all export cases I found to be isomorphic in groups. Each group's name implies why the elements are isomorphic in the group. Since every element can be interconnected with imports using the same algorithm per group, an isomorphic group with its elements can be considered as one generalised export case regarding the ASG interconnection process of the Codemodel-Rifle framework.
 
 The following $5$ isomorphic export groups have been formed:
 
@@ -277,7 +277,7 @@ The following $5$ isomorphic export groups have been formed:
 	\end{itemize}
 \end{itemize}
 
-Based on the above, having $5$ isomorphic export groups means that the number of distinctly handled export cases has been reduced to $5$. \Cref{table:updated-compatibility-table} shows the updated compatibility table without the unsupported cases, and with export cases grouped by isomorphic attributes. By this time, with excluding incompatible and unsupported cases and applying pattern generalisation techniques, $\alpha$ has been reduced to $13$, meaning only $13$ separate algorithms have to be implemented in order to cover most of the export-import cases.
+Based on the above, having $5$ isomorphic export groups means that the number of distinctly handled export cases has been reduced to $5$. \Cref{table:updated-compatibility-table} shows the updated compatibility table without the unsupported cases, and with export cases grouped by their isomorphism. By this time, with excluding incompatible and unsupported cases and applying pattern generalisation techniques, $\alpha$ has been reduced to $13$, meaning only $13$ separate algorithms have to be implemented in order to cover most of the export-import cases.
 
 \vspace*{-1mm}
 \begin{table}[!htb]
@@ -301,7 +301,7 @@ Based on the above, having $5$ isomorphic export groups means that the number of
 		\hline
 	\end{tabular}
 
-	\caption{Export-import compatibility matrix with unsupported cases in grey}
+	\caption{Export-import compatibility matrix with exports grouped by their isomorphism}
 	\label{table:updated-compatibility-table}
 \end{table}
 
