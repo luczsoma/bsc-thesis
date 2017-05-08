@@ -147,7 +147,7 @@ As only semantically valid export-import combinations are required to be support
 There are export and import cases which I chosen not be supported by Codemodel-Rifle because of implementation difficulties, or the cases' irrelevant usage. This reduces $\alpha$ from $79$ to $30$. The unsupported export and import cases are the following:
 
 \begin{itemize}
-\item \textbf{\lstinline{exportExpression}}: Unnamed expressions (e.g.\ \lstinline{export 1 + 2;}) can not be imported, because they can not be referenced.
+\item \textbf{\lstinline{exportExpression}}: Unnamed expressions (e.g.\ \lstinline[language=JavaScript]{export 1 + 2;}) can not be imported, because they can not be referenced.
 \item \textbf{\lstinline{exportDefaultExpression, exportDefaultAnonymousClass, export\- DefaultAnonymousFunction, exportDefaultAnonymousGenerator}}: There is no clear way for interconnecting the exported entities with the importer module.
 \item \textbf{\lstinline{reexportName},} \textbf{\lstinline{reexportAlias},} \textbf{\lstinline{reexportNamespace}}: According to my experiences, re-exporting is used very little.
 \item \textbf{\lstinline{importNamespace}}: There is no clear solution for including all exported variable of the imported module as an object into the ASG.
@@ -219,26 +219,44 @@ After excluding the incompatible and the unsupported cases, $30$ different impor
 
 \paragraph{Semantically correct interconnection}
 
-An import-export interconnection between two modules' property graphs is \emph{semantically correct}, if the interconnection is non-destructive, it correlates with the semantics of the \es language, and the interconnected property graphs contain the same information as the separate property graphs.
+An export-import interconnection between two modules' property graphs is \emph{semantically correct} to Codemodel-Rifle, if the interconnection is reversible, it correlates with the semantics of \es, and the interconnected property graphs contain the same information as the separate property graphs.
 
 \paragraph{Isomorphic export case}
 
-Two export cases are \emph{isomorphic}, if their ASG patterns can be interconnected to an import case's ASG pattern with the same algorithm, with the same nodes and edges, and the interconnection is semantically correct.
+Two export cases are \emph{isomorphic}, if they contain ASG patterns which can be interconnected to an import case along the same nodes and edges, applying the same algorithm, and the interconnection is semantically correct.
 
 Applying the two definitions, my workflow was the following for finding the isomorphic export cases in order to reduce $\alpha$:
 
 \begin{enumerate}
-\item I inspected the similarly looking export cases whether they can be described by one, somehow generalised graph pattern description.
-\item If yes, I examined if the two cases can be interconnected with imports with the same nodes and edges, with the same algorithm.
+\item I inspected the similarly looking export cases' ASG patterns, whether they can be described by one, somehow generalised graph pattern description.
+\item If yes, I examined if the two export cases can be interconnected with imports along the same nodes and edges, with the same algorithm.
 \item If yes, I performed the interconnections, and inspected them whether they are semantically correct.
 \item If yes, the two export cases are isomorphic.
 \end{enumerate}
 
-The process of pattern generalisation needs to be performed very carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting in semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
+\Cref{fig:export-declaration-demonstration} presents two distinct ASGs of two isomorphic export cases as an example. These two cases are described below with also specifying their location on the figure:
+\begin{itemize}
+\item \textsc{on the left:}\enskip\lstinline[language=JavaScript]{export let name1 = "name1Value"}
+\item \textsc{on the right:}\enskip\lstinline[language=JavaScript]{export function name1()}\texttt{ \{ }\lstinline{return "name1Value";}\texttt{ \}}
+\end{itemize}
 
-In the following, I list all export cases I found to be isomorphic in groups. Each group's name implies why the elements are isomorphic in the group. Since every element can be interconnected with imports using the same algorithm per group, an isomorphic group with its elements can be considered as one generalised export case regarding the ASG interconnection process of the Codemodel-Rifle framework.
+The two export cases are isomorphic because of the following.
+\begin{enumerate}[label=\alph*)]
+\item \emph{The two graphs contain patterns which can be matched by one pattern description.} Even though these patterns (indicated with thicker outlines) contain nodes and edges with different labels and properties, in Neo4j it is possible to match both of them with only one Cypher expression. This is to be detailed later.
+\item \emph{Both patterns can be interconnected to an import along the same nodes and edges applying the same algorithm.} Applying the semantics of Codemodel-Rifle developed along practical reasons, only the node labeled \lstinline{Declaration} (indicated with blue filling) needs to be connected to the import module's ASG in both cases.
+\item \emph{The interconnection is semantically correct.} In both cases, the interconnection is reversible, and no information is lost. The interconnection also correlates with the semantics of \es: in both cases, it expresses that a \emph{named declaration} has been imported from another module. For the aim of the Codemodel-Rifle framework — which is revealing possible errors in software by static analysis — this is a satisfactory way of implementing the interconnections.
+\end{enumerate}
 
-The following $5$ isomorphic export groups have been formed:
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\textwidth, trim=5mm 5mm 5mm 5mm,clip]{figures/export-declaration-demonstration.pdf}
+	\caption{Two isomorphic export cases contain the same pattern}
+	\label{fig:export-declaration-demonstration}
+\end{figure}
+
+The process of pattern generalisation needs to be performed carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting in semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
+
+In the following, I list all export cases I found to be isomorphic in groups. Each group's name implies why the elements are isomorphic in the group. Since every element can be interconnected with imports using the same algorithm per group, an isomorphic group with its elements can be considered as one generalised export case regarding the ASG interconnection process of the Codemodel-Rifle framework. The following $5$ isomorphic export groups have been formed:
 
 \begin{itemize}
 \item \textbf{\lstinline{exportName}}
@@ -277,9 +295,8 @@ The following $5$ isomorphic export groups have been formed:
 	\end{itemize}
 \end{itemize}
 
-Based on the above, having $5$ isomorphic export groups means that the number of distinctly handled export cases has been reduced to $5$. \Cref{table:updated-compatibility-table} shows the updated compatibility table without the unsupported cases, and with export cases grouped by their isomorphism. By this time, with excluding incompatible and unsupported cases and applying pattern generalisation techniques, $\alpha$ has been reduced to $13$, meaning only $13$ separate algorithms have to be implemented in order to cover most of the export-import cases.
+Based on the above, having $5$ isomorphic export groups means that the number of distinctly handled export cases has been reduced to $5$. \Cref{table:updated-compatibility-table} shows the updated compatibility table with export cases grouped by their isomorphism, without listing the unsupported cases. By this time, with excluding incompatible and unsupported cases and applying pattern generalisation techniques, $\alpha$ has been reduced to $13$, meaning only $13$ separate algorithms have to be implemented in order to cover most of the export-import cases.
 
-\vspace*{-1mm}
 \begin{table}[!htb]
 	\newcommand{\yep}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
 	\newcommand{\nop}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
@@ -305,4 +322,93 @@ Based on the above, having $5$ isomorphic export groups means that the number of
 	\label{table:updated-compatibility-table}
 \end{table}
 
+
 \subsection{Implementing the Interconnection Algorithms}
+
+After thoroughly inspecting the ASG-signatures of the numerous export and import cases for minimising the number of algorithms to be implemented, actually implementing the algorithms was straightforward. In this section, I will not present all cases in detail. Instead, I describe the general steps of the interconnection process, provide a complete example of one concrete case, and describe the algorithms of other cases in the Appendix.
+
+The steps of the interconnection process in general can be described as the following:
+
+\begin{enumerate}
+\item Match each to-be-exported entities of the exporter module with strictly unique patterns containing all necessary identifiers and information for the export.
+\item Match each to-be-imported entities of the importer module with strictly unique patterns containing all necessary identifiers and information for the import.
+\item Perform interconnections between the exporter module and the importer module by finding corresponding entities in the two modules based on identifiers like names and/or default export/import bindings.
+\item Clean the graph, so it will not contain duplicate nodes or edges after the interconnection process.
+\end{enumerate}
+
+\begin{figure}[!htb]
+	\begin{lstlisting}[language=JavaScript]
+			// exporter.js
+			let name1 = "name1Value";
+			export { name1 };
+
+			// importer.js
+			import { name1 as importedName1 } from "exporter";
+	\end{lstlisting}
+  \caption{Modules of the \emph{exportName–importAlias} demonstration}
+  \label{fig:export-import-example-source}
+\end{figure}
+
+I chose the fully detailed case to be the \emph{exportName–importAlias}. The \emph{exportName} is present in the \lstinline{exporter} module, while the \emph{importAlias} is present in the \lstinline{importer} module. \Cref{fig:export-import-example-source} shows the source code of the two modules.
+
+\Cref{fig:export-import-example-asg} displays the process of interconnecting the \lstinline{exporter} module with the \lstinline{importer} module along the \emph{exportName–importAlias} case. The following steps are necessary in the ASG of the modules:
+\begin{enumerate}
+\item Find the exported \lstinline{Variable} with its \lstinline{Declaration} in the \lstinline{exporter} module marked with blue colour. The full matched pattern is indicated with thicker outlines.
+\item Find the imported \lstinline{Variable} with its \lstinline{BindingIdentifier} and its \lstinline{Declaration} in the \lstinline{importer} module marked with crimson colour. The full matched pattern is indicated with thicker outlines.
+\item Check if the \lstinline{Import} node's \lstinline{moduleSpecifier} attribute is equal to the exporter module's name (currently \lstinline{exporter}).
+\item Check if the \lstinline{name} attribute of the \lstinline{IdentifierExpression} node (connecting to the \lstinline{ExportLocalSpecifier} node) is equal to the \lstinline{ImportSpecifier} node's \lstinline{name} attribute. In this particular \emph{importAlias} case, checking \lstinline{ImportSpecifier} node's \lstinline{name} attribute instead of the imported \lstinline{Variable} node's \lstinline{name} attribute provides the support for the \emph{aliased} import.
+\item Create a \lstinline{declarations} edge from the imported \lstinline{Variable} node to the exported \lstinline{Declaration}. This is indicated with a thick black outline.
+\item Create a \lstinline{node} edge from the exported \lstinline{Declaration} node to the imported variable's \lstinline{BindingIdentifier} node. This is indicated with a thick black outline.
+\item Delete the original \lstinline{Declaration} node of the imported variable with its edges.\footnote{This step does not cause loss of information: the graph still contains the information that the variable was \emph{imported}.}
+\end{enumerate}
+
+These steps are translated to Cypher, and sent to the database. Each export-import combination featured in \Cref{table:updated-compatibility-table} has a separate Cypher query. As these \emph{export-import interconnection queries} are \emph{independent} from each other — they do not modify the others' results in any way — they can be executed in any order. The queries are also \emph{idempotent}: they can be re-executed arbitrarily many times without different outcomes on the same dataset.
+
+\Cref{fig:export-import-example-cypher-source} presents the full Cypher query of the \emph{exportName–importAlias} case featured in the example. The query contains a node with a label that is not displayed in the visualised graph: \lstinline{CompilationUnit}. At translating the modules into ASGs, Codemodel-Rifle creates a node with the label \lstinline{CompilationUnit} for each distinct source file. Each module's all graph nodes is connected to the module's \lstinline{CompilationUnit} node. The node also stores the information about the parsed module's file path. As displaying the \lstinline{CompilationUnit} node and all its connections to all other nodes would make the graph very dense and unclear, it is omitted from the visualisation.
+
+\begin{figure}[!p]
+	\centering
+	\includegraphics[width=\textwidth, trim=5mm 5mm 5mm 5mm,clip]{figures/export-import-example-asg.pdf}
+	\caption{Interconnecting the \lstinline{exporter} module with the \lstinline{importer} module in the case \emph{exportName–importAlias}}
+	\label{fig:export-import-example-asg}
+\end{figure}
+
+\begin{figure}[!p]
+	\begin{lstlisting}[language=Cypher]
+MATCH
+// exporter.js: let name1 = "name1Value"; export { name1 };
+    (exporter:CompilationUnit)-[:contains]->(:ExportLocals)
+        -[:namedExports]->(:ExportLocalSpecifier)
+        -[:name]->(exportBindingIdentifier:IdentifierExpression)
+        <-[:node]-(:Reference)
+        <-[:references]-(:Variable)
+        -[:declarations]->(declarationToMerge:Declaration)
+        -[:node]->(:BindingIdentifier),
+
+// importer.js: import { name1 as importedName1 } from "exporter";
+    (importer:CompilationUnit)-[:contains]->(import:Import)
+        -[:namedImports]->(importSpecifier:ImportSpecifier)
+        -[:binding]->(importBindingIdentifierToMerge:BindingIdentifier)
+        <-[:node]-(declarationToDelete:Declaration)
+        <-[:declarations]-(importedVariable:Variable)
+
+    WHERE
+    exporter.parsedFilePath CONTAINS import.moduleSpecifier
+    AND exportBindingIdentifier.name = importSpecifier.name
+
+CREATE UNIQUE
+    (importedVariable)-[:declarations]->(declarationToMerge),
+    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+
+DETACH DELETE
+    declarationToDelete
+	\end{lstlisting}
+  \caption{The Cypher query of the \emph{exportName–importAlias} case}
+  \label{fig:export-import-example-cypher-source}
+\end{figure}
+
+
+\section{The Qualifier System}
+
+
+\section{Implementing the Analyses}

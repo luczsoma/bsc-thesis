@@ -3,10 +3,12 @@ digraph Neo {
     fontsize = "8"
     shape = "Mrecord"
     fontname = "Noto Sans"
+    penwidth = 0.5
   ]
   edge [
     fontname = "Noto Sans"
     fontsize = "8"
+    penwidth = 0.5
   ]
   N5 [
     label = "{AsgNode\nBindingIdentifier\nBinding\nVariableReference|'session' = 'test' : String\l'name' = 'PI' : String\l}"

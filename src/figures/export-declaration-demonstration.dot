@@ -1,0 +1,223 @@
+digraph Neo {
+  node [
+    fontsize = "8"
+    shape = "Mrecord"
+    fontname = "Noto Sans"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 0.5
+  ]
+  edge [
+    fontname = "Noto Sans"
+    fontsize = "8"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 0.5
+  ]
+  N3 [
+    label = "{AsgNode\nBindingIdentifier\nBinding\nVariableReference|'name' = 'name1' : String\l'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N5 [
+    label = "{AsgNode\nModule\nProgram|'session' = 'test' : String\l}"
+  ]
+  N5 -> N8 [
+    label = "items\n"
+  ]
+  N6 [
+    label = "{AsgNode\nMap|'session' = 'test' : String\l}"
+  ]
+  N6 -> N13 [
+    label = "name1\n"
+  ]
+  N8 [
+    label = "{AsgNode\nExport\nExportDeclaration|'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N8 -> N37 [
+    label = "declaration\n"
+    penwidth = 2
+  ]
+  N11 [
+    label = "{AsgNode\nGlobalScope\nScope|'type' = 'Global' : String\l'session' = 'test' : String\l'dynamic' = true : boolean\l}"
+  ]
+  N11 -> N32 [
+    label = "children\n"
+  ]
+  N11 -> N5 [
+    label = "astNode\n"
+  ]
+  N13 [
+    label = "{AsgNode\nVariable|'name' = 'name1' : String\l'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N13 -> N43 [
+    label = "declarations\n"
+    penwidth = 2
+  ]
+  N13 -> N42 [
+    label = "references\n"
+  ]
+  N32 [
+    label = "{AsgNode\nScope|'type' = 'Module' : String\l'session' = 'test' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N32 -> N5 [
+    label = "astNode\n"
+  ]
+  N32 -> N6 [
+    label = "variables\n"
+  ]
+  N34 [
+    label = "{AsgNode\nLiteralStringExpression\nExpression|'value' = 'name1Value' : String\l'session' = 'test' : String\l}"
+  ]
+  N37 [
+    label = "{AsgNode\nVariableDeclaration\nNode\nFunctionDeclarationClassDeclarationVariableDeclaration\nVariableDeclarationAssignmentTarget\nVariableDeclarationExpression|'session' = 'test' : String\l'kind' = 'let' : String\l}"
+    penwidth = 2
+  ]
+  N37 -> N39 [
+    label = "declarators\n"
+    penwidth = 2
+  ]
+  N39 [
+    label = "{AsgNode\nNode\nVariableDeclarator|'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N39 -> N34 [
+    label = "init\n"
+  ]
+  N39 -> N3 [
+    label = "binding\n"
+    penwidth = 2
+  ]
+  N42 [
+    label = "{AsgNode\nReference|'accessibility' = 'Write' : String\l'session' = 'test' : String\l}"
+  ]
+  N42 -> N3 [
+    label = "node\n"
+  ]
+  N43 [
+    label = "{AsgNode\nDeclaration|'session' = 'test' : String\l'kind' = 'Let' : String\l}"
+    color = "white"
+    fontcolor = "white"
+    fillcolor = "cadetblue4"
+    style = "filled"
+  ]
+  N43 -> N3 [
+    label = "node\n"
+    penwidth = 2
+  ]
+  N49 [
+    label = "{AsgNode\nNode\nFormalParameters|'session' = 'test' : String\l}"
+  ]
+  N50 [
+    label = "{AsgNode\nGlobalScope\nScope|'type' = 'Global' : String\l'session' = 'test' : String\l'dynamic' = true : boolean\l}"
+  ]
+  N50 -> N92 [
+    label = "children\n"
+  ]
+  N50 -> N72 [
+    label = "astNode\n"
+  ]
+  N54 [
+    label = "{AsgNode\nBindingIdentifier\nBinding\nVariableReference|'name' = 'name1' : String\l'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N58 [
+    label = "{AsgNode\nMap|'session' = 'test' : String\l}"
+  ]
+  N58 -> N69 [
+    label = "name1\n"
+  ]
+  N67 [
+    label = "{AsgNode\nNode\nFunctionBody\nFunctionBodyExpression|'session' = 'test' : String\l}"
+  ]
+  N67 -> N91 [
+    label = "statements\n"
+  ]
+  N68 [
+    label = "{AsgNode\nDeclaration|'kind' = 'FunctionDeclaration' : String\l'session' = 'test' : String\l}"
+    color = "white"
+    fontcolor = "white"
+    fillcolor = "cadetblue4"
+    style = "filled"
+  ]
+  N68 -> N54 [
+    label = "node\n"
+    penwidth = 2
+  ]
+  N69 [
+    label = "{AsgNode\nVariable|'name' = 'name1' : String\l'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N69 -> N68 [
+    label = "declarations\n"
+    penwidth = 2
+  ]
+  N72 [
+    label = "{AsgNode\nModule\nProgram|'session' = 'test' : String\l}"
+  ]
+  N72 -> N76 [
+    label = "items\n"
+  ]
+  N75 [
+    label = "{AsgNode\nMap|'session' = 'test' : String\l}"
+  ]
+  N75 -> N79 [
+    label = "arguments\n"
+  ]
+  N76 [
+    label = "{AsgNode\nExport\nExportDeclaration|'session' = 'test' : String\l}"
+    penwidth = 2
+  ]
+  N76 -> N84 [
+    label = "declaration\n"
+    penwidth = 2
+  ]
+  N79 [
+    label = "{AsgNode\nVariable|'name' = 'arguments' : String\l'session' = 'test' : String\l}"
+  ]
+  N84 [
+    label = "{AsgNode\nFunctionDeclarationClassDeclarationVariableDeclaration\nFunctionDeclaration\nStatement\nFunctionDeclarationClassDeclarationExpression\nFunction|'session' = 'test' : String\l'isGenerator' = false : boolean\l}"
+    penwidth = 2
+  ]
+  N84 -> N67 [
+    label = "body\n"
+  ]
+  N84 -> N49 [
+    label = "params\n"
+  ]
+  N84 -> N54 [
+    label = "name\n"
+    penwidth = 2
+  ]
+  N91 [
+    label = "{AsgNode\nStatement\nReturnStatement|'session' = 'test' : String\l}"
+  ]
+  N91 -> N94 [
+    label = "expression\n"
+  ]
+  N92 [
+    label = "{AsgNode\nScope|'type' = 'Module' : String\l'session' = 'test' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N92 -> N72 [
+    label = "astNode\n"
+  ]
+  N92 -> N58 [
+    label = "variables\n"
+  ]
+  N92 -> N98 [
+    label = "children\n"
+  ]
+  N94 [
+    label = "{AsgNode\nLiteralStringExpression\nExpression|'value' = 'name1Value' : String\l'session' = 'test' : String\l}"
+  ]
+  N98 [
+    label = "{AsgNode\nScope|'type' = 'Function' : String\l'session' = 'test' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N98 -> N84 [
+    label = "astNode\n"
+  ]
+  N98 -> N75 [
+    label = "variables\n"
+  ]
+}

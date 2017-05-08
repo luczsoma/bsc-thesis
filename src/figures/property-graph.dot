@@ -4,10 +4,12 @@ digraph Neo {
     fontsize = "8"
     shape = "Mrecord"
     fontname = "Noto Sans"
+    penwidth = 0.5
   ]
   edge [
     fontname = "Noto Sans"
     fontsize = "8"
+    penwidth = 0.5
   ]
   N1 [
     label = "{Bob\n:Human|'gender' = 'male' : String\l'age' = '27' : Integer}"
