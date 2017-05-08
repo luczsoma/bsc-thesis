@@ -366,14 +366,20 @@ These steps are translated to Cypher, and sent to the database. Each export-impo
 
 \Cref{fig:export-import-example-cypher-source} presents the full Cypher query of the \emph{exportName–importAlias} case featured in the example. The query contains a node with a label that is not displayed in the visualised graph: \lstinline{CompilationUnit}. At translating the modules into ASGs, Codemodel-Rifle creates a node with the label \lstinline{CompilationUnit} for each distinct source file. Each module's all graph nodes is connected to the module's \lstinline{CompilationUnit} node. The node also stores the information about the parsed module's file path. As displaying the \lstinline{CompilationUnit} node and all its connections to all other nodes would make the graph very dense and unclear, it is omitted from the visualisation.
 
-\begin{figure}[!p]
+% Floating two figures on two consecutive pages does not work, had to be hacked
+\newpage
+\vspace*{7em}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth, trim=5mm 5mm 5mm 5mm,clip]{figures/export-import-example-asg.pdf}
 	\caption{Interconnecting the \lstinline{exporter} module with the \lstinline{importer} module in the case \emph{exportName–importAlias}}
 	\label{fig:export-import-example-asg}
 \end{figure}
 
-\begin{figure}[!p]
+% Floating two figures on two consecutive pages does not work, had to be hacked
+\newpage
+\vspace*{5.3em}
+\begin{figure}[!h]
 	\begin{lstlisting}[language=Cypher]
 MATCH
 // exporter.js: let name1 = "name1Value"; export { name1 };
@@ -408,6 +414,7 @@ DETACH DELETE
 \end{figure}
 
 
+\newpage
 \section{The Qualifier System}
 
 
