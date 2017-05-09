@@ -29,9 +29,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportLocalSpecifier.exportedName = importSpecifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -60,9 +60,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportLocalSpecifier.exportedName = 'default'
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -92,9 +92,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportLocalSpecifier.exportedName = importBindingIdentifierToMerge.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -123,9 +123,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportBindingIdentifier.name = importSpecifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -154,9 +154,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportBindingIdentifier.name = importBindingIdentifierToMerge.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -184,9 +184,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND importSpecifier.name = exportBindingIdentifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -212,9 +212,9 @@ MATCH
     WHERE
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -242,9 +242,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND importBindingIdentifierToMerge.name = exportBindingIdentifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -272,9 +272,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportedIdentifierExpression.name = importSpecifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -300,9 +300,9 @@ MATCH
     WHERE
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -330,9 +330,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportedIdentifierExpression.name = importBindingIdentifierToMerge.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -361,9 +361,9 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportBindingIdentifier.name = importSpecifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
@@ -395,9 +395,9 @@ MATCH
     AND NOT exists(exportLocalSpecifier.exportedName)
     AND NOT exists(importSpecifier.name)
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete

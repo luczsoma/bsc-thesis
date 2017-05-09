@@ -373,7 +373,7 @@ These steps are translated to Cypher, and sent to the database. Each export-impo
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth, trim=5mm 5mm 5mm 5mm,clip]{figures/export-import-example-asg.pdf}
-	\caption{Interconnecting the \lstinline{exporter} module with the \lstinline{importer} module in the case \emph{exportName–importAlias}}
+	\caption{Interconnecting the \lstinline{exporter} module with the \lstinline{importer} module in the export-import combination \emph{exportName–importAlias}}
 	\label{fig:export-import-example-asg}
 \end{figure}
 
@@ -403,14 +403,14 @@ MATCH
     exporter.parsedFilePath CONTAINS import.moduleSpecifier
     AND exportBindingIdentifier.name = importSpecifier.name
 
-CREATE UNIQUE
-    (importedVariable)-[:declarations]->(declarationToMerge),
-    (declarationToMerge)-[:node]->(importBindingIdentifierToMerge)
+MERGE
+    (importedVariable)-[:declarations]->(declarationToMerge)
+        -[:node]->(importBindingIdentifierToMerge)
 
 DETACH DELETE
     declarationToDelete
 	\end{lstlisting}
-  \caption{The Cypher query of the \emph{exportName–importAlias} case}
+  \caption{The Cypher query interconnecting the \emph{exportName–importAlias} combination}
   \label{fig:export-import-example-cypher-source}
 \end{figure}
 
