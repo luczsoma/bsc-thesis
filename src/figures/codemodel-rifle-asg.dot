@@ -1,13 +1,13 @@
 digraph Neo {
   node [
-    fontsize = "14"
+    fontsize = "10"
     shape = "Mrecord"
     fontname = "Noto Sans"
     penwidth = 0.5
   ]
   edge [
     fontname = "Noto Sans"
-    fontsize = "14"
+    fontsize = "10"
     penwidth = 0.5
   ]
   N5 [
