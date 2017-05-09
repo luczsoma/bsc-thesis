@@ -21,7 +21,7 @@ The abstract interpretation approach consists of the following main points~\cite
 \item define transfer functions, which abstracts the operations on the data flow lattice.
 \end{enumerate}
 
-There is an Eclipse plug-in for TAJS, but it is not ready for production usage, according to the creators of the framework~\cite{tajs-website}.
+There is an Eclipse plug-in for TAJS, but according to the creators of the framework, it is not ready for production usage~\cite{tajs-website}.
 
 
 \subsection{Flow}
@@ -30,17 +30,15 @@ Flow is a static type checker for JavaScript developed and maintained by the Fac
 
 Like many other static analysis tools, Flow also aims for soundness, while preventing extensive reporting of false positives. The developers of the tool identified two main goals: precision and speed. According to the very imprecise documentation~\cite{flow-docs}, Flow is made to be practically precise by modeling the language's essential characteristics accurately enough to differentiate between intentional solutions and unintentional mistakes.
 
-Flow's speediness means to be part of the editing process: the goal is to be fast enough for an IDE to show type information in real-time, during editing the code. To achieve this speed, Flow uses incremental processing with file-granularity, meaning only the changes since the last analysis need to be processed.
+Flow's speediness means to be part of the editing process: the goal is to be fast enough for an IDE to show type information in real-time, during editing the code. To achieve this speed, Flow uses file-level incremental processing, meaning only those files need to be processed, which were changed since the last analysis.
 
 \subsection{Tern}
 
-From the Tern website: \textquote{Tern is a stand-alone code-analysis engine for JavaScript. It is intended to be used with a code editor plugin to enhance the editor's support for intelligent JavaScript editing.}~\cite{tern-website}
-
-Tern provides features like editor auto-completion of variables and properties, function argument hints, automatic refactoring, and finding the definition of a function or variable. It is written in JavaScript, and capable of running both on node.js and in the browser.
+From the Tern website: \textquote{Tern is a stand-alone code-analysis engine for JavaScript. It is intended to be used with a code editor plugin to enhance the editor's support for intelligent JavaScript editing.}~\cite{tern-website} Tern provides features like editor auto-completion of variables and properties, function argument hints, automatic refactoring, and finding the definition of functions or variables. Being written in JavaScript, it is capable of running on external runtimes and in web browsers as well.
 
 The software is maintained on GitHub~\cite{tern-github} by Marijn Haverbeke, developer of the Acorn lightweight JavaScript parser. Acorn is used as the underlying parser for the Tern infrastructure, which consists of several components: the editor plugins communicate with the Tern server, which is implemented on top of the server module, which uses the inference engine to perform analyses~\cite{tern-website}.
 
-Editor plug-ins' list contains editors with significant or growing popularity:
+Tern's editor plug-ins' list contains editors with significant or growing popularity:
 
 \begin{itemize}
 \item Emacs
@@ -70,7 +68,7 @@ Shift AST is said to comply with all aspects of a good AST-format, as
 
 \subsection{Esprima}
 
-Esprima is an \es parser with extended capabilities, like syntax validation. It supports the full standard of \emph{\es 7\textsuperscript{th} Edition}. The open-source software is created by Ariya Hidayat, engineer of \emph{Shape Security}, and is maintained on GitHub.
+Esprima is an \es parser with extended capabilities, like syntax validation. It supports the full standard of \emph{\es 7\textsuperscript{th} Edition}. The open-source software is created by Ariya Hidayat, engineer of \emph{Shape Security}, and is maintained on GitHub~\cite{esprima-github}.
 
 
 \subsection{Comparison of the Featured Tools}
@@ -121,7 +119,7 @@ Similarly to FindBugs, PMD performs syntactic analysis on Java programs, but is 
 
 A German technology firm, Buschmais developed a component-based static analysis tool for Java, called jQAssistant~\cite{jqassistant-website}. Similarly to the Codemodel-Rifle framework, jQAssistant is built upon the Neo4j graph database. According to the documentation~\cite{jqassistant-documentation}, the tool is to be integrated into the build process to detect constraint violations and generate reports about user defined concepts and metrics.
 
-Analysis rules can be expressed in Neo4j's graph query language, Cypher. However, instead of the semantics of the source code itself, jQAssistant focuses on the software components and their connections. Its features include validating dependencies between modules in a project, enforcing naming conventions e.g. for test classes, packages, JPA entities, and detecting common architectural problems like cyclic dependencies~\cite{jqassistant-documentation}. The products is licensed under GNU General Public License, v3, allowing developers to use it in open-source projects~\cite{gplv3}.
+Analysis rules can be expressed in Neo4j's graph query language, Cypher. However, instead of the semantics of the source code itself, jQAssistant focuses on the software components and their connections. Its features include validating dependencies between modules in a project, enforcing naming conventions e.g. for test classes, packages, JPA entities, and detecting common architectural problems like cyclic dependencies~\cite{jqassistant-documentation}. The products is licensed under GNU General Public License v3, allowing developers to use it in open-source projects~\cite{gplv3}.
 
 
 \section{Static Analysis Tools for C and C++}
@@ -140,7 +138,7 @@ Clang uses static analysis based on compiler techniques. It is designed to repor
 
 PolySpace Technologies, which first developed the PolySpace Verifier static analysis tool, was later acquired by MathWorks. PolySpace Verifier has been reorganised into a suite, which now features static analysis for C and C++. Similar to TAJS's approach, PolySpace uses the classic lattice-theoretic abstract interpretation technique. The underlying analyser relies on a sound approximation of the set of all reachable states~\cite{emanuelsson2008comparative}. The tool features a mathematical data structure named \emph{convex polyhedron}\footnote{A convex polyhedron is an $n$-dimensional geometric shape where for any pair of points inside the shape the straight line connecting the points is also inside the shape~\cite{emanuelsson2008comparative}.}, several \emph{convex polyhedra} encodes the sets of states~\cite{cousot1978automatic}.
 
-The tool is sound in the meaning that, given the full code base of the project, it computes the superset of every reachable state. It is flow-sensitive, context-sensitive, features inter-procedural analyses, and supports aliasing. \textquote{The properties checked by PolySpace Verifier are in many cases similar as those checked e.g. by other commercial systems, but the analysis is more sophisticated taking account of non-trivial relationships between variables (taking advantage of convex polyhedra) while other static analysis tools seem to cater only for simple relationships (e.g. equalities between variables and variables being bound to constant values or intervals of values).}~\cite{emanuelsson2008comparative}
+The tool is sound in the meaning that, given the full code base of the project, it computes the superset of every reachable state. It is flow-sensitive, context-sensitive, features inter-procedural analyses, and supports aliasing. \textquote{The properties checked by PolySpace Verifier are in many cases similar as those checked e.g.\ by other commercial systems, but the analysis is more sophisticated taking account of non-trivial relationships between variables (taking advantage of convex polyhedra) while other static analysis tools seem to cater only for simple relationships (e.g.\ equalities between variables and variables being bound to constant values or intervals of values).}~\cite{emanuelsson2008comparative}
 
 PolySpace Verifier features checks for array conversion range extensions, return value initializations, variable initializations, pointer initializations, scalar/float under- and overflows and division by zero, non-termination of calls and loops, correctness of function arguments, unreachable code and many others~\cite{emanuelsson2008comparative}.
 
