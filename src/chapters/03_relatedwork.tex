@@ -34,9 +34,9 @@ Flow's speediness means to be part of the editing process: the goal is to be fas
 
 \subsection{Tern}
 
-From the Tern website: \textquote{Tern is a stand-alone code-analysis engine for JavaScript. It is intended to be used with a code editor plugin to enhance the editor's support for intelligent JavaScript editing.}~\cite{tern-website} Tern provides features like editor auto-completion of variables and properties, function argument hints, automatic refactoring, and finding the definition of functions or variables. Being written in JavaScript, it is capable of running on external runtimes and in web browsers as well.
+From the Tern website: \textquote{Tern is a stand-alone code-analysis engine for JavaScript. It is intended to be used with a code editor plug-in to enhance the editor's support for intelligent JavaScript editing.}~\cite{tern-website} Tern provides features like editor auto-completion of variables and properties, function argument hints, automatic refactoring, and finding the definition of functions or variables. Being written in JavaScript, it is capable of running on external runtimes and in web browsers as well.
 
-The software is maintained on GitHub~\cite{tern-github} by Marijn Haverbeke, developer of the Acorn lightweight JavaScript parser. Acorn is used as the underlying parser for the Tern infrastructure, which consists of several components: the editor plugins communicate with the Tern server, which is implemented on top of the server module, which uses the inference engine to perform analyses~\cite{tern-website}.
+The software is maintained on GitHub~\cite{tern-github} by Marijn Haverbeke, developer of the Acorn lightweight JavaScript parser. Acorn is used as the underlying parser for the Tern infrastructure, which consists of several components: the editor plug-ins communicate with the Tern server, which is implemented on top of the server module, which uses the inference engine to perform analyses~\cite{tern-website}.
 
 Tern's editor plug-ins' list contains editors with significant or growing popularity:
 
@@ -49,6 +49,30 @@ Tern's editor plug-ins' list contains editors with significant or growing popula
 \end{itemize}
 
 At the time of this writing, the newest version of Tern is $0.21$, implying that the tool is not yet aimed for heavyweight production usage, but rather for experimental purposes.
+
+
+\subsection{SonarQube}
+
+SonarQube (formerly Sonar) is an open-source platform providing \textquote{Continuous Code Quality as a Service}~\cite{sonarqube-website}, backed by a Swiss software company called SonarSource. The platform offers two functionality model for source code analysis:
+
+\begin{itemize}
+\item Used \textbf{as a service}, SonarQube analyses GitHub repositories online: an analysis is triggered every time if new code is pushed to the repository. Analysis settings and results are available on a customisable, per-project interface within the SonarQube website after authentication.
+\item Used as an \textbf{offline tool}, SonarQube can be integrated into the build process with plug-ins available for popular build and continuous integration tools like Maven, Gradle, Jenkins and Apache Ant. It has a command-line interface as well, enabling build-independent analyses.
+\end{itemize}
+
+Following the documentation~\cite{sonarqube-website}, the platform's \emph{Code Quality Model} is based on three types of rule-based constraints:
+
+\begin{itemize}
+\item \textbf{bugs} track code that is highly likely to yield unexpected behavior of the software,
+\item \textbf{vulnerabilities} are raised on code that is potentially vulnerable to exploitation, and
+\item \textbf{code smells} are code snippets that confuse maintainers being measured primarily in terms of the time they will take to fix.
+\end{itemize}
+
+The platform supports a wide variety of programming languages: in the time of this writing, there are rules for Java (411), C++ (315), Python (238), C\# (229), C (225) and JavaScript (186), besides others. As implementing constraints for new problems is highly encouraged in the community, the list of rules is continuously expanding.
+
+Apart from the basically linting-based rules of \emph{code smells} constraints, the software is capable of detecting common bugs, pitfalls and vulnerabilities over JavaScript source codes. Constraints in the \emph{bug} category include inspecting whether non-empty statements alter the control-flow, if non-existent variables or properties are referenced, or if conditionally executed code blocks are not reachable, amongst others.
+
+The inspections in the \emph{vulnerability} category check for vulnerable functionality usage patterns including dynamically injected and executed code, debugger messages, and using the local storage of the browser, amongst others.
 
 
 \subsection{Shift}
@@ -73,6 +97,8 @@ Esprima is an \es parser with extended capabilities, like syntax validation. It 
 
 \subsection{Comparison of the Featured Tools}
 
+\Cref{table:javascript-tools-comparison} presents a functionality, maturity and usability comparison of the featured JavaScript static analyses tools.
+
 \begin{table}[!htb]
 	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
 	\newcommand{\partialsupport}{\tikz\draw[black,fill=none] (0,0) circle (0.8ex);\xspace}
@@ -80,18 +106,21 @@ Esprima is an \es parser with extended capabilities, like syntax validation. It 
 	\centering
 	\begin{tabular}{l|cccc}
 		\toprule
-																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}   &   \textbf{Shift Java}   \\
+																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}     &   \textbf{SonarQube}    \\
 		\midrule
-		\textbf{\es support}                  &   ES3             &   ES5             &   ES6             &   ES7                   \\
-		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey    &   Shift                 \\
-		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \fullsupport          \\
-		\textbf{number of contributors}       &   1               &   335             &   87              &   10                    \\
-		\textbf{license}                      &   Apache 2.0      &   BSD 3           &   MIT             &   Apache 2.0            \\
-		\textbf{current version number}       &   v0.9-10         &   v0.45.0         &   0.21.0          &   es2016-v1.1.1         \\
+		\textbf{\es support}                  &   ES3             &   ES5             &   ES6               &   ES7                   \\
+		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey      &   \nosupport            \\
+		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport      &   \fullsupport          \\
+		\textbf{number of contributors}       &   1               &   335             &   87                &   59                    \\
+		\textbf{license}                      &   Apache 2.0      &   BSD 3           &   MIT               &   LGPL 3.0              \\
+		\textbf{current version number}       &   v0.9-10         &   v0.45.0         &   0.21.0            &   6.3.2                 \\
 		\midrule
-		\textbf{infers types}                 &   \fullsupport    &   \fullsupport    &   \fullsupport    &   \nosupport            \\
-		\textbf{needs non-standard syntax}    &   \nosupport      &   \fullsupport    &   \nosupport      &   \nosupport            \\
-		\textbf{analyses related files}       &   \nosupport      &   \nosupport      &   \fullsupport    &   \nosupport            \\
+		\textbf{infers types}                 &   \fullsupport    &   \fullsupport    &   \fullsupport      &   \nosupport            \\
+		\textbf{needs non-standard syntax}    &   \nosupport      &   \fullsupport    &   \nosupport        &   \nosupport            \\
+		\textbf{checks code style}            &   \nosupport      &   \nosupport      &   \partialsupport   &   \fullsupport          \\
+		\textbf{analyses vulnerabilities}     &   \nosupport      &   \nosupport      &   \partialsupport   &   \fullsupport          \\
+		\textbf{functionally extensible}      &   \nosupport      &   \nosupport      &   \partialsupport   &   \fullsupport          \\
+		\textbf{analyses related files}       &   \nosupport      &   \nosupport      &   \fullsupport      &   \fullsupport          \\
 		\bottomrule
 	\end{tabular}
 
@@ -129,7 +158,7 @@ This section introduces static analysis tools for C and C++, mainly for earning 
 
 \subsection{Clang}
 
-Besides serving as a compiler front-end for LLVM, Clang has a static analyser component for finding bugs in C, C++, and Objective-C programs~\cite{clang-analyser-website}. The tool can be used either as a standalone command-line tool, or as an Xcode\footnote{Xcode is Apple's integrated development environment only available for Apple's macOS, containing a suite of development tools for Apple platforms: macOS, iOS, watchOS and tvOS.} plugin.
+Besides serving as a compiler front-end for LLVM, Clang has a static analyser component for finding bugs in C, C++, and Objective-C programs~\cite{clang-analyser-website}. The tool can be used either as a standalone command-line tool, or as an Xcode\footnote{Xcode is Apple's integrated development environment only available for Apple's macOS, containing a suite of development tools for Apple platforms: macOS, iOS, watchOS and tvOS.} plug-in.
 
 Clang uses static analysis based on compiler techniques. It is designed to report much more information than GCC, using control-flow graph analysis. It features flow- and path-sensitive analyses while preserving the overall form of the original source code~\cite{kremenek2008finding}. The tool can be integrated into IDEs, and supports automated refactoring.
 
