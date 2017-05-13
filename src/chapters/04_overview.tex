@@ -6,7 +6,7 @@ This chapter gives an overview of my approach of JavaScript static analysis usin
 
 \section{Rearchitecturing the Codemodel-Rifle Framework}
 
-Dániel Stein, creator of the Codemodel-Rifle framework, details the design of the framework in his Master's Thesis~\cite{stein-daniel-msc}. Following his thesis and my experiences with the framework, the summary of the software's architecture was the following:
+Dániel Stein, creator of the Codemodel-Rifle framework, details the design of the framework in his Master's Thesis~\cite{stein-daniel-msc}. Following his thesis and my experiences with the framework, \Cref{fig:codemodel-rifle-original-architecture} and the below specification summarises the software's original architecture:
 
 \begin{itemize}
 \item A source code file is delivered to Codemodel-Rifle via the HTTP REST API of the framework's embedded webserver as a text.
@@ -19,6 +19,13 @@ Dániel Stein, creator of the Codemodel-Rifle framework, details the design of t
 \end{itemize}
 
 Codemodel-Rifle was notably refactored since then. This section introduces why refactoring was necessary, and presents the details and the results of the process.
+
+\begin{figure}[!p]
+	\centering
+	\includegraphics[height=\textheight-18mm,clip]{figures/codemodel-rifle-original-architecture.pdf}
+	\caption{The original architecture of the Codemodel-Rifle framework}
+	\label{fig:codemodel-rifle-original-architecture}
+\end{figure}
 
 
 \subsection{Open-Sourcing and Licensing Issues}
@@ -37,18 +44,20 @@ Codemodel-Rifle's first architecture was monolith. It \emph{embedded} four key m
 \begin{itemize}
 \item a Neo4j graph \textbf{database},
 \item a \textbf{webserver} exposing an HTTP REST API for interactions,
-\item the \textbf{core module} responsible for transforming source code into an ASG and performing analyses on the graph,
+\item the \textbf{core module} responsible for transforming source code into an ASG,
 \item and \textbf{other application logic}, e.g.\ for displaying and exporting AGSs into visual file formats like PDF or PNG.
 \end{itemize}
 
-Decoupling, or minimising direct interdependencies between components is an important aspect of software engineering. If a software is decomposed into smaller components along well-defined interfaces, it becomes modular: any module's inner functionality can be changed without affecting other modules, as long as the module implements the interface it was bound to. Motivations to alter a module include performance issues, scalability efforts, or changed domain logic. Codemodel-Rifle's first architecture was well-designed for easy manual testing and seemed to be an obvious solution for creating a small-scale graph-based analysis software. However, requirements like simultaneous usage of several users, or having dedicated hardware resources to run analysis queries over large repositories, required the Codemodel-Rifle framework to become modular to adapt.
+Analysing the graph was possible either by running built-in Cypher queries via dedicated REST endpoints (e.g.\ \lstinline{/unusedfunctions}), or by submitting custom Cypher queries to the embedded database via the \lstinline{/run} endpoint.
+
+Decoupling, or minimising direct interdependencies between components is an important aspect of software engineering. If a software is decomposed into smaller components along well-defined interfaces, it becomes modular: any module's inner functionality can be changed without affecting other modules, as long as the module implements the interface it was bound to. Motivations to alter a module include performance issues, scalability efforts, or changed domain logic. Codemodel-Rifle's first architecture was well-designed for easy manual testing and seemed to be an obvious solution for creating a small-scale analysis software. But several reasons required the framework to become modular to adapt.
 
 
 \subsubsection{Detaching the Database}
 
 Apart from the licensing issues detailed above, using a remote Neo4j server as a database instead of the embedded version comes with several benefits. The database can be outsourced onto a separate hardware or infrastructure: since analyses and graph maintenance can be demanding over large code repositories, providing dedicated resources for the database is an obvious solution for possible performance issues and scalability.
 
-With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level\footnote{Gábor Szárnyas et al. are developing a graph database driver named \emph{ingraph} with the goal of evaluating openCypher queries incrementally~\cite{ingraph-github}.}, or it can support testing by providing an in-memory database instance via a driver\footnote{The default configuration of the framework currently is to use an in-memory Neo4j instance exposed as a remote database accessed via a driver. This is to be detailed in the next subsection.}.
+With a remote Neo4j database, a custom database driver can be utilised. This driver can be capable of incremental processing on the graph database level.\footnote{Gábor Szárnyas et al. are developing a graph database driver named \emph{ingraph} with the goal of evaluating openCypher queries incrementally~\cite{ingraph-github}.} Or it can provide an impermanent, in-memory local database instance for testing and for developing new analyses — to eliminate the need of installing a complete database server when long-term persistency is not explicitly needed.
 
 As a result of the aforementioned benefits and licensing issues, the framework was refactored to use a remote Neo4j server via a driver. This meant native API-calls were no longer possible: interacting with the database has been restricted to Cypher queries provided via the database driver. The Codemodel-Rifle framework extensively used native API-calls, so all these function calls had to be rewritten into distinct Cypher queries. As Cypher queries turned out to be notably slower than the API, when executed many queries at once, this introduced \emph{performance issues}. Solutions to these issues are described in the next sections.
 
@@ -67,7 +76,7 @@ Visualising the ASG of an imported JavaScript source code is key to get familiar
 
 \subsection{Optimising for Testing Purposes}
 
-The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \lstinline{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use a remote Neo4j database server accessed via a database driver for Java because of the aforementioned licensing issues, testing became difficult. The following database-related steps were needed to run unit tests:
+The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \lstinline{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use an external Neo4j database server accessed via a driver because of the aforementioned licensing issues, testing became difficult. The following database-related steps were needed to run unit tests:
 
 \begin{itemize}
 \item the Neo4j Community Edition server software needed to be downloaded,
@@ -79,7 +88,7 @@ The framework used embedded Neo4j as a persistent storage: the project's folder 
 
 This process can be partially automated with scripts, but it is still not a clean way to perform automated unit tests of Codemodel-Rifle.
 
-As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers and decorators for the Neo4j Java driver: \lstinline{EmbeddedTestkitDriver} makes possible to use an embedded, in-memory \lstinline{ImpermanentGraphDatabase} exposed as a remote database, thus being accessible via the Neo4j Java database driver. This solution is convenient for testing, since no external Neo4j database needs to be installed and run. It is also easily reconfigurable in Codemodel-Rifle by changing the framework's driver configuration in the \lstinline{DbServicesManager} class only, to either Neo4j's in-production Bolt driver for Java, or in the future, to an incremental driver like ingraph~\cite{ingraph-github}.
+As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers for the Neo4j Java driver: the \lstinline{EmbeddedTestkitDriver} makes possible to use a local, in-memory \lstinline{ImpermanentGraphDatabase} accessed via a driver. Using an impermanent, local database is convenient for use cases where persistency is not explicitly needed — e.g.\ testing and developing new analyses —, since no external Neo4j database needs to be installed and run. At the same time, Codemodel-Rifle can be easily reconfigured for production environments, where the framework needs to persist its data in an actual remote database. The reconfiguration only involves changing the framework's database driver in the \lstinline{DbServicesManager} class to another Neo4j-compatible one.
 
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
@@ -186,12 +195,13 @@ The final version of Dániel Stein's framework used the \lstinline{v2.2.0} versi
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\textwidth, trim=3mm 3mm 3mm 3mm,clip]{figures/codemodel-rifle-refactored-architecture.pdf}
-	\caption{The refactored architecture of the Codemodel-Rifle framework}
+	\includegraphics[height=\textheight-37mm,clip]{figures/codemodel-rifle-refactored-architecture.pdf}
+	\caption{The new architecture of Codemodel-Rifle with my contributions \emph{emphasised}}
 	\label{fig:codemodel-rifle-refactored-architecture}
 \end{figure}
 
 
+\newpage
 \section{In Development: Steps of Building New Analyses}
 
 Building new analyses for software defects basically consists of three steps. The steps are detailed in the following subsections.
@@ -222,13 +232,13 @@ If the analysis matches the specified pattern, it returns the following:
 
 \begin{itemize}
 \item a \textbf{message} to explain the type of the defect for a human reader,
-\item an \textbf{entity name} (or an empty string) to identify defects bound to named entities,
+\item an \textbf{entity name} (or an empty string) to identify defects bound to named entities like variables and functions,
 \item the \textbf{path} of the containing module,
 \item the \textbf{line} in which the defect was found,
 \item the \textbf{column} of the line at which the defect begins.
 \end{itemize}
 
-In my current implementation, these items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect's type.} returned from the database as elements of a Neo4j \lstinline{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be easily parsed into a Java class named \lstinline{Defect}. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output for cooperating with other software.
+In my current implementation, the above items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect's type. This is not flexible, since an \emph{unreachable code} defect may require other arguments to be displayed, than a \emph{non-initialised variable} defect.} returned from the database as elements of a Neo4j \lstinline{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be easily parsed into a Java class named \lstinline{Defect}. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output. With a clean API, this would allow the framework to be embedded to other software.
 
 
 \section{In Production: Steps of Operating Live}

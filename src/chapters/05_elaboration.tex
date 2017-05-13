@@ -367,7 +367,6 @@ These steps are translated to Cypher, and sent to the database. Each export-impo
 
 \Cref{fig:export-import-example-cypher-source} presents the full Cypher query of the \emph{exportName–importAlias} combination. The query contains a node with a label that is not displayed in the visualised graph: \lstinline{CompilationUnit}. At translating the modules into ASGs, Codemodel-Rifle creates a node with the label \lstinline{CompilationUnit} for each distinct source file. Each module's all graph nodes are connected to the module's \lstinline{CompilationUnit} node. The node also stores information about the parsed module's file path. As displaying the \lstinline{CompilationUnit} nodes with all their connections would make the graph very dense, they are omitted.
 
-% Floating two figures on two consecutive pages does not work, had to be hacked
 \newpage
 \vspace*{7em}
 \begin{figure}[!h]
@@ -377,7 +376,6 @@ These steps are translated to Cypher, and sent to the database. Each export-impo
 	\label{fig:export-import-example-asg}
 \end{figure}
 
-% Floating two figures on two consecutive pages does not work, had to be hacked
 \newpage
 \vspace*{5.3em}
 \begin{figure}[!h]
