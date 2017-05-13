@@ -248,8 +248,8 @@ The two export cases are isomorphic because of the following.
 \end{enumerate}
 
 \begin{figure}[!htb]
-	\centering
-	\includegraphics[width=\textwidth, trim=5mm 5mm 5mm 5mm,clip]{figures/export-declaration-demonstration.pdf}
+	\centerfloat
+	\includegraphics[width=\textwidth+3cm, trim=12mm 12mm 12mm 12mm,clip]{figures/export-declaration-demonstration.pdf}
 	\caption{Two isomorphic export cases contain the same pattern}
 	\label{fig:export-declaration-demonstration}
 \end{figure}
@@ -368,16 +368,16 @@ These steps are translated to Cypher, and sent to the database. Each export-impo
 \Cref{fig:export-import-example-cypher-source} presents the full Cypher query of the \emph{exportName–importAlias} combination. The query contains a node with a label that is not displayed in the visualised graph: \lstinline{CompilationUnit}. At translating the modules into ASGs, Codemodel-Rifle creates a node with the label \lstinline{CompilationUnit} for each distinct source file. Each module's all graph nodes are connected to the module's \lstinline{CompilationUnit} node. The node also stores information about the parsed module's file path. As displaying the \lstinline{CompilationUnit} nodes with all their connections would make the graph very dense, they are omitted.
 
 \newpage
-\vspace*{7em}
+\vspace*{5em}
 \begin{figure}[!h]
-	\centering
-	\includegraphics[width=\textwidth, trim=5mm 5mm 5mm 5mm,clip]{figures/export-import-example-asg.pdf}
+	\centerfloat
+	\includegraphics[width=\textwidth+4cm, trim=12mm 12mm 12mm 12mm,clip]{figures/export-import-example-asg.pdf}
 	\caption{Interconnecting the \lstinline{exporter} module with the \lstinline{importer} module in the export-import combination \emph{exportName–importAlias}}
 	\label{fig:export-import-example-asg}
 \end{figure}
 
 \newpage
-\vspace*{5.3em}
+\vspace*{8.35em}
 \begin{figure}[!h]
 	\begin{lstlisting}[language=Cypher]
 MATCH
