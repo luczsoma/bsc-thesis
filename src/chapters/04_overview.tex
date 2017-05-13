@@ -93,8 +93,9 @@ As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
-Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} compares the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.\footnote{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}
+Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} compares the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.
 
+\vspace*{-1mm}
 \begin{table}[!htb]
 	\centering
 	\begin{tabular}{l|cc}
@@ -110,11 +111,11 @@ Converting from embedded Neo4j to driver-accessed Neo4j, involving converting fr
 		\bottomrule
 	\end{tabular}
 
-	\caption{Speed comparison between the two database approach}
+	\caption[Speed comparison between the two database approach]{Speed comparison between the two database approach\footnotemark}
 	\label{table:embedded-vs-in-memory-remote-table}
 \end{table}
 
-Seeing measurement results in \Cref{table:embedded-vs-in-memory-remote-table}, it was necessary to optimise the framework's performance for the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations benefit the in-production performance as well, since the two environments share the same interface: in both scenario, the database is accessed via a Neo4j driver. Ideally, the optimisations should be configurable to adapt to both the testing and the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
+Seeing measurement results in \Cref{table:embedded-vs-in-memory-remote-table}\footnotetext{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}, it was necessary to optimise the framework's performance for the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations benefit the in-production performance as well, since the two environments share the same interface: in both scenario, the database is accessed via a Neo4j driver. Ideally, the optimisations should be configurable to adapt to both the testing and the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
 
 In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG model to the property graph model happens simultaneously with actually storing the property graph model in the database. If an element of the ASG model has been successfully translated into the property graph model, it is stored in the database immediately. This can be optimised: by creating a property graph model stored in Java objects, and then implementing a storage logic to perform saving the objects into the database, the operative parameters of the storage logic can be optimised directly to the currently used database driver.
 
@@ -163,7 +164,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsubsection{Results of Speed-Related Refactorings}
 
-\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \lstinline{exporter} module of the running example, presented in \Cref{fig:running-example-exporter}.\footnote{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.} Both versions presented here uses the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.
+\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \lstinline{exporter} module of the running example, presented in \Cref{fig:running-example-exporter}.\footnotetext{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.} Both versions presented here uses the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.
 
 \begin{table}[!htb]
 	\centering
@@ -178,7 +179,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 		\bottomrule
 	\end{tabular}
 
-	\caption{Speed comparison with and without optimisations}
+	\caption[Speed comparison with and without optimisations]{Speed comparison with and without optimisations\footnotemark}
 	\label{table:results-of-query-optimisations}
 \end{table}
 
