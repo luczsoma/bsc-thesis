@@ -57,7 +57,7 @@ SonarQube (formerly Sonar) is an open-source platform providing \textquote{Conti
 
 \begin{itemize}
 \item Used \textbf{as a service}, SonarQube analyses GitHub repositories online: an analysis is triggered every time if new code is pushed to the repository. Analysis settings and results are available on a customisable, per-project interface within the SonarQube website after authentication.
-\item Used as an \textbf{offline tool}, SonarQube can be integrated into the build process with plug-ins available for popular build and continuous integration tools like Maven, Gradle, Jenkins and Apache Ant. It has a command-line interface as well, enabling build-independent analyses.
+\item Used as an \textbf{offline tool}, SonarQube can be integrated into the build process with plug-ins available for popular build and continuous integration tools like Maven, Gradle, Jenkins and Apache Ant. It has a command-line interface as well, allowing build-independent analyses.
 \end{itemize}
 
 Following the documentation~\cite{sonarqube-website}, the platform's \emph{Code Quality Model} is based on three types of rule-based constraints:
@@ -97,7 +97,7 @@ Esprima is an \es parser with extended capabilities, like syntax validation. It 
 
 \subsection{Comparison of the Featured Tools}
 
-\Cref{table:javascript-tools-comparison} presents a functionality, maturity, and usability comparison of the featured JavaScript static analyses tools.
+\Cref{table:javascript-tools-comparison} presents a functional comparison of the featured JavaScript static analysis tools. From the version number and open-source attributes like the number of contributors and the license, the tool's maturity and usability can be inferred.
 
 \begin{table}[!htb]
 	\newcommand{\fullsupport}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
@@ -109,11 +109,10 @@ Esprima is an \es parser with extended capabilities, like syntax validation. It 
 																					&   \textbf{TAJS}   &   \textbf{Flow}   &   \textbf{Tern}     &   \textbf{SonarQube}    \\
 		\midrule
 		\textbf{\es support}                  &   ES3             &   ES5             &   ES6               &   ES7                   \\
-		\textbf{AST-format}                   &   \nosupport      &   \nosupport      &   SpiderMonkey      &   \nosupport            \\
 		\textbf{open-source}                  &   \fullsupport    &   \fullsupport    &   \fullsupport      &   \fullsupport          \\
 		\textbf{number of contributors}       &   1               &   335             &   87                &   59                    \\
 		\textbf{license}                      &   Apache 2.0      &   BSD 3           &   MIT               &   LGPL 3.0              \\
-		\textbf{current version number}       &   v0.9-10         &   v0.45.0         &   0.21.0            &   6.3.2                 \\
+		\textbf{current version}              &   v0.9-10         &   v0.45.0         &   0.21.0            &   6.3.2                 \\
 		\midrule
 		\textbf{infers types}                 &   \fullsupport    &   \fullsupport    &   \fullsupport      &   \nosupport            \\
 		\textbf{needs non-standard syntax}    &   \nosupport      &   \fullsupport    &   \nosupport        &   \nosupport            \\
@@ -161,6 +160,20 @@ This section introduces static analysis tools for C and C++, mainly for earning 
 Besides serving as a compiler front-end for LLVM, Clang has a static analyser component for finding bugs in C, C++, and Objective-C programs~\cite{clang-analyser-website}. The tool can be used either as a standalone command-line tool, or as an Xcode\footnote{Xcode is Apple's integrated development environment only available for Apple's macOS, containing a suite of development tools for Apple platforms: macOS, iOS, watchOS and tvOS.} plug-in.
 
 Clang uses static analysis based on compiler techniques. It is designed to report much more information than GCC, using control-flow graph analysis. It features flow- and path-sensitive analyses while preserving the overall form of the original source code~\cite{kremenek2008finding}. The tool can be integrated into IDEs, and supports automated refactoring.
+
+Following~\cite{clang-analyser-website}, the checkers of Clang can be divided into six groups.
+
+\paragraph{Core checkers} Core checkers model core language features and analyse general software defects like division by zero or null pointer deference. It features checks for arrays initialised with zero size, uninitialised values used in assignments or branch conditions, or undefined return values of a function.
+
+\paragraph{C++ checkers} As the name implies, these checkers perform analyses specifically for defects related to the C++ language. Without counting checkers marked as experimental, the category has only one member; it analyses double-free, use-after-free and offset problems involving the \lstinline{delete} keyword.
+
+\paragraph{Dead code checkers} This category also has only one member, which checks for values stored to variables that are never read afterwards.
+
+\paragraph{OS X checkers} These checkers perform Objective-C-specific checks and analyse if Apple's SDKs and APIs are used appropriately.
+
+\paragraph{Security checkers} Members of this category check for insecure API usage and perform analyses based on the CERT Secure Coding Standards. Checks include verifying if return values of insecure API calls are checked, or if a float value is used as a loop counter.
+
+\paragraph{UNIX checkers} These checkers analyse UNIX-specific defect possibilities, like mismatched memory deallocation, incompatible types used in \lstinline{malloc} calls, or insecure API usage.
 
 
 \subsection{PolySpace}
