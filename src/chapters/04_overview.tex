@@ -76,7 +76,7 @@ Visualising the ASG of an imported JavaScript source code is key to get familiar
 
 \subsection{Optimising for Testing Purposes}
 
-The framework used embedded Neo4j as a persistent storage: the project's folder contained a directory named \lstinline{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use an external Neo4j database server accessed via a driver because of the aforementioned licensing issues, testing became difficult. The following database-related steps were needed to run unit tests:
+The framework used embedded Neo4j as its storage: the project's folder contained a directory named \lstinline{database}, in which the full Neo4j embedded graph database was stored. Being embedded, the database instance was managed entirely by Codemodel-Rifle. After refactoring the framework to use an external Neo4j database server accessed via a driver because of the aforementioned licensing issues, testing became difficult. The following database-related steps were needed to run unit tests:
 
 \begin{itemize}
 \item the Neo4j Community Edition server software needed to be downloaded,
@@ -88,12 +88,12 @@ The framework used embedded Neo4j as a persistent storage: the project's folder 
 
 This process can be partially automated with scripts, but it is still not a clean way to perform automated unit tests of Codemodel-Rifle.
 
-As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers for the Neo4j Java driver: the \lstinline{EmbeddedTestkitDriver} makes possible to use a local, in-memory \lstinline{ImpermanentGraphDatabase} accessed via a driver. Using an impermanent, local database is convenient for use cases where persistency is not explicitly needed — e.g.\ testing and developing new analyses —, since no external Neo4j database needs to be installed and run. At the same time, Codemodel-Rifle can be easily reconfigured for production environments, where the framework needs to persist its data in an actual remote database. The reconfiguration only involves changing the framework's database driver in the \lstinline{DbServicesManager} class to another Neo4j-compatible one.
+As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers for the Neo4j Java driver: the \lstinline{EmbeddedTestkitDriver} makes possible to use a local, in-memory \lstinline{ImpermanentGraphDatabase} accessed via a driver. Using an impermanent, local database is convenient for use cases where persistency is not explicitly needed — e.g.\ testing and developing new analyses —, since no external Neo4j database needs to be installed and run. At the same time, Codemodel-Rifle can be easily reconfigured for production environments, where the framework needs to persist its data in an actual remote database. This reconfiguration only involves changing the framework's database driver in the \lstinline{DbServicesManager} class to another Neo4j-compatible one.
 
 
 \subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
-Converting from embedded Neo4j to driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} compares the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.
+Converting from embedded Neo4j to external, driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} compares the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.
 
 \vspace*{-1mm}
 \begin{table}[!htb]
@@ -115,7 +115,7 @@ Converting from embedded Neo4j to driver-accessed Neo4j, involving converting fr
 	\label{table:embedded-vs-in-memory-remote-table}
 \end{table}
 
-Seeing measurement results in \Cref{table:embedded-vs-in-memory-remote-table}\footnotetext{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}, it was necessary to optimise the framework's performance for the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations benefit the in-production performance as well, since the two environments share the same interface: in both scenario, the database is accessed via a Neo4j driver. Ideally, the optimisations should be configurable to adapt to both the testing and the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
+Seeing measurement results in \Cref{table:embedded-vs-in-memory-remote-table}\footnotetext{These measurements are only for demonstrating that the framework was so slow after the necessary refactorings that it needed to be optimised even for testing. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.}, it was necessary to optimise the framework's performance for the in-memory driver-accessed database scenario, because extensive testing would not have been possible with such slowness. Apart from testing, optimisations benefit the in-production performance as well, since the testing and the production environments share the same interface: in both scenario, the database is accessed via a Neo4j driver. Ideally, the optimisations should be configurable to adapt to both the testing and the production environment. In the following paragraphs, I will summarise the optimisations I performed on the Codemodel-Rifle framework.
 
 In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG model to the property graph model happens simultaneously with actually storing the property graph model in the database. If an element of the ASG model has been successfully translated into the property graph model, it is stored in the database immediately. This can be optimised: by creating a property graph model stored in Java objects, and then implementing a storage logic to perform saving the objects into the database, the operative parameters of the storage logic can be optimised directly to the currently used database driver.
 
@@ -124,8 +124,8 @@ In Dániel Stein's implementation~\cite{stein-daniel-msc}, translating the ASG m
 Importing a repository can be summarised by two types of database-level action.
 
 \begin{enumerate}
-\item \emph{Creating nodes} – the property graph model's nodes get created in Neo4j.
-\item \emph{Setting relationships} – the property graph model's relationships get set in Neo4j.
+\item \emph{Creating nodes} — the property graph model's nodes get created in Neo4j.
+\item \emph{Setting relationships} — the property graph model's relationships get set in Neo4j.
 \end{enumerate}
 
 Therefore, a mapping layer basically needs to translate two object types: \emph{nodes} and \emph{relationships}. I mapped these two object types with the \lstinline{AsgNode} and \lstinline{AsgRelation} Java classes. An \lstinline{AsgNode} stores its properties in a \lstinline{HashMap}, and its labels and relations in two separate \lstinline{List} members. An \lstinline{AsgRelation} has a \lstinline{fromNode}, a \lstinline{toNode}, and a \lstinline{relationshipLabel} member. Storing relationship properties was omitted, since the Codemodel-Rifle framework semantics does not contain relationship properties.
@@ -135,7 +135,7 @@ Identifying nodes is achieved with a universally unique identifier (UUID), inste
 
 \subsubsection{The Cypher Query Builder}
 
-A main bottleneck identified with the \lstinline{ImpermanentGraphDatabase} interface of the \lstinline{EmbeddedTestkitDriver} was the speed of parsing queries. Since the example presented in \Cref{table:embedded-vs-in-memory-remote-table} requires $201$ property graph nodes and $340$ relationships to be created, it normally requires $541$ distinct Cypher queries to be run. As per my experience of manually performed testing, if several distinct queries are merged into one, it increases speed significantly. Accordingly, it was a reasonable step to implement a configurable, specialised query builder, which manages storing the property graph model with a coarser query-granularity (by creating more than one nodes or setting more than one relationships within one executed database query).
+A main bottleneck identified with the \lstinline{ImpermanentGraphDatabase} instance of the \lstinline{EmbeddedTestkitDriver} interface was the speed of parsing queries. The example presented in \Cref{table:embedded-vs-in-memory-remote-table} requires $201$ property graph nodes and $340$ relationships to be created, so it normally requires $541$ distinct Cypher queries to be run. As per my experience of manually performed testing, if several distinct queries are merged into one, it increases speed significantly. Accordingly, it was a reasonable step to implement a configurable, specialised query builder, which manages storing the property graph model with a coarser query-granularity (by creating more than one nodes or setting more than one relationships within one executed database query).
 
 The query builder I implemented is capable of creating Cypher queries specially for the aforementioned OGM layer, following its internal configuration of how many \emph{node creator} queries and how many \emph{relation setter} queries should be merged (compressed) into one. The builder assembles and prepares the queries, and then returns them in a list. Each database query in the list is ready to be executed without further modifications.
 
@@ -144,7 +144,7 @@ The query builder I implemented is capable of creating Cypher queries specially 
 
 After implementing and testing the mapping layer and the query builder, I modified the core import logic of the framework in the \lstinline{ASTScopeProcessor} class to utilise the new components. Instead of immediately storing the translated ASG model as a property graph model in the database, the processor first stores the property graph model in Java objects with my custom OGM layer. Then, benefiting from the query builder, the model is sent to the database in optimally sized chunks following the query builder's configuration.
 
-\Cref{table:query-builder-config} shows the optimal configuration values of the query builder in testing environment (with the \lstinline{EmbeddedTestkitDriver}), and in a prospective production environment (with the official Bolt driver of Neo4j) for test cases run on my computer.
+\Cref{table:query-builder-config} shows the optimal configuration values of the query builder in testing environment (with the \lstinline{EmbeddedTestkitDriver}), and in a prospective production environment (with the official Neo4j driver) for test cases run on my computer.
 
 \begin{table}[!htb]
 	\centering
@@ -164,7 +164,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsubsection{Results of Speed-Related Refactorings}
 
-\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \lstinline{exporter} module of the running example, presented in \Cref{fig:running-example-exporter}.\footnotetext{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.} Both versions presented here uses the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.
+\Cref{table:results-of-query-optimisations} shows a comparison between the speed of two versions of the framework when importing the \lstinline{exporter} module of the running example, presented in \Cref{fig:running-example-exporter}.\footnotetext{These measurements are only for demonstrating that the framework became notably faster after the speed-related refactorings. They are not aimed to be fully accurate and complete. Evaluating the framework's performance with accurate measurements is the subject of \Cref{chapter:evaluation}.} Both versions presented here use the in-memory driver-accessed database, but the first does not use the optimisations implemented (the mapping layer and the query builder), while the second one does.
 
 \begin{table}[!htb]
 	\centering
@@ -186,7 +186,7 @@ After implementing and testing the mapping layer and the query builder, I modifi
 
 \subsection{Other Performances}
 
-After the refactoring, the framework's package structure got very complex. Several main features of the software – like source code parsing and other actions to be exposed onto the external interface for user interactions – were mixed with internal operations like database management and utilities. I separated the packages this way: \lstinline{actions} contains features to be exposed to the user, \lstinline{database} contains database-related operations, \lstinline{tasks} contains internal features not to be exposed, and \lstinline{utils} contains utilities.
+After the refactoring, the framework's package structure got very complex. Several main features of the software — like source code parsing and other actions to be exposed onto the external interface for user interactions — were mixed with internal operations like database management and utilities. I separated the packages this way: \lstinline{actions} contains features to be exposed to the user, \lstinline{database} contains database-related operations, \lstinline{tasks} contains internal features not to be exposed, and \lstinline{utils} contains utilities.
 
 The final version of Dániel Stein's framework used the \lstinline{v2.2.0} version of Shape Security's Shift parser and scope analyser. This version only supports the 6\textsuperscript{th} Version of \es. Since then, version \lstinline{es2016-v1.1.1} supporting the full ES7 specification was released by Shape Security~\cite{shift-ast, shift-java-github}. I updated the framework's dependencies to use the new version of the parser and scope analyser.
 
@@ -275,7 +275,7 @@ The graph is queried with Cypher, with matching predefined graph patterns develo
 
 \begin{figure}[!htb]
 	\centering
-	\begin{lstlisting}[language=Rifle, aboveskip=0em, belowskip=0em]
+	\begin{lstlisting}[language=Rifle]
 				message: entityname at line:column in path
 	\end{lstlisting}
   \caption{The framework's console output if a defect was found}
