@@ -1,0 +1,76 @@
+digraph Neo {
+  ratio = 0.6
+  node [
+    fontsize = "12"
+    shape = "Mrecord"
+    fontname = "Noto Sans"
+    penwidth = 0.5
+  ]
+  edge [
+    fontname = "Noto Sans"
+    fontsize = "12"
+    penwidth = 0.5
+  ]
+  N2 [
+    label = "{AsgNode\nDeclaration|'session' = 'test' : String\l'kind' = 'Let' : String\l}"
+    penwidth = 3
+  ]
+  N2 -> N15 [
+    label = "node\n"
+    penwidth = 3
+  ]
+  N3 [
+    label = "{AsgNode\nReference|'accessibility' = 'Write' : String\l'session' = 'test' : String\l}"
+    penwidth = 3
+  ]
+  N3 -> N15 [
+    label = "node\n"
+    penwidth = 3
+  ]
+  N10 [
+    label = "{AsgNode\nVariable|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    penwidth = 3
+  ]
+  N10 -> N2 [
+    label = "declarations\n"
+    penwidth = 3
+  ]
+  N10 -> N3 [
+    label = "references\n"
+    penwidth = 3
+  ]
+  N15 [
+    label = "{AsgNode\nBindingIdentifier\nBinding\nVariableReference|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    penwidth = 3
+  ]
+  N16 [
+    label = "{AsgNode\nVariableDeclaration\nNode\nFunctionDeclarationClassDeclarationVariableDeclaration\nVariableDeclarationAssignmentTarget\nVariableDeclarationExpression|'session' = 'test' : String\l'kind' = 'let' : String\l}"
+  ]
+  N16 -> N23 [
+    label = "declarators\n"
+  ]
+  N19 [
+    label = "{AsgNode\nLiteralStringExpression\nExpression|'session' = 'test' : String\l'value' = 'bar' : String\l}"
+    penwidth = 3
+    style = "dashed"
+  ]
+  N23 [
+    label = "{AsgNode\nNode\nVariableDeclarator|'session' = 'test' : String\l}"
+    penwidth = 3
+  ]
+  N23 -> N15 [
+    label = "binding\n"
+    penwidth = 3
+  ]
+  N23 -> N19 [
+    label = "init\n"
+    penwidth = 3
+    style = "dashed"
+  ]
+  N29 [
+    label = "{AsgNode\nVariableDeclarationStatement\nStatement|'session' = 'test' : String\l}"
+  ]
+  N29 -> N16 [
+    label = "declaration\n"
+  ]
+}

@@ -1,0 +1,182 @@
+digraph Neo {
+  node [
+    fontsize = "8"
+    shape = "Mrecord"
+    fontname = "Noto Sans"
+    penwidth = 0.5
+  ]
+  edge [
+    fontname = "Noto Sans"
+    fontsize = "8"
+    penwidth = 0.5
+  ]
+  N18 [
+    label = "{AsgNode\nVariableDeclaration\nNode\nFunctionDeclarationClassDeclarationVariableDeclaration\nVariableDeclarationAssignmentTarget\nVariableDeclarationExpression|'session' = 'test' : String\l'kind' = 'let' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N18 -> N41 [
+    label = "declarators\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N22 [
+    label = "{AsgNode\nIdentifierExpression\nExpression\nVariableReference|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N24 [
+    label = "{AsgNode\nDeclaration|'session' = 'test' : String\l'kind' = 'Let' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N24 -> N76 [
+    label = "node\n"
+    color = "crimson"
+    fontcolor = "crimson"
+    penwidth = 3
+    style = "dashed"
+  ]
+  N24 -> N48 [
+    label = "node\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N29 [
+    label = "{AsgNode\nExportLocals\nExportDeclaration|'session' = 'test' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N29 -> N47 [
+    label = "namedExports\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N41 [
+    label = "{AsgNode\nNode\nVariableDeclarator|'session' = 'test' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N41 -> N44 [
+    label = "init\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N41 -> N48 [
+    label = "binding\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N44 [
+    label = "{AsgNode\nExpression\nLiteralNumericExpression|'value' = 5.0 : double\l'session' = 'test' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N47 [
+    label = "{AsgNode\nNode\nExportLocalSpecifier|'session' = 'test' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N47 -> N22 [
+    label = "name\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N48 [
+    label = "{AsgNode\nVariableReference\nBindingIdentifier\nBinding|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N54 [
+    label = "{AsgNode\nReference|'accessibility' = 'Write' : String\l'session' = 'test' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N54 -> N48 [
+    label = "node\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N62 [
+    label = "{AsgNode\nReference|'session' = 'test' : String\l'accessibility' = 'Read' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N62 -> N22 [
+    label = "node\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N64 [
+    label = "{AsgNode\nVariable|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N64 -> N62 [
+    label = "references\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N64 -> N54 [
+    label = "references\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+  ]
+  N64 -> N24 [
+    label = "declarations\n"
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
+    penwidth = 3
+  ]
+  N76 [
+    label = "{AsgNode\nVariableReference\nBindingIdentifier\nBinding|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    color = "crimson"
+    fontcolor = "crimson"
+    penwidth = 3
+    style = "dashed"
+  ]
+  N88 [
+    label = "{AsgNode\nVariable|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+    color = "crimson"
+    fontcolor = "crimson"
+  ]
+  N88 -> N24 [
+    label = "declarations\n"
+    color = "crimson"
+    fontcolor = "crimson"
+  ]
+  N89 [
+    label = "{AsgNode\nImport\nImportDeclaration|'moduleSpecifier' = 'exporter' : String\l'session' = 'test' : String\l}"
+    color = "crimson"
+    fontcolor = "crimson"
+  ]
+  N89 -> N96 [
+    label = "namedImports\n"
+    color = "crimson"
+    fontcolor = "crimson"
+  ]
+  N96 [
+    label = "{AsgNode\nNode\nImportSpecifier|'session' = 'test' : String\l}"
+    color = "crimson"
+    fontcolor = "crimson"
+    penwidth = 3
+    style = "dashed"
+  ]
+  N96 -> N76 [
+    label = "binding\n"
+    color = "crimson"
+    fontcolor = "crimson"
+    penwidth = 3
+    style = "dashed"
+  ]
+}

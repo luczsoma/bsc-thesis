@@ -19,6 +19,7 @@ Since I have not made any semantic changes to the \textsc{Import} phase, this ch
 
 
 \section{Interconnecting Related \es Modules}
+\label{section:interconnect}
 
 This section describes the work I made to support analysing more than one \es modules coherently. The approach follows~\cite{stein-daniel-msc}, and completes it by developing the semantics of missing use cases, and then implementing them. To shorty summarise: in order to coherently analyse several related \es modules with the Codemodel-Rifle framework, the related modules' separate property graphs are interconnected by well-defined rules. As previously already mentioned, these rules are built upon the \emph{export} and \emph{import} semantics of \es~\cite{exploringes6}. Equivalently, \es modules are considered to be \emph{related}, if they refer to each other by using \emph{export} and \emph{import} statements.
 
@@ -416,21 +417,48 @@ DETACH DELETE
 \newpage
 \section{Simple Analyses by Pattern Matching}
 
-In the Codemodel-Rifle framework, analyses are basically Cypher queries. If a defect’s pattern can be expressed with a Cypher query, it can be detected by the framework. This section details the analyses I implemented for Codemodel-Rifle without altering the graph, utilising only pattern-matching techniques.
+In the Codemodel-Rifle framework, analyses are basically Cypher queries. If a defect's pattern in the Abstract Semantic Graph can be expressed with a Cypher query, it can be detected by the framework. This section details those analyses I implemented for Codemodel-Rifle, which use only pattern matching and do not require to alter the graph.
+
+I developed the analyses by the process I presented in \Cref{section:steps-of-building-new-analyses}. After visualising the defect's pattern with Codemodel-Visualisation, I created the description of the defect by implementing a Cypher query for matching its pattern in the ASG model. The results of the analyses are returned as strings containing defect properties, as described in \Cref{subsection:implementing-analyses}.
 
 
 \subsection{Uninitialised Variables}
 
+A variable is uninitialised if it was declared but given no value. In most programming languages, uninitialised variables do have \emph{some} value, but it is usually unpredictable \emph{memory garbage} originating from prior values stored at the variable's memory location.
+
+Contrarily in JavaScript, uninitialised variables do not contain random memory garbage. A method or statement evaluating a variable that has not been assigned a value returns \lstinline{undefined}; a primitive value and also a primitive type of JavaScript. Uninitialised variables are of type \lstinline{undefined} with the value \lstinline{undefined}. Per se, uninitialised variables are not defects, but if an uninitialised variable is used without checking whether it is \lstinline{undefined}, it can break code execution in several ways: e.g.\ making the result of the evaluating expression \lstinline{undefined} too, or throwing a \lstinline{ReferenceError}.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[height=69mm, trim=12mm 12mm 12mm 12mm,clip]{figures/analysis_nonInitializedVariable.pdf}
+	\caption{Matching the \lstinline{nonInitialisedVariable} analysis pattern}
+	\label{fig:analysis-noninitialisedvariable}
+\end{figure}
+
+Regarding uninitialised variables, my analysis in Codemodel-Rifle reports if a variable was not explicitly initialised with an assignment expression.\footnote{The analysis only covers unconditional cases, reporting results of conditional value assignments is currently not supported.} ASG-semantically, this means verifying that the variable's \lstinline{VariableDeclarator} node has no \lstinline{init} relationship. \Cref{fig:analysis-noninitialisedvariable} presents a partial ASG demonstrating how an uninitialised variable is revealed. The nodes with thicker outlines are members of the pattern matching expression, the dashed outlines represent entities being checked for existence. The source code of the analysis is available in the Appendix.
+
+
 \subsection{Globally Unused Exports}
 
-\subsection{Globally Invalid Imports}
+The \es module system provides a practical solution for keeping code bases organised: logically separated, but practically cooperating software components can be implemented. Exporting only particular entities from a module allows to hide several sensitive information from the outside, such as internal functioning and implementation details, or even security-related specialities. Thus, a best practice is to only export what is explicitly intended to be public, and keep everything else private.
 
-\subsection{Division By Zero (only for specific cases)}
+Unused exports can be a security concern. My analysis for detecting unused exports report if an entity is exported, but never imported to any other module. It is based on the semantics of the module interconnections described in \Cref{section:interconnect}.
 
-\subsection{Misuse of Negative Integers as Function Arguments (only for specific cases)}
+\Cref{fig:analysis-unusedexport} presents a partial ASG demonstrating how an unused export is revealed. Nodes of the exporter module's graph are indicated with blue colour, nodes of the importer module's graph are indicated with crimson colour. The nodes with thicker outlines are members of the pattern matching expression, the dashed outlines represent entities being checked for existence. The source code of the analysis is available in the Appendix.
 
-\subsection{Unreachable Code because of Exceptions (only for specific cases)}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\textwidth, trim=12mm 12mm 12mm 12mm,clip]{figures/analysis_exportName.pdf}
+	\caption{Matching the \lstinline{unusedExport_exportName} analysis pattern}
+	\label{fig:analysis-unusedexport}
+\end{figure}
 
+
+\subsection{Division By Zero (restricted)}
+
+\subsection{Misuse of Negative Integers as Function Arguments (restricted)}
+
+\subsection{Unreachable Code caused by Exception (restricted)}
 
 
 \section{Complex Analyses with the Qualifier System}
@@ -440,8 +468,11 @@ Some defects are more high-level or more general than to present their patterns 
 
 \subsection{Introduction: The Qualifier System}
 
-\subsection{Division By Zero (for universal cases)}
+\subsection{The Running Example's Division By Zero (transitive)}
 
-\subsection{Misuse of Negative Integers as Function Arguments (for universal cases)}
+\subsection{Misuse of Negative Integers as Function Arguments (transitive)}
 
-\subsection{Unreachable Code because of Exception Thrown (for universal cases)}
+\subsection{Unreachable Code caused by Exception (transitive)}
+
+
+\section{Limitations of the Analyses}

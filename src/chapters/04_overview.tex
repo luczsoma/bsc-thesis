@@ -204,6 +204,7 @@ The final version of Dániel Stein's framework used the \lstinline{v2.2.0} versi
 
 \newpage
 \section{In Development: Steps of Building New Analyses}
+\label{section:steps-of-building-new-analyses}
 
 Building new analyses for software defects basically consists of three steps. The steps are detailed in the following subsections.
 
@@ -217,7 +218,7 @@ Using Codemodel-Rifle as a dependency, Codemodel-Visualization first parses the 
 
 \subsection{Describing the Defect Pattern}
 
-The file exported by Codemodel-Visualization precisely mirrors the property graph instance model translated by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \lstinline{GraphWalker} class as filtered entities from the underlying visitor pattern implementation. As an earlier architectural decision, it is not configurable externally.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
+The file exported by Codemodel-Visualization precisely mirrors the property graph instance model translated by Codemodel-Rifle, but some nodes and edges are not displayed to preserve the transparency of the visualised graph.\footnote{Ignored nodes and edges are listed in the \lstinline{GraphWalker} class as filtered entities from the underlying visitor pattern implementation. As an earlier architectural decision, this is not configurable externally.} Any pattern seen in the visualised graph can be directly matched by Codemodel-Rifle.
 
 
 \subsection{Implementing the Analysis}

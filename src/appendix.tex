@@ -4,7 +4,7 @@
 \addcontentsline{toc}{chapter}{Appendix}
 \renewcommand{\thesection}{\Alph{section}}
 
-\section{Cypher Queries for Interconnecting the Abstract Semantic Graphs of Related \es Modules along Export-Import Semantics}
+\section{Cypher Queries for Interconnecting the ASGs of Related Modules}
 
 \subsection{exportAlias–importAlias}
 \begin{lstlisting}[language=Cypher]
@@ -401,4 +401,112 @@ MERGE
 
 DETACH DELETE
     declarationToDelete
+\end{lstlisting}
+
+
+\newpage
+\section{Cypher Queries of the Analyses}
+
+\subsection{nonInitialisedVariable}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (containingCompilationUnit:CompilationUnit)-[:contains]->
+        (variableLocation:SourceLocation)<-[:start]-(:SourceSpan)
+        <-[:location]-(variableReference:VariableReference)
+        <-[:node]-(:Reference)
+        <-[:references]-(subjectVariable:Variable)
+        -[:declarations]->(:Declaration)
+        -[:node]->(:VariableReference)
+        <-[:binding]-(variableDeclarator:VariableDeclarator)
+
+    WHERE NOT (variableDeclarator)-[:init]->()
+
+RETURN
+    'Non-initialized variable' AS message,
+    subjectVariable.name AS entityName,
+    containingCompilationUnit.parsedFilePath AS compilationUnitPath,
+    variableLocation.line AS line,
+    variableLocation.column AS column
+\end{lstlisting}
+
+\newpage
+\subsection{unusedExport — exportName-exportAlias}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (exporter:CompilationUnit)-[:contains]->(:ExportLocals)
+        -[:namedExports]->(exportLocalSpecifier:ExportLocalSpecifier)
+        -[:name]->(:VariableReference)
+        <-[:node]-(:Reference)
+        <-[:references]-(exportedVariable:Variable),
+    (exportLocalSpecifier)-[:location]->(:SourceSpan)
+        -[:start]->(exportLocation:SourceLocation)
+
+    WHERE
+    NOT (exportedVariable)-[:declarations]->(:Declaration)
+        -[:node]->(:VariableReference)
+        <-[:binding]-(:ImportSpecifier)
+
+RETURN
+    'Globally unused export' AS message,
+    exportedVariable.name AS entityName,
+    exporter.parsedFilePath AS compilationUnitPath,
+    exportLocation.line AS line,
+    exportLocation.column AS column
+\end{lstlisting}
+
+\newpage
+\subsection{unusedExport — exportDefault-exportDefaultName}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (exporter:CompilationUnit)-[:contains]->(exportDefault:ExportDefault)
+        -[:body]->(:IdentifierExpression)
+        <-[:node]-(:Reference)
+        <-[:references]-(exportedVariable:Variable),
+    (exportDefault)-[:location]->(:SourceSpan)
+        -[:start]->(exportLocation:SourceLocation),
+
+    (exporter:CompilationUnit)-[:contains]->(:ExportLocals)
+        -[:namedExports]->(exportLocalSpecifier:ExportLocalSpecifier)
+        -[:name]->(:VariableReference)
+        <-[:node]-(:Reference)
+        <-[:references]-(exportedVariable:Variable),
+    (exportLocalSpecifier)-[:location]->(:SourceSpan)
+        -[:start]->(exportLocation:SourceLocation)
+
+    WHERE
+    NOT (exportedVariable)-[:declarations]->(:Declaration)
+        -[:node]->(:VariableReference)
+        <-[:binding]-(:ImportSpecifier)
+
+RETURN
+    'Globally unused export' AS message,
+    exportedVariable.name AS entityName,
+    exporter.parsedFilePath AS compilationUnitPath,
+    exportLocation.line AS line,
+    exportLocation.column AS column
+\end{lstlisting}
+
+\newpage
+\subsection{unusedExport — exportDeclaration}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (exporter:CompilationUnit)-[:contains]->(exportDeclaration:ExportDeclaration)
+        -[:declaration]->(:FunctionDeclarationClassDeclarationVariableDeclaration)
+        -[*1..2]->(:BindingIdentifier)
+        <-[:node]-(:Declaration)
+        <-[:declarations]-(exportedVariable:Variable),
+    (exportDeclaration)-[:location]->(:SourceSpan)
+        -[:start]->(exportLocation:SourceLocation)
+
+    WHERE
+    NOT (exportedVariable)-[:declarations]->(:Declaration)
+        -[:node]->(:VariableReference)
+        <-[:binding]-(:ImportSpecifier)
+
+RETURN
+    'Globally unused export' AS message,
+    exportedVariable.name AS entityName,
+    exporter.parsedFilePath AS compilationUnitPath,
+    exportLocation.line AS line,
+    exportLocation.column AS column
 \end{lstlisting}
