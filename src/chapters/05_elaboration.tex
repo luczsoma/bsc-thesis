@@ -20,7 +20,7 @@ Since I have not made any semantic changes to the \textsc{Import} phase, this ch
 
 \section{Interconnecting Related \es Modules}
 
-This section describes the work I made to support analysing more than one \es modules coherently. The approach follows~\cite{stein-daniel-msc}, and completes it by implementing missing use cases. To shorty summarise: in order to coherently analyse several related \es modules with the Codemodel-Rifle framework, the related modules' separate property graphs are interconnected by well-defined rules. As previously already mentioned, these rules are built upon the \emph{export} and \emph{import} semantics of \es~\cite{exploringes6}. Equivalently, \es modules are considered to be \emph{related}, if they refer to each other by using \emph{export} and \emph{import} statements.
+This section describes the work I made to support analysing more than one \es modules coherently. The approach follows~\cite{stein-daniel-msc}, and completes it by developing the semantics of missing use cases, and then implementing them. To shorty summarise: in order to coherently analyse several related \es modules with the Codemodel-Rifle framework, the related modules' separate property graphs are interconnected by well-defined rules. As previously already mentioned, these rules are built upon the \emph{export} and \emph{import} semantics of \es~\cite{exploringes6}. Equivalently, \es modules are considered to be \emph{related}, if they refer to each other by using \emph{export} and \emph{import} statements.
 
 
 \subsection{The \es Module System}
@@ -215,7 +215,7 @@ There are export and import cases which I chosen not be supported by Codemodel-R
 
 \subsection{Pattern Generalisation Techniques}
 
-After excluding the incompatible and the unsupported cases, $33$ different import-export combinations still need to be covered by the interconnection process. This could imply that $\alpha = 33$ algorithms are needed for all combinations, but $\alpha$ can be reduced further by involving ASG-specific knowledge. At interconnecting modules, several export cases' graph patterns can be matched by one, somehow generalised pattern description, and thus several export cases can be interconnected with the same algorithm. For import cases, generalisation is neither possible nor necessary, since only three, semantically different import cases are supported by Codemodel-Rifle. To proceed, two concepts are defined.
+After excluding the incompatible and the unsupported cases, $33$ different import-export combinations still need to be covered by the interconnection process. This would imply that $\alpha = 33$ algorithms are needed for all combinations, but $\alpha$ can be reduced further by involving ASG-specific knowledge. At interconnecting modules, several export cases' graph patterns can be matched by one, somehow generalised pattern description, and thus several export cases can be interconnected with the same algorithm. For import cases, generalisation is neither possible nor necessary, since only three, semantically different import cases are supported by Codemodel-Rifle. To proceed, two concepts are defined.
 
 \paragraph{Semantically correct interconnection}
 
@@ -254,7 +254,7 @@ The two export cases are isomorphic because of the following.
 	\label{fig:export-declaration-demonstration}
 \end{figure}
 
-The process of pattern generalisation needs to be performed carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting in semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
+The process of pattern generalisation needs to be performed carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
 
 In the following, I list all export cases I found to be isomorphic in groups. Each group's name implies why the elements are isomorphic in the group. Since every element can be interconnected with imports using the same algorithm per group, an isomorphic group with its elements can be considered as one generalised export case regarding the ASG interconnection process of the Codemodel-Rifle framework. The following $5$ isomorphic export groups have been formed:
 
@@ -325,7 +325,7 @@ Based on the above, having $5$ isomorphic export groups means that the number of
 
 \subsection{Implementing the Interconnection Algorithms}
 
-After thoroughly inspecting the ASG-signatures of the numerous export and import cases for minimising the number of algorithms to be implemented, actually implementing the algorithms was straightforward. In this section, I will not present all combinations in detail. Instead, I describe the general steps of the interconnection process, and I provide a complete example with one concrete combination. In the Appendix, all export-import case combinations are listed with their interconnection algorithms.
+After thoroughly inspecting the ASG signatures of the numerous export and import cases for minimising the number of algorithms to be implemented, actually implementing the algorithms was straightforward. In this section, I will not present all combinations in detail. Instead, I describe the general steps of the interconnection process, and I provide a complete example with one concrete combination. In the Appendix, all export-import case combinations are listed with their interconnection algorithms.
 
 The steps of the interconnection process in general can be described as follows:
 
@@ -414,11 +414,34 @@ DETACH DELETE
 
 
 \newpage
-\section{Implementing the Analyses}
+\section{Simple Analyses by Pattern Matching}
 
-In the Codemodel-Rifle framework, analyses are basically Cypher queries. If a defect’s pattern can be expressed with a Cypher query, it can be detected by the framework. This section details the analyses I implemented for Codemodel-Rifle. Implementing complex analyses involved the creation of the Qualifier System, a generic graph constraint propagation strategy for revealing — otherwise generally unmatchable — \emph{transitive} defect patterns. This is covered in this section as well.
+In the Codemodel-Rifle framework, analyses are basically Cypher queries. If a defect’s pattern can be expressed with a Cypher query, it can be detected by the framework. This section details the analyses I implemented for Codemodel-Rifle without altering the graph, utilising only pattern-matching techniques.
 
 
-\subsection{Introduction and Definitions}
-\subsection{Simple Analyses by Pattern Matching}
-\subsection{Complex Analyses with the Qualifier System}
+\subsection{Uninitialised Variables}
+
+\subsection{Globally Unused Exports}
+
+\subsection{Globally Invalid Imports}
+
+\subsection{Division By Zero (only for specific cases)}
+
+\subsection{Misuse of Negative Integers as Function Arguments (only for specific cases)}
+
+\subsection{Unreachable Code because of Exceptions (only for specific cases)}
+
+
+
+\section{Complex Analyses with the Qualifier System}
+
+Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these require to extensively manipulate the graph to dredge defect patterns for matching. Implementing complex analyses for these defects involved the creation of the Qualifier System, a generic graph constraint propagation strategy for revealing — otherwise generally unmatchable — \emph{transitive} defect patterns. This section details the analyses I implemented for Codemodel-Rifle involving extensive manipulations of the graph, utilising the Qualifier System.
+
+
+\subsection{Introduction: The Qualifier System}
+
+\subsection{Division By Zero (for universal cases)}
+
+\subsection{Misuse of Negative Integers as Function Arguments (for universal cases)}
+
+\subsection{Unreachable Code because of Exception Thrown (for universal cases)}
