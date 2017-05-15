@@ -1,0 +1,77 @@
+digraph Neo {
+  ratio = 0.8
+  node [
+    fontsize = "12"
+    shape = "Mrecord"
+    fontname = "Noto Sans"
+    penwidth = 0.5
+  ]
+  edge [
+    fontname = "Noto Sans"
+    fontsize = "12"
+    penwidth = 0.5
+  ]
+  N2 [
+    label = "{AsgNode\nVariableDeclaration\nNode\nFunctionDeclarationClassDeclarationVariableDeclaration\nVariableDeclarationAssignmentTarget\nVariableDeclarationExpression|'session' = 'test' : String\l'kind' = 'let' : String\l}"
+  ]
+  N2 -> N32 [
+    label = "declarators\n"
+  ]
+  N5 [
+    label = "{AsgNode\nLiteralNumericExpression\nExpression|'value' = 0.0 : double\l'session' = 'test' : String\l}"
+    penwidth = 3
+  ]
+  N7 [
+    label = "{AsgNode\nExpression\nBinaryExpression|'session' = 'test' : String\l'operator' = 'Div' : String\l}"
+    penwidth = 3
+  ]
+  N7 -> N5 [
+    label = "right\n"
+    penwidth = 3
+  ]
+  N7 -> N33 [
+    label = "left\n"
+  ]
+  N30 [
+    label = "{AsgNode\nDeclaration|'session' = 'test' : String\l'kind' = 'Let' : String\l}"
+  ]
+  N30 -> N39 [
+    label = "node\n"
+  ]
+  N32 [
+    label = "{AsgNode\nNode\nVariableDeclarator|'session' = 'test' : String\l}"
+  ]
+  N32 -> N7 [
+    label = "init\n"
+  ]
+  N32 -> N39 [
+    label = "binding\n"
+  ]
+  N33 [
+    label = "{AsgNode\nLiteralNumericExpression\nExpression|'value' = 5.0 : double\l'session' = 'test' : String\l}"
+  ]
+  N34 [
+    label = "{AsgNode\nVariableDeclarationStatement\nStatement|'session' = 'test' : String\l}"
+  ]
+  N34 -> N2 [
+    label = "declaration\n"
+  ]
+  N39 [
+    label = "{AsgNode\nBindingIdentifier\nBinding\nVariableReference|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+  ]
+  N47 [
+    label = "{AsgNode\nReference|'accessibility' = 'Write' : String\l'session' = 'test' : String\l}"
+  ]
+  N47 -> N39 [
+    label = "node\n"
+  ]
+  N48 [
+    label = "{AsgNode\nVariable|'session' = 'test' : String\l'name' = 'foo' : String\l}"
+  ]
+  N48 -> N47 [
+    label = "references\n"
+  ]
+  N48 -> N30 [
+    label = "declarations\n"
+  ]
+}

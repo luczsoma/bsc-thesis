@@ -510,3 +510,51 @@ RETURN
     exportLocation.line AS line,
     exportLocation.column AS column
 \end{lstlisting}
+
+\newpage
+\subsection{divisionByZero-literal — restricted}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (binaryExpression:BinaryExpression)-[:right]->
+        (rightValue:LiteralNumericExpression)
+        -[:location]->(:SourceSpan)
+        -[:start]->(locationStart:SourceLocation)
+        <-[:contains]-(containingCompilationUnit:CompilationUnit)
+
+    WHERE
+    binaryExpression.operator = 'Div'
+    AND rightValue.value = 0
+
+RETURN
+    'Division by zero' AS message,
+    '' AS entityName,
+    containingCompilationUnit.parsedFilePath AS compilationUnitPath,
+    locationStart.line AS line,
+    locationStart.column AS column
+\end{lstlisting}
+
+\newpage
+\subsection{squareRootNegativeArgument-literal — restricted}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (containingCompilationUnit:CompilationUnit)-[:contains]->
+        (callExpression:CallExpression)
+        -[:callee]->(memberExpression:StaticMemberExpression)
+        -[:object]->(variableReference:VariableReference),
+    (callExpression)-[:arguments]->(unaryExpression:UnaryExpression)
+        -[:operand]->(:LiteralNumericExpression),
+    (callExpression)-[:location]->
+         (:SourceSpan)-[:start]->(entityLocation:SourceLocation)
+
+    WHERE
+    variableReference.name = 'Math'
+    AND memberExpression.property = 'sqrt'
+    AND unaryExpression.operator = 'Minus'
+
+RETURN
+    'Square root called with negative argument' AS message,
+    '' AS entityName,
+    containingCompilationUnit.parsedFilePath AS compilationUnitPath,
+    entityLocation.line AS line,
+    entityLocation.column AS column
+\end{lstlisting}

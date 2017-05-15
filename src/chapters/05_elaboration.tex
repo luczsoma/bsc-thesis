@@ -446,6 +446,7 @@ Unused exports can be a security concern. My analysis for detecting unused expor
 
 \Cref{fig:analysis-unusedexport} presents a partial ASG demonstrating how an unused export is revealed. Nodes of the exporter module's graph are indicated with blue colour, nodes of the importer module's graph are indicated with crimson colour. The nodes with thicker outlines are members of the pattern matching expression, the dashed outlines represent entities being checked for existence. The source code of the analysis is available in the Appendix.
 
+\vspace*{1mm}
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth, trim=12mm 12mm 12mm 12mm,clip]{figures/analysis_exportName.pdf}
@@ -456,9 +457,36 @@ Unused exports can be a security concern. My analysis for detecting unused expor
 
 \subsection{Division By Zero (restricted)}
 
+Division by zero is one of the most basic software defects. JavaScript usually does not throw an error if it evaluates such expressions, but returns \lstinline{undefined}, \lstinline{NaN} or \lstinline{Infinity} instead, depending on the environment and the runtime. As stated before, this can break program execution in several ways.
+
+Detecting a division by zero scenario generally is rather challenging by using only static tools. As the right-hand operator of a division expression can be a variable, whose value can be anything — even originate from several other variables —, it needs much more effort than simple pattern matching. Detecting such \emph{transitive} division by zero cases is the subject of the next section, involving the Qualifier System.
+
+However, finding division expressions in the ASG, where the right-hand operator is a numeric literal with the value zero is not complicated. My analysis for this \emph{restricted} case reports such division by zero defects by simple graph pattern matching.
+
+\Cref{fig:analysis-divisionbyzero-simple} presents a partial ASG demonstrating how a division by zero defect is revealed when zero is a numeric literal. The nodes with thicker outlines are members of the pattern matching expression, and the \lstinline{`value'} property of the \lstinline{LiteralNumericExpression} is checked if it equals zero.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[height=91mm, trim=12mm 12mm 12mm 12mm,clip]{figures/analysis_divisionByZero_simple.pdf}
+	\caption{Matching the \lstinline{divisionByZero-literal} analysis pattern}
+	\label{fig:analysis-divisionbyzero-simple}
+\end{figure}
+
+
 \subsection{Misuse of Negative Integers as Function Arguments (restricted)}
 
-\subsection{Unreachable Code caused by Exception (restricted)}
+Generally used functions in JavaScript's \lstinline{Math} library do not support complex numbers. Therefore, if a developer supplies a negative numeric value to a function like \lstinline{Math.sqrt()} or \lstinline{Math.log()}, the expression will return \lstinline{NaN} or \lstinline{undefined}, depending on the environment and the runtime.
+
+My analysis for detecting the misuse of negative integers as function arguments reports if the argument of a \lstinline{log()} or a \lstinline{sqrt()} call is a negative numeric literal.\footnote{This analysis does not cover transitive cases, where the function argument is a variable. That is the subject of the next subsection.}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[height=90mm, trim=12mm 12mm 12mm 12mm,clip]{figures/analysis_squareRootArgument.pdf}
+	\caption{Matching the \lstinline{squareRootNegativeArgument-literal} analysis pattern}
+	\label{fig:analysis-squarerootnegativeargument-simple}
+\end{figure}
+
+\Cref{fig:analysis-squarerootnegativeargument-simple} presents a partial ASG demonstrating how a square root called with a negative argument defect is revealed when the argument is a numeric literal. The nodes with thicker outlines are members of the pattern matching expression. The \lstinline{`name'} property of the \lstinline{VariableReference} connected to the \lstinline{StaticMemberExpression} is checked whether it is \lstinline{Math}, the \lstinline{`property'} property of the \lstinline{StaticMemberExpression} is checked whether it is \lstinline{sqrt}, and the \lstinline{`operator'} property of the \lstinline{UnaryExpression} connected to the \lstinline{LiteralNumericExpression} is checked whether it is \lstinline{Minus}. The source code of the analysis is available in the Appendix.
 
 
 \section{Complex Analyses with the Qualifier System}
