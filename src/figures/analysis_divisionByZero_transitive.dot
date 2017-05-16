@@ -1,0 +1,563 @@
+digraph Neo {
+  node [
+    fontsize = "8"
+    shape = "Mrecord"
+    fontname = "Bitstream Vera Sans"
+  ]
+  edge [
+    fontname = "Bitstream Vera Sans"
+    fontsize = "8"
+  ]
+  N0 [
+    label = "{Node\[0\]: AsgNode, Temp, ReturnStatement, Statement|'id' = '_86b9367acdf84ffa8ae38320cf78a99c' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N0 -> N69 [
+    label = "expression\n"
+  ]
+  N3 [
+    label = "{Node\[3\]: AsgNode, Temp, Variable|'id' = '_50ff6878682c403ab482dbb83ab52842' : String\l'session' = 'dummyTestExport' : String\l'name' = 'c' : String\l}"
+  ]
+  N3 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N3 -> N45 [
+    label = "declarations\n"
+  ]
+  N3 -> N24 [
+    label = "references\n"
+  ]
+  N3 -> N100 [
+    label = "references\n"
+  ]
+  N8 [
+    label = "{Node\[8\]: AsgNode, Temp, IdentifierExpression, Expression, VariableReference|'id' = '_a1262321f76b4502871953f03580c78e' : String\l'session' = 'dummyTestExport' : String\l'name' = 'c' : String\l}"
+  ]
+  N8 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N14 [
+    label = "{Node\[14\]: AsgNode, Temp, VariableDeclarator, Node|'id' = '_c476f46a9943443db0eb59dbee6ca589' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N14 -> N82 [
+    label = "init\n"
+  ]
+  N14 -> N58 [
+    label = "binding\n"
+  ]
+  N24 [
+    label = "{Node\[24\]: AsgNode, Temp, Reference|'id' = '_3f244e2f8b12424c92c8b830b931f2a2' : String\l'session' = 'dummyTestExport' : String\l'accessibility' = 'Read' : String\l}"
+  ]
+  N24 -> N8 [
+    label = "node\n"
+  ]
+  N25 [
+    label = "{Node\[25\]: AsgNode, Temp, Map|'id' = '_4f1feb57a02b4e1e8ae04bd874c36215' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N25 -> N157 [
+    label = "arguments\n"
+  ]
+  N25 -> N3 [
+    label = "c\n"
+  ]
+  N27 [
+    label = "{Node\[27\]: AsgNode, Temp, Scope|'type' = 'Function' : String\l'id' = '_475d0bbd584141949b1553a2334c6c16' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N27 -> N25 [
+    label = "variables\n"
+  ]
+  N27 -> N192 [
+    label = "through\n"
+  ]
+  N27 -> N159 [
+    label = "children\n"
+  ]
+  N27 -> N143 [
+    label = "astNode\n"
+  ]
+  N28 [
+    label = "{Node\[28\]: AsgNode, Temp, Node, VariableDeclaration, FunctionDeclarationClassDeclarationVariableDeclaration, VariableDeclarationAssignmentTarget, VariableDeclarationExpression|'id' = '_6a22a250bad44a45acde25244b97705a' : String\l'session' = 'dummyTestExport' : String\l'kind' = 'let' : String\l}"
+  ]
+  N28 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N28 -> N14 [
+    label = "declarators\n"
+  ]
+  N33 [
+    label = "{Node\[33\]: AsgNode, Temp, VariableReference, BindingIdentifier, Binding|'id' = '_b2d8f271d3a6459cadc3a0b0782a8d7c' : String\l'session' = 'dummyTestExport' : String\l'name' = 'b' : String\l}"
+  ]
+  N33 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N41 [
+    label = "{Node\[41\]: AsgNode, Temp, ReturnStatement, Statement|'id' = '_6ed41151486d427ba1efc3aabf6fcaab' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N41 -> N90 [
+    label = "expression\n"
+  ]
+  N45 [
+    label = "{Node\[45\]: AsgNode, Temp, Declaration|'id' = '_36937bf6c1f84bbaa1544cc8c1d1754e' : String\l'session' = 'dummyTestExport' : String\l'kind' = 'Let' : String\l}"
+  ]
+  N45 -> N58 [
+    label = "node\n"
+  ]
+  N49 [
+    label = "{Node\[49\]: AsgNode, Temp, Map|'id' = '_38bd958fbeea4529ba2f06077df46c59' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N49 -> N136 [
+    label = "arguments\n"
+  ]
+  N58 [
+    label = "{Node\[58\]: AsgNode, Temp, VariableReference, BindingIdentifier, Binding|'id' = '_1fa3ca2c159c46b08edeefd006fef2e9' : String\l'session' = 'dummyTestExport' : String\l'name' = 'c' : String\l}"
+  ]
+  N58 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N60 [
+    label = "{Node\[60\]: AsgNode, Temp, VariableReference, BindingIdentifier, Binding|'id' = '_b4c09336d41246f3aa234b37cc011241' : String\l'session' = 'dummyTestExport' : String\l'name' = 'a' : String\l}"
+  ]
+  N60 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N69 [
+    label = "{Node\[69\]: AsgNode, Temp, IdentifierExpression, Expression, VariableReference|'id' = '_8abab926253047eda82505d15e2d0a33' : String\l'session' = 'dummyTestExport' : String\l'name' = 'a' : String\l}"
+  ]
+  N69 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N70 [
+    label = "{Node\[70\]: AsgNode, Temp, Scope|'type' = 'Module' : String\l'id' = '_013fd28ea2794d41a41a1a4b51597236' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N70 -> N174 [
+    label = "astNode\n"
+  ]
+  N70 -> N27 [
+    label = "children\n"
+  ]
+  N70 -> N188 [
+    label = "variables\n"
+  ]
+  N74 [
+    label = "{Node\[74\]: AsgNode, Temp, Node, FunctionBody, FunctionBodyExpression|'id' = '_34cc7d575fae44fc81482680e0ed0ed4' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N74 -> N41 [
+    label = "statements\n"
+  ]
+  N74 -> N179 [
+    label = "statements\n"
+  ]
+  N81 [
+    label = "{Node\[81\]: AsgNode, Temp, ExportDefault, ExportDeclaration|'id' = '_f9bec115b7294954b79a7194de7c2dc9' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N81 -> N132 [
+    label = "_next\n"
+  ]
+  N81 -> N143 [
+    label = "body\n"
+  ]
+  N82 [
+    label = "{Node\[82\]: AsgNode, Temp, Expression, FunctionExpression, Function|'id' = '_238060c2ef9e440497ce36666d88456f' : String\l'session' = 'dummyTestExport' : String\l'isGenerator' = false : boolean\l}"
+  ]
+  N82 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N82 -> N146 [
+    label = "name\n"
+  ]
+  N82 -> N184 [
+    label = "body\n"
+  ]
+  N82 -> N94 [
+    label = "params\n"
+  ]
+  N84 [
+    label = "{Node\[84\]: AsgNode, Temp, VariableDeclarator, Node|'id' = '_38cc19c1056548cf89d14776418de0ee' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N84 -> N60 [
+    label = "binding\n"
+  ]
+  N84 -> N142 [
+    label = "init\n"
+  ]
+  N88 [
+    label = "{Node\[88\]: AsgNode, Temp, Variable|'id' = '_8b045b22e5334effb3df3a1b92d2f4f2' : String\l'session' = 'dummyTestExport' : String\l'name' = 'b' : String\l}"
+  ]
+  N88 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N88 -> N167 [
+    label = "declarations\n"
+  ]
+  N90 [
+    label = "{Node\[90\]: AsgNode, Temp, Expression, CallExpression|'id' = '_60e53f496d7c448891af94372a06ad1b' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N90 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N90 -> N8 [
+    label = "callee\n"
+  ]
+  N94 [
+    label = "{Node\[94\]: AsgNode, Temp, Node, FormalParameters|'id' = '_5c36ffee85a8453c80fb97422c449ddb' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N98 [
+    label = "{Node\[98\]: AsgNode, Temp, Declaration|'id' = '_2240a851625a42c6a9e44692793d8622' : String\l'session' = 'dummyTestExport' : String\l'kind' = 'Var' : String\l}"
+  ]
+  N98 -> N60 [
+    label = "node\n"
+  ]
+  N100 [
+    label = "{Node\[100\]: AsgNode, Temp, Reference|'accessibility' = 'Write' : String\l'id' = '_ee6bac563faf49a5848f6c2d90ce1d79' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N100 -> N24 [
+    label = "_next\n"
+  ]
+  N100 -> N58 [
+    label = "node\n"
+  ]
+  N101 [
+    label = "{Node\[101\]: AsgNode, Temp, Variable|'id' = '_8adda340374646f78566dd29ef953e58' : String\l'session' = 'dummyTestExport' : String\l'name' = 'a' : String\l}"
+  ]
+  N101 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N101 -> N117 [
+    label = "references\n"
+  ]
+  N101 -> N158 [
+    label = "references\n"
+  ]
+  N101 -> N98 [
+    label = "declarations\n"
+  ]
+  N107 [
+    label = "{Node\[107\]: AsgNode, Temp, Map|'id' = '_49f4babd57a640929ba4f94c4a9ef23e' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N107 -> N116 [
+    label = "d\n"
+  ]
+  N116 [
+    label = "{Node\[116\]: AsgNode, Temp, Variable|'id' = '_cc7aea8a6b3d44f084bd29bdff651f62' : String\l'session' = 'dummyTestExport' : String\l'name' = 'd' : String\l}"
+  ]
+  N116 -> N123 [
+    label = "declarations\n"
+  ]
+  N117 [
+    label = "{Node\[117\]: AsgNode, Temp, Reference|'accessibility' = 'Write' : String\l'id' = '_774b5df6b61842399ce16a3f79a2b52d' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N117 -> N60 [
+    label = "node\n"
+  ]
+  N117 -> N158 [
+    label = "_next\n"
+  ]
+  N123 [
+    label = "{Node\[123\]: AsgNode, Temp, Declaration|'kind' = 'FunctionExpressionName' : String\l'id' = '_7d39a976244d486fae5054c7884e7d00' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N123 -> N146 [
+    label = "node\n"
+  ]
+  N132 [
+    label = "{Node\[132\]: AsgNode, Temp, Statement, EmptyStatement|'id' = '_991a26359a7a4b40b770368336702309' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N136 [
+    label = "{Node\[136\]: AsgNode, Temp, Variable|'name' = 'arguments' : String\l'id' = '_96f8ae9bc146419f879141afb20ec50b' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N142 [
+    label = "{Node\[142\]: AsgNode, Temp, Expression, LiteralNumericExpression|'value' = 0.0 : double\l'id' = '_a8450644fe2d444a8a64573be29064fc' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N142 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N143 [
+    label = "{Node\[143\]: AsgNode, Temp, Statement, FunctionDeclarationClassDeclarationVariableDeclaration, Function, FunctionDeclaration, FunctionDeclarationClassDeclarationExpression|'id' = '_d1cf549ea9aa41c5a7ea2fa30c6d7ce1' : String\l'session' = 'dummyTestExport' : String\l'isGenerator' = false : boolean\l}"
+  ]
+  N143 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N143 -> N74 [
+    label = "body\n"
+  ]
+  N143 -> N33 [
+    label = "name\n"
+  ]
+  N143 -> N94 [
+    label = "params\n"
+  ]
+  N145 [
+    label = "{Node\[145\]: AsgNode, Temp, Scope, GlobalScope|'type' = 'Global' : String\l'id' = '_998f98a6d19b4bb4a35c78c216d7560a' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = true : boolean\l}"
+  ]
+  N145 -> N174 [
+    label = "astNode\n"
+  ]
+  N145 -> N70 [
+    label = "children\n"
+  ]
+  N146 [
+    label = "{Node\[146\]: AsgNode, Temp, VariableReference, BindingIdentifier, Binding|'id' = '_6273a36f3bce4d4da945010b37613483' : String\l'session' = 'dummyTestExport' : String\l'name' = 'd' : String\l}"
+  ]
+  N157 [
+    label = "{Node\[157\]: AsgNode, Temp, Variable|'name' = 'arguments' : String\l'id' = '_17c1f9b910bc4398ab91ed8504d0bb1d' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N158 [
+    label = "{Node\[158\]: AsgNode, Temp, Reference|'id' = '_e8254b8c21f84f9ab511461495cfbd4e' : String\l'session' = 'dummyTestExport' : String\l'accessibility' = 'Read' : String\l}"
+  ]
+  N158 -> N69 [
+    label = "node\n"
+  ]
+  N159 [
+    label = "{Node\[159\]: AsgNode, Temp, Scope|'type' = 'FunctionName' : String\l'id' = '_64978574db2242a1b9a277dc8f66861c' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N159 -> N166 [
+    label = "children\n"
+  ]
+  N159 -> N107 [
+    label = "variables\n"
+  ]
+  N159 -> N177 [
+    label = "through\n"
+  ]
+  N159 -> N82 [
+    label = "astNode\n"
+  ]
+  N162 [
+    label = "{Node\[162\]: AsgNode, Temp, Node, VariableDeclaration, FunctionDeclarationClassDeclarationVariableDeclaration, VariableDeclarationAssignmentTarget, VariableDeclarationExpression|'id' = '_91afdbd0b87449a996f2d2c6c3f7b47f' : String\l'session' = 'dummyTestExport' : String\l'kind' = 'var' : String\l}"
+  ]
+  N162 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N162 -> N84 [
+    label = "declarators\n"
+  ]
+  N166 [
+    label = "{Node\[166\]: AsgNode, Temp, Scope|'type' = 'Function' : String\l'id' = '_43883d9d355f4fcd8210fe2e2d1cf824' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N166 -> N49 [
+    label = "variables\n"
+  ]
+  N166 -> N82 [
+    label = "astNode\n"
+  ]
+  N167 [
+    label = "{Node\[167\]: AsgNode, Temp, Declaration|'kind' = 'FunctionDeclaration' : String\l'id' = '_b9b0269946b447ebb8a8abc003138d8f' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N167 -> N256 [
+    label = "node\n"
+  ]
+  N167 -> N33 [
+    label = "node\n"
+  ]
+  N174 [
+    label = "{Node\[174\]: AsgNode, Temp, Module, Program|'id' = '_2ac7c0157a5347ce86355cdc944174d7' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N174 -> N81 [
+    label = "items\n"
+  ]
+  N174 -> N132 [
+    label = "items\n"
+  ]
+  N174 -> N182 [
+    label = "items\n"
+  ]
+  N177 [
+    label = "{Node\[177\]: AsgNode, Temp, HashTable|'id' = '_510d32ee914a41caa58ee0395b1835bd' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N179 [
+    label = "{Node\[179\]: AsgNode, Temp, Statement, VariableDeclarationStatement|'id' = '_0977e9e7a9ab4d05b20d442fbde88752' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N179 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N179 -> N28 [
+    label = "declaration\n"
+  ]
+  N179 -> N41 [
+    label = "_next\n"
+  ]
+  N182 [
+    label = "{Node\[182\]: AsgNode, Temp, Statement, VariableDeclarationStatement|'id' = '_b82b832bfba64292ae855bfd354335af' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N182 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N182 -> N81 [
+    label = "_next\n"
+  ]
+  N182 -> N162 [
+    label = "declaration\n"
+  ]
+  N184 [
+    label = "{Node\[184\]: AsgNode, Temp, Node, FunctionBody, FunctionBodyExpression|'id' = '_8a0c2e7925874d47b947d77b18de4ce6' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N184 -> N0 [
+    label = "statements\n"
+  ]
+  N188 [
+    label = "{Node\[188\]: AsgNode, Temp, Map|'id' = '_6dfdc361ad7d49c69c044639e192be54' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N188 -> N101 [
+    label = "a\n"
+  ]
+  N188 -> N88 [
+    label = "b\n"
+  ]
+  N192 [
+    label = "{Node\[192\]: AsgNode, Temp, HashTable|'id' = '_4faa1a5ec2fd4d8b8e53d31b7926bc55' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N192 -> N158 [
+    label = "a\n"
+  ]
+  N201 [
+    label = "{Node\[201\]: AsgNode, Temp, Scope|'type' = 'Module' : String\l'id' = '_8b572bd64fd04f2aac0adca3438aa8f6' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = false : boolean\l}"
+  ]
+  N201 -> N267 [
+    label = "astNode\n"
+  ]
+  N201 -> N285 [
+    label = "variables\n"
+  ]
+  N203 [
+    label = "{Node\[203\]: AsgNode, Temp, VariableDeclarator, Node|'id' = '_9c29e35b58c94416adb17205e78b676e' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N203 -> N220 [
+    label = "binding\n"
+  ]
+  N203 -> N262 [
+    label = "init\n"
+  ]
+  N211 [
+    label = "{Node\[211\]: AsgNode, Temp, Reference|'accessibility' = 'Write' : String\l'id' = '_045d834af4074548949c6c08c5507b70' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N211 -> N220 [
+    label = "node\n"
+  ]
+  N217 [
+    label = "{Node\[217\]: AsgNode, Temp, IdentifierExpression, Expression, VariableReference|'name' = 'defaultName' : String\l'id' = '_fb8150c403054d4493985ca8d0d2c6e2' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N217 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N220 [
+    label = "{Node\[220\]: AsgNode, Temp, VariableReference, BindingIdentifier, Binding|'id' = '_75a3e257b9d94d8092b95cebd418edaa' : String\l'session' = 'dummyTestExport' : String\l'name' = 'lol' : String\l}"
+  ]
+  N223 [
+    label = "{Node\[223\]: AsgNode, Temp, Import, ImportDeclaration|'moduleSpecifier' = 'exporter' : String\l'id' = '_c6e5775a6c804cadaed63482632a1ae9' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N223 -> N256 [
+    label = "defaultBinding\n"
+  ]
+  N223 -> N241 [
+    label = "_next\n"
+  ]
+  N238 [
+    label = "{Node\[238\]: AsgNode, Temp, Node, VariableDeclaration, FunctionDeclarationClassDeclarationVariableDeclaration, VariableDeclarationAssignmentTarget, VariableDeclarationExpression|'id' = '_80c207ae89194fcc8f0ca160e98b1c0a' : String\l'session' = 'dummyTestExport' : String\l'kind' = 'let' : String\l}"
+  ]
+  N238 -> N203 [
+    label = "declarators\n"
+  ]
+  N241 [
+    label = "{Node\[241\]: AsgNode, Temp, Statement, VariableDeclarationStatement|'id' = '_c6bccb01b9284e899609b39361302886' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N241 -> N238 [
+    label = "declaration\n"
+  ]
+  N243 [
+    label = "{Node\[243\]: AsgNode, Temp, Variable|'id' = '_4e3e99cfb7d44687bff49dfe9e39910e' : String\l'session' = 'dummyTestExport' : String\l'name' = 'lol' : String\l}"
+  ]
+  N243 -> N211 [
+    label = "references\n"
+  ]
+  N243 -> N269 [
+    label = "declarations\n"
+  ]
+  N256 [
+    label = "{Node\[256\]: AsgNode, Temp, VariableReference, BindingIdentifier, Binding|'name' = 'defaultName' : String\l'id' = '_e3d3f5e9c75a42289ef9811601ece4f2' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N257 [
+    label = "{Node\[257\]: AsgNode, Temp, Expression, LiteralNumericExpression|'value' = 5.0 : double\l'id' = '_45c51ae0177d4ad5a0f824d9077f5a88' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N262 [
+    label = "{Node\[262\]: AsgNode, Temp, Expression, BinaryExpression|'id' = '_3c807de0e5ef439397d8d6880fde86de' : String\l'session' = 'dummyTestExport' : String\l'operator' = 'Div' : String\l}"
+  ]
+  N262 -> N279 [
+    label = "right\n"
+  ]
+  N262 -> N257 [
+    label = "left\n"
+  ]
+  N267 [
+    label = "{Node\[267\]: AsgNode, Temp, Module, Program|'id' = '_af1ba419e550469191dbf13c0212065b' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N267 -> N223 [
+    label = "items\n"
+  ]
+  N267 -> N241 [
+    label = "items\n"
+  ]
+  N269 [
+    label = "{Node\[269\]: AsgNode, Temp, Declaration|'id' = '_c9adf879806342488ec130069873e1c4' : String\l'session' = 'dummyTestExport' : String\l'kind' = 'Let' : String\l}"
+  ]
+  N269 -> N220 [
+    label = "node\n"
+  ]
+  N270 [
+    label = "{Node\[270\]: AsgNode, Temp, Reference|'id' = '_d10c586c2dd04b13a4e0b7e291c594d5' : String\l'session' = 'dummyTestExport' : String\l'accessibility' = 'Read' : String\l}"
+  ]
+  N270 -> N217 [
+    label = "node\n"
+  ]
+  N279 [
+    label = "{Node\[279\]: AsgNode, Temp, Expression, CallExpression|'id' = '_81ed8cbe33fb4b3d8298d4aa0c4cf208' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N279 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N279 -> N217 [
+    label = "callee\n"
+  ]
+  N280 [
+    label = "{Node\[280\]: AsgNode, Temp, Scope, GlobalScope|'type' = 'Global' : String\l'id' = '_fc9a1cd78e744068bb585a5d9a069ec7' : String\l'session' = 'dummyTestExport' : String\l'dynamic' = true : boolean\l}"
+  ]
+  N280 -> N267 [
+    label = "astNode\n"
+  ]
+  N280 -> N201 [
+    label = "children\n"
+  ]
+  N282 [
+    label = "{Node\[282\]: AsgNode, Temp, Variable|'name' = 'defaultName' : String\l'id' = '_05f4e5870d0c4818bbc8b8f3ff0aa827' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N282 -> N288 [
+    label = "_qualifier\n"
+  ]
+  N282 -> N167 [
+    label = "declarations\n"
+  ]
+  N282 -> N270 [
+    label = "references\n"
+  ]
+  N285 [
+    label = "{Node\[285\]: AsgNode, Temp, Map|'id' = '_c12f86ccf34c42af9f55f3b68271a438' : String\l'session' = 'dummyTestExport' : String\l}"
+  ]
+  N285 -> N243 [
+    label = "lol\n"
+  ]
+  N285 -> N282 [
+    label = "defaultName\n"
+  ]
+  N287 [
+    label = "{Node\[287\]: QualifierSystem|}"
+  ]
+  N287 -> N289 [
+    label = "_instance\n"
+  ]
+  N287 -> N288 [
+    label = "_instance\n"
+  ]
+  N288 [
+    label = "{Node\[288\]: Qualifier, EqualsZero|}"
+  ]
+  N289 [
+    label = "{Node\[289\]: Qualifier, ExceptionThrown|}"
+  ]
+}

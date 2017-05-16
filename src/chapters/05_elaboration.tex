@@ -502,13 +502,13 @@ Demonstratively, the running example presented in \Cref{chapter:background} cont
 
 The defect is transitive in the meaning that the zero is not a numeric literal $0$ which could be revealed easily by simple pattern matching. Instead, that zero comes from several levels of nested variable assignments and functions — it \emph{transits} along variable assignments and functions. This transitivity can be deduced by the Qualifier System.
 
-\Cref{fig:qualifier-propagation} presents the propagation of the running example's transitive division by zero defect in the \lstinline{exporter} module's partial ASG. The graph node marked with black filling is the exported \lstinline{function b()} (which is the right-hand value of the division in the \lstinline{importer} module). The node with crimson filling is the \lstinline{LiteralNumericExpression}, which finally causes \lstinline{function b()} to return 0. The propagation of the transitive defect starts at the assignment of the literal zero (the crimson node), and ends — at least in the \lstinline{exporter} module — at the exported function (the black node). (Of course, the propagation does not end at module boundaries, since the related modules' ASGs are interconnected. In this case however, the \lstinline{importer} module was omitted from the graph for transparency.)
+\Cref{fig:transitive-defect-propagation} presents the propagation of the running example's transitive division by zero defect in the \lstinline{exporter} module's partial ASG. The graph node marked with black filling is the exported \lstinline{function b()} (which is the right-hand value of the division in the \lstinline{importer} module). The node with crimson filling is the \lstinline{LiteralNumericExpression}, which finally causes \lstinline{function b()} to return 0. The propagation of the transitive defect starts at the assignment of the literal zero (the crimson node), and ends — at least in the \lstinline{exporter} module — at the exported function (the black node). (Of course, the propagation does not end at module boundaries, since the related modules' ASGs are interconnected. In this case however, the \lstinline{importer} module was omitted from the graph for transparency.)
 
 \begin{sidewaysfigure}[!p]
   \centering
-	\includegraphics[width=\textwidth, trim=12mm 12mm 12mm 12mm,clip]{figures/qualifier-propagation.pdf}
-  \caption{Spreading constraints in the ASG by propagation rules}
-  \label{fig:qualifier-propagation}
+	\includegraphics[width=\textwidth, trim=12mm 12mm 12mm 12mm,clip]{figures/transitive-defect-propagation.pdf}
+  \caption{The transition path of the running example's division by zero defect}
+  \label{fig:transitive-defect-propagation}
 \end{sidewaysfigure}
 
 
@@ -538,7 +538,22 @@ If the propagation of the Qualifier System finished, then all transitive defects
 
 \subsection{The Running Example's Division By Zero (transitive)}
 
-Detecting a transitive division by zero defect — when the zero expression is not a numeric literal 0, but a variable or a function providing the value zero — requires the zero value to be ded
+Detecting a transitive division by zero defect — when the zero expression is not a numeric literal 0, but a variable or a function providing the value zero — requires the right-hand value of the division expression to be deduced. If this value comes from several nested variable assignments and functions, like presented in the running example, the originating value has to be found: a variable assignment with a numeric literal.
+
+Finding a variable assignment, where a numeric literal is the assigned value, can be carried out by simple pattern matching. If this value equals zero, its graph node, the \lstinline{LiteralNumericExpression} is qualified by using an \lstinline{EqualsZero} qualifier instance. After this assignment has been qualified, its adjacent nodes are inspected whether they can be also qualified, according to the propagation rules\footnote{The propagation rules or propagation criteria of Codemodel-Rifle's Qualifier System is implemented as pattern matching queries. Let $N_1$ be qualified by a qualifier instance, and let $N_2$ be an adjacent node of $N_1$ via the relationship $R$. If $R$ is member of the set of qualifier propagator relationships, then $N_2$ gets qualified too.} of the Qualifier System. In the current case, after the \lstinline{LiteralNumericExpression}, its only adjacent ASG node, the \lstinline{VariableDeclaration} gets qualified too by \lstinline{EqualsZero}. This is valid, because the \lstinline{init} edge connecting the two nodes is allowed to propagate an \lstinline{EqualsZero} qualifier instance. After the \lstinline{VariableDeclaration} has been qualified, its adjacent nodes are inspected whether they can be qualified, and the propagation algorithm continues until there are no more paths the qualifier instance could be propagated further on.
+
+In the running example, the propagation of the \lstinline{EqualsZero} qualifier instance stops at the right-hand value of the importer module's division expression. Semantically, the meaning that the right-hand value of the division expression is qualified with an \lstinline{EqualsZero} instance: the division's right-hand side value (the value of the \lstinline{defaultName()} function) has been successfully deduced, and found to be equal to zero.
+
+After the propagation of qualifiers, a simple pattern matching query checks if there are any right-hand values of division expressions qualified by \lstinline{EqualsZero}. If yes, then a division by zero is performed, so it is reported to the developer.
+
+\Cref{fig:divisionbyzero-transitive} presents the propagation of the \lstinline{EqualsZero} qualifier, regarding the running example's transitive division by zero defect. Although the figure is analogous to \Cref{fig:transitive-defect-propagation} by showing the same path, \Cref{fig:transitive-defect-propagation} shows the propagation path of the \emph{defect}, while \Cref{fig:divisionbyzero-transitive} shows the propagation of the \lstinline{EqualsZero} \emph{qualifier}, following the defect.
+
+\begin{sidewaysfigure}[!p]
+  \centering
+	\includegraphics[width=\textwidth, trim=12mm 12mm 12mm 12mm,clip]{figures/analysis_divisionByZero_transitive.pdf}
+  \caption{The propagation path of the \lstinline{EqualsZero} qualifier instance at analysing the running example}
+  \label{fig:divisionbyzero-transitive}
+\end{sidewaysfigure}
 
 
 \subsection{Misuse of Negative Integers as Function Arguments (transitive)}
