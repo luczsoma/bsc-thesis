@@ -486,48 +486,60 @@ My analysis for detecting the misuse of negative integers as function arguments 
 	\label{fig:analysis-squarerootnegativeargument-simple}
 \end{figure}
 
-\Cref{fig:analysis-squarerootnegativeargument-simple} presents a partial ASG demonstrating how a square root called with a negative argument defect is revealed when the argument is a numeric literal. The nodes with thicker outlines are members of the pattern matching expression. The \lstinline{`name'} property of the \lstinline{VariableReference} connected to the \lstinline{StaticMemberExpression} is checked whether it is \lstinline{Math}, the \lstinline{`property'} property of the \lstinline{StaticMemberExpression} is checked whether it is \lstinline{sqrt}, and the \lstinline{`operator'} property of the \lstinline{UnaryExpression} connected to the \lstinline{LiteralNumericExpression} is checked whether it is \lstinline{Minus}. The source code of the analysis is available in the Appendix.
+\Cref{fig:analysis-squarerootnegativeargument-simple} presents a partial ASG demonstrating how a square root called with a negative argument defect is revealed when the argument is a numeric literal. The nodes with thicker outlines are members of the pattern matching expression. The \lstinline{`name'} property of the \lstinline{VariableReference} connected to the \lstinline{StaticMemberExpression} is checked whether it is \lstinline{Math}, the \lstinline{`property'} property of the \lstinline{StaticMemberExpression} is checked whether it is \lstinline{sqrt}, and the \lstinline[keywordstyle={}]{`operator'} property of the \lstinline{UnaryExpression} connected to the \lstinline{LiteralNumericExpression} is checked whether it is \lstinline{Minus}. The source code of the analysis is available in the Appendix.
 
 
 \section{Complex Analyses with the Qualifier System}
 
-Some defects are more high-level or more general than to present their patterns in an intact graph directly. Detecting complex errors like these require to extensively manipulate the graph to dredge defect patterns for matching. Implementing complex analyses for these defects involved the creation of the Qualifier System, a generic graph constraint propagation strategy for revealing — otherwise generally unmatchable — \emph{transitive} defect patterns. This section details the analyses I implemented for Codemodel-Rifle involving extensive manipulations of the graph, utilising the Qualifier System.
+Some defects are more general than to present their patterns in an intact graph directly. Detecting complex errors like these may involve to deduce variable and function return values, and it may require to manipulate the graph to dredge defect patterns for matching. Implementing complex analyses for these defects involved the creation of the Qualifier System, a generic graph constraint propagation strategy for revealing — otherwise generally unmatchable — \emph{transitive} defect patterns. This section details the analyses I implemented for Codemodel-Rifle involving extensive graph manipulations, using the Qualifier System.
 
 
 \subsection{Transitive Defects}
 
-In this thesis, the term transitive defect is used as follows. A software defect is considered \emph{value-transitive} or simply \emph{transitive}, if its effect propagates through variable values and/or function return values.
+In this thesis, the term transitive defect is used as follows. A software defect is considered \emph{transitive}, if its effect propagates through multiple variable value assignment and/or function calls. Patterns of transitive defects generally can not be directly matched in the ASG, because the graph pattern of such defects — spanning an indeterminate number of functions or variable assignments — can not be described by one general pattern expression. But, patterns of transitive defects can be deduced in the ASG by following their propagation, and marking the intermediate nodes with constraints.
 
-Demonstratively, the running example presented in \Cref{chapter:background} contains a transitive division by zero defect. In the example's \lstinline{exporter} module, there is a variable given the value zero, then the variable is nested into several levels of variable assignments and function return expressions, finally into the \lstinline{exporter} module's default function export. The exported function will return zero. After the example's \lstinline{importer} module imports the default export of \lstinline{exporter}, it divides numeric literal $5$ with the return value of the imported function, practically by zero.
+Demonstratively, the running example presented in \Cref{chapter:background} contains a transitive division by zero defect. In the example's \lstinline{exporter} module, there is a variable given the value zero, then the variable is nested into several levels of variable assignments and function return expressions, finally into the \lstinline{exporter} module's default function export. The exported function will return zero, too. After the example's \lstinline{importer} module imports the default export of \lstinline{exporter}, it divides numeric literal $5$ with the return value of the imported function, practically by zero.
 
-The defect is transitive in the meaning that the zero is not a numeric literal $0$ which can be easily revealed by simple pattern matching. Instead, that zero comes from several levels of nested variable assignments and functions — it \emph{transits} along variable assignments and functions. This transitivity can be deduced by introducing the Qualifier System into the analysis process.
+The defect is transitive in the meaning that the zero is not a numeric literal $0$ which could be revealed easily by simple pattern matching. Instead, that zero comes from several levels of nested variable assignments and functions — it \emph{transits} along variable assignments and functions. This transitivity can be deduced by the Qualifier System.
+
+\Cref{fig:qualifier-propagation} presents the propagation of the running example's transitive division by zero defect in the \lstinline{exporter} module's partial ASG. The graph node marked with black filling is the exported \lstinline{function b()} (which is the right-hand value of the division in the \lstinline{importer} module). The node with crimson filling is the \lstinline{LiteralNumericExpression}, which finally causes \lstinline{function b()} to return 0. The propagation of the transitive defect starts at the assignment of the literal zero (the crimson node), and ends — at least in the \lstinline{exporter} module — at the exported function (the black node). (Of course, the propagation does not end at module boundaries, since the related modules' ASGs are interconnected. In this case however, the \lstinline{importer} module was omitted from the graph for transparency.)
+
+\begin{sidewaysfigure}[!p]
+  \centering
+	\includegraphics[width=\textwidth, trim=12mm 12mm 12mm 12mm,clip]{figures/qualifier-propagation.pdf}
+  \caption{Spreading constraints in the ASG by propagation rules}
+  \label{fig:qualifier-propagation}
+\end{sidewaysfigure}
 
 
 \subsection{Introduction: The Qualifier System}
 
-The Qualifier System is the generalisation of Dániel Stein's Type System~\cite{stein-daniel-msc}. The system assigns well-defined constraints to ASG nodes satisfying certain criteria, then propagates these constraints through the graph by certain rules. The constraints or \emph{qualifiers} are \emph{instances} of the Qualifier System: they are represented by graph nodes, connected to a central \lstinline{QualifierSystem} collector node with a \lstinline{:_instance} relationship.
+The Qualifier System is the generalisation of Dániel Stein's Type System~\cite{stein-daniel-msc}. The system assigns well-defined constraints to ASG nodes satisfying certain criteria, then propagates these constraints through the graph by certain rules. These constraints — the \emph{qualifiers} — are \emph{instances} of the Qualifier System: they are represented by graph nodes, connected to a central \lstinline{QualifierSystem} collector node with a \lstinline{:_instance} relationship.
 
-As stated in the \Cref{chapter:elaboration}, the graph manipulations of the Qualifier System are performed:
+The graph manipulations of the Qualifier System are performed:
 \begin{itemize}
 \item \textbf{after} the analysed repository is imported/synchronised, the source files' ASGs are constructed, and the related modules' graphs are interconnected to each other,
 \item \textbf{before} the defect patterns of the analyses are matched.
 \end{itemize}
 
-This allows to first manipulate the graph in several ways by placing and propagating the qualifiers, and then build pattern matching expressions specifically for the qualifier instances. This way, complex \emph{transitive} defects can be detected, like the division by zero passed along multiple functions and variable assignments presented in \Cref{chapter:background} as the running example.
+This allows to first manipulate the graph in several ways by assigning and propagating the qualifiers, and then build pattern matching expressions specifically for the qualifier instances. This way, \emph{transitive} defects — like the running example of \Cref{chapter:background}, where the division by zero is passed along multiple functions and variable assignments — can be detected by deducing the transitions by the qualifiers.
 
-The basic operation of the system is the following. In the enumeration below, the phase description is followed by a concrete demonstrative case based on the running example of \Cref{chapter:background}.
+The basic operation of the system is the following. In the enumeration below, the \textbf{phase description} is followed by a concrete demonstrative case based on the running example presented in \Cref{chapter:background}.
 
 \begin{enumerate}
-\item Initialise the Qualifier System. Create the \lstinline{QualifierSystem} collector node and all the qualifier instance nodes. In the running example, the analysis is based on the \lstinline{EqualsZero} qualifier instance.
-\item Identify all literals which can be directly marked with a qualifier instance. Connect them to the right qualifier instance with the edge \lstinline{:_qualifier}. In the running example, it means connecting the \lstinline{LiteralNumericExpression} node of the \lstinline{var a = 0;} variable declaration statement to the \lstinline{EqualsZero} instance.
-\item Connect adjacent nodes with the same qualifier if they satisfy propagation criteria. In the running example, it means connecting the \lstinline{VariableDeclarator} node the \lstinline{EqualsZero} too, because it is connected to the \lstinline{LiteralNumericExpression}.
-\item Repeat the previous step until there is no modification in the graph.\footnote{There has to be a stop condition for unintentional infinite loops.} In the running example, this means, that after the propagation finished, the \lstinline{EqualsZero} qualifier will be connected to the right-hand side value of the division, so it can be easily detected by pattern matching.
+\item \textbf{Initialise the Qualifier System. Create the \lstinline{QualifierSystem} collector node and the qualifier instance nodes.} In the running example, the analysis is based on propagating the \lstinline{EqualsZero} qualifier instance.
+\item \textbf{Identify all literals which can be directly marked with a qualifier instance. Connect them to the right qualifier instance with the edge \lstinline{:_qualifier}.} In the running example, it means connecting the \lstinline{LiteralNumericExpression} node of the \lstinline{var a = 0;} variable declaration statement to the \lstinline{EqualsZero} instance.
+\item \textbf{Connect adjacent nodes to the same qualifier if they satisfy propagation criteria.} In the running example, it means connecting also the \lstinline{VariableDeclarator} node to the \lstinline{EqualsZero} qualifier instance, because it satisfies the propagation criterion of being connected to a \lstinline{LiteralNumericExpression} by an \lstinline{init} relationship.
+\item \textbf{Repeat the previous step until there is no modification in the graph.\footnote{There has to be a stop condition for unintentional infinite loops.}} In the running example — after the propagation finished — the \lstinline{EqualsZero} qualifier will be connected to every entity that is caused to be zero because of the \lstinline{var a = 0;} assignment, including the exported \lstinline{function b()}, and thus the imported \lstinline{defaultName()} function — which is the right-hand side value of the division. Therefore, the transitive division by zero defect can be detected by simply checking whether the right-hand side of the expression has an \lstinline{EqualsZero} qualifier.
 \end{enumerate}
 
 If the propagation of the Qualifier System finished, then all transitive defects are \emph{closed} in the meaning that every spread of the defect is marked with a qualifier, so it can be easily detected by a simple pattern matching expression. The following subsections present examples for detecting transitive defects with the Qualifier System.
 
 
 \subsection{The Running Example's Division By Zero (transitive)}
+
+Detecting a transitive division by zero defect — when the zero expression is not a numeric literal 0, but a variable or a function providing the value zero — requires the zero value to be ded
+
 
 \subsection{Misuse of Negative Integers as Function Arguments (transitive)}
 

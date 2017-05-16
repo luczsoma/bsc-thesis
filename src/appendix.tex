@@ -106,7 +106,8 @@ DETACH DELETE
 MATCH
 // exporter.js: export var name1;
     (exporter:CompilationUnit)-[:contains]->(:ExportDeclaration)
-        -[:declaration]->(:FunctionDeclarationClassDeclarationVariableDeclaration)
+        -[:declaration]->
+        (:FunctionDeclarationClassDeclarationVariableDeclaration)
         -[:declarators]->(:VariableDeclarator)
         -[:binding]->(exportBindingIdentifier:BindingIdentifier)
         <-[:node]-(declarationToMerge:Declaration)
@@ -137,7 +138,8 @@ DETACH DELETE
 MATCH
 // exporter.js: export var name1;
     (exporter:CompilationUnit)-[:contains]->(:ExportDeclaration)
-        -[:declaration]->(:FunctionDeclarationClassDeclarationVariableDeclaration)
+        -[:declaration]->
+        (:FunctionDeclarationClassDeclarationVariableDeclaration)
         -[:declarators]->(:VariableDeclarator)
         -[:binding]->(exportBindingIdentifier:BindingIdentifier)
         <-[:node]-(declarationToMerge:Declaration)
@@ -490,8 +492,10 @@ RETURN
 \subsection{unusedExport — exportDeclaration}
 \begin{lstlisting}[language=Cypher]
 MATCH
-    (exporter:CompilationUnit)-[:contains]->(exportDeclaration:ExportDeclaration)
-        -[:declaration]->(:FunctionDeclarationClassDeclarationVariableDeclaration)
+    (exporter:CompilationUnit)-[:contains]->
+        (exportDeclaration:ExportDeclaration)
+        -[:declaration]->
+        (:FunctionDeclarationClassDeclarationVariableDeclaration)
         -[*1..2]->(:BindingIdentifier)
         <-[:node]-(:Declaration)
         <-[:declarations]-(exportedVariable:Variable),
