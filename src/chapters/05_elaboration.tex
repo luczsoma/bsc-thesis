@@ -21,7 +21,7 @@ Since I have not made any semantic changes to the \textsc{Import} phase, this ch
 \section{Interconnecting Related \es Modules}
 \label{section:interconnect}
 
-This section describes the work I made to support analysing more than one \es modules coherently. The approach follows~\cite{stein-daniel-msc}, and completes it by developing the semantics of missing use cases, and then implementing them. To shorty summarise: in order to coherently analyse several related \es modules with the Codemodel-Rifle framework, the related modules' separate property graphs are interconnected by well-defined rules. As previously already mentioned, these rules are built upon the \emph{export} and \emph{import} semantics of \es~\cite{exploringes6}. Equivalently, \es modules are considered to be \emph{related}, if they refer to each other by using \emph{export} and \emph{import} statements.
+This section describes the work I made to support analysing more than one \es modules coherently. The approach follows~\cite{stein-daniel-msc}, and completes it by developing the semantics of missing use cases, and then implementing them. To shortly summarise: in order to coherently analyse several related \es modules with the Codemodel-Rifle framework, the related modules' separate property graphs are interconnected by well-defined rules. As previously already mentioned, these rules are built upon the \emph{export} and \emph{import} semantics of \es~\cite{exploringes6}. Equivalently, \es modules are considered to be \emph{related}, if they refer to each other by using \emph{export} and \emph{import} statements.
 
 
 \subsection{The \es Module System}
@@ -37,7 +37,7 @@ In \es 6, there are several ways of exporting and importing entities~\cite{explo
 
 By default, each entity can only be accessed in the scope of the module it was declared in. To be accessed in other modules, the entity has to be explicitly exported first. \Cref{fig:export-syntaxes} presents export syntax examples of \es 6, based on~\cite{export-syntaxes}. Since these statements can be almost arbitrarily combined, and the number of exported variables is not limited in theory, the list of differing export syntaxes of \es 6 is practically endless.
 
-Therefore, \emph{export syntaxes} need to be distinguished from \emph{export cases}. An \emph{export case} is identified by the \emph{basic form} of an \emph{export syntax}. An \emph{export syntax} written in \emph{basic form} does not combine divers syntaxes, and exports only one entity per export statement. \Cref{fig:export-syntaxes} displays all syntaxes in \emph{basic form}, thus it lists all members of the \emph{distinct export cases'} finite set. Each different \emph{export case} has a unique graph pattern in the ASG.
+Therefore, \emph{export syntaxes} need to be distinguished from \emph{export cases}. An \emph{export case} is identified by the \emph{basic form} of an \emph{export syntax}. An \emph{export syntax} written in \emph{basic form} does not combine diverse syntaxes, and exports only one entity per export statement. \Cref{fig:export-syntaxes} displays all syntaxes in \emph{basic form}, thus it lists all members of the \emph{distinct export cases'} finite set. Each different \emph{export case} has a unique graph pattern in the ASG.
 
 \begin{figure}[!p]
 	\centering
@@ -133,7 +133,7 @@ Let $\mathbb{E}$ be set of all the distinct export cases, and let $\mathbb{I}$ b
   \label{fig:incompatible-export-import-example}
 \end{figure}
 
-Let $\mathbb{S}$ be the set of the export-import combinations supported by Codemodel-Rifle, and let $\alpha$ be the number of distinct algorithms needed to be implemented for supporting every element of $\mathbb{S}$. The following applies: $\alpha \leq |\mathbb{S}|$, since the framework needs one separate algorithm for each export-import case at most. Since not all export cases are compatible with all import cases (a counterexample is displayed on \Cref{fig:incompatible-export-import-example}), the set of \emph{semantically valid} export-import combinations is narrower than $\mathbb{C}$. Codemodel-Rifle should interconnect only semantically valid export-import cases, so $\mathbb{S} \subset \mathbb{C}$. Also, $\alpha$ can be reduced further by involving ASG-specific knowledge: with graph pattern generalisation techniques, several export cases can be handled as one at implementing the interconnections, while preserving semantics. Therefore several export cases can be covered by one algorithm, so $\alpha < |\mathbb{S}|$. In addition, by choosing particular export and import cases not to be supported by Codemodel-Rifle, $\alpha$ can be lowered even further. Case compatibility, unsupported cases and pattern generalisation techniques are detailed in the following subsections.
+Let $\mathbb{S}$ be the set of the export-import combinations supported by Codemodel-Rifle, and let $\alpha$ be the number of distinct algorithms needed to be implemented for supporting every element of $\mathbb{S}$. The following applies: $\alpha \leq |\mathbb{S}|$, since the framework needs one separate algorithm for each export-import case at most. As not all export cases are compatible with all import cases (a counterexample is displayed on \Cref{fig:incompatible-export-import-example}), the set of \emph{semantically valid} export-import combinations is narrower than $\mathbb{C}$. Codemodel-Rifle should interconnect only semantically valid export-import cases, so $\mathbb{S} \subset \mathbb{C}$. Also, $\alpha$ can be reduced further by involving ASG-specific knowledge: with graph pattern generalisation techniques, several export cases can be handled as one at implementing the interconnections, while preserving semantics. Therefore several export cases can be covered by one algorithm, so $\alpha < |\mathbb{S}|$. In addition, by choosing particular export and import cases not to be supported by Codemodel-Rifle, $\alpha$ can be lowered even further. Case compatibility, unsupported cases and pattern generalisation techniques are detailed in the following subsections.
 
 
 \subsection{Compatibility of the Export-Import Cases}
@@ -216,7 +216,7 @@ There are export and import cases which I chosen not be supported by Codemodel-R
 
 \subsection{Pattern Generalisation Techniques}
 
-After excluding the incompatible and the unsupported cases, $33$ different import-export combinations still need to be covered by the interconnection process. This would imply that $\alpha = 33$ algorithms are needed for all combinations, but $\alpha$ can be reduced further by involving ASG-specific knowledge. At interconnecting modules, several export cases' graph patterns can be matched by one, somehow generalised pattern description, and thus several export cases can be interconnected with the same algorithm. For import cases, generalisation is neither possible nor necessary, since only three, semantically different import cases are supported by Codemodel-Rifle. To proceed, two concepts are defined.
+After excluding the incompatible and the unsupported cases, $33$ different import-export combinations still need to be covered by the interconnection process. This would imply that $\alpha = 33$ algorithms are needed for all combinations, but $\alpha$ can be reduced further by involving ASG-specific knowledge. At interconnecting modules, several export cases' graph patterns can be matched by one, generalised pattern description, and thus several export cases can be interconnected with the same algorithm. For import cases, generalisation is neither possible nor necessary, since only three, semantically different import cases are supported by Codemodel-Rifle. To proceed, two concepts are defined.
 
 \paragraph{Semantically correct interconnection}
 
@@ -229,7 +229,7 @@ Two export cases are \emph{isomorphic}, if they contain ASG patterns which can b
 Applying the two definitions, my workflow was the following for finding the isomorphic export cases in order to reduce $\alpha$:
 
 \begin{enumerate}
-\item I inspected the similarly looking export cases' ASG patterns, whether they can be described by one, somehow generalised graph pattern description.
+\item I inspected the similar export cases' ASG patterns, whether they can be described by one, generalised graph pattern description.
 \item If yes, I examined if the two export cases can be interconnected with import cases along the same nodes and edges, with the same algorithm.
 \item If yes, I performed the interconnections, and inspected them whether they are semantically correct.
 \item If yes, the two export cases are isomorphic.
@@ -255,7 +255,7 @@ The two export cases are isomorphic because of the following.
 	\label{fig:export-declaration-demonstration}
 \end{figure}
 
-The process of pattern generalisation needs to be performed carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of the $\alpha$.
+The process of pattern generalisation needs to be performed carefully. The generalised patterns must match only those export cases' patterns that can be interconnected with imports in a semantically correct way. If the patterns are too broadly generalised, they will match more export cases than intended, resulting semantically incorrect interconnections (between incompatible export-import cases). In contrary, if they are too narrowly specified, they will match only one export case, resulting no reduction of $\alpha$.
 
 In the following, I list all export cases I found to be isomorphic in groups. Each group's name implies why the elements are isomorphic in the group. Since every element can be interconnected with imports using the same algorithm per group, an isomorphic group with its elements can be considered as one generalised export case regarding the ASG interconnection process of the Codemodel-Rifle framework. The following $5$ isomorphic export groups have been formed:
 
@@ -296,7 +296,7 @@ In the following, I list all export cases I found to be isomorphic in groups. Ea
 	\end{itemize}
 \end{itemize}
 
-Based on the above, having $5$ isomorphic export groups means that the number of distinctly handled export cases has been reduced to $5$. \Cref{table:updated-compatibility-table} shows the updated compatibility table with export cases grouped by their isomorphism, without listing the unsupported cases. By this time, with excluding incompatible and unsupported cases and applying pattern generalisation techniques, $\alpha$ has been reduced to $13$, meaning only $13$ separate algorithms have to be implemented in order to cover most of the export-import cases.
+Based on the above, having $5$ isomorphic export groups means that the number of distinctly handled export cases has been reduced to $5$. \Cref{table:updated-compatibility-table} shows the updated compatibility table with export cases grouped by their isomorphism, without listing the unsupported cases. By this time, with excluding incompatible and unsupported cases, and applying pattern generalisation techniques, $\alpha$ has been reduced to $13$, meaning only $13$ separate algorithms have to be implemented in order to cover most of the export-import cases.
 
 \begin{table}[!htb]
 	\newcommand{\yep}{\tikz\draw[black,fill=black] (0,0) circle (0.8ex);\xspace}
@@ -424,7 +424,7 @@ I developed the analyses by the process I presented in \Cref{section:steps-of-bu
 
 \subsection{Uninitialised Variables}
 
-A variable is uninitialised if it was declared but given no value. In most programming languages, uninitialised variables do have \emph{some} value, but it is usually unpredictable \emph{memory garbage} originating from prior values stored at the variable's memory location.
+A variable is uninitialised if it was declared but had no value assigned. In most programming languages, uninitialised variables do have \emph{some} value, but it is usually unpredictable \emph{memory garbage} originating from prior values stored at the variable's memory location.
 
 Contrarily in JavaScript, uninitialised variables do not contain random memory garbage. A method or statement evaluating a variable that has not been assigned a value returns \lstinline{undefined}; a primitive value and also a primitive type of JavaScript. Uninitialised variables are of type \lstinline{undefined} with the value \lstinline{undefined}. Per se, uninitialised variables are not defects, but if an uninitialised variable is used without checking whether it is \lstinline{undefined}, it can break code execution in several ways: e.g.\ making the result of the evaluating expression \lstinline{undefined} too, or throwing a \lstinline{ReferenceError}.
 
@@ -440,9 +440,9 @@ Regarding uninitialised variables, my analysis in Codemodel-Rifle reports if a v
 
 \subsection{Globally Unused Exports}
 
-The \es module system provides a practical solution for keeping code bases organised: logically separated, but practically cooperating software components can be implemented. Exporting only particular entities from a module allows to hide several sensitive information from the outside, such as internal functioning and implementation details, or even security-related specialities. Thus, a best practice is to only export what is explicitly intended to be public, and keep everything else private.
+The \es module system provides a practical solution for keeping code bases organised: logically separated, but practically cooperating software components can be implemented. Exporting only particular entities from a module allows to hide several sensitive information from the outside, such as internal functionality and implementation details, or even security-related specialities. Thus, a best practice is to only export what is explicitly intended to be public, and keep everything else private.
 
-Unused exports can be a security concern. My analysis for detecting unused exports report if an entity is exported, but never imported to any other module. It is based on the semantics of the module interconnections described in \Cref{section:interconnect}.
+My analysis for detecting unused exports report if an entity is exported, but never imported to any other module. It is based on the semantics of the module interconnections described in \Cref{section:interconnect}.
 
 \Cref{fig:analysis-unusedexport} presents a partial ASG demonstrating how an unused export is revealed. Nodes of the exporter module's graph are indicated with blue colour, nodes of the importer module's graph are indicated with crimson colour. The nodes with thicker outlines are members of the pattern matching expression, the dashed outlines represent entities being checked for existence. The source code of the analysis is available in the Appendix.
 
@@ -496,13 +496,13 @@ Some defects are more general than to present their patterns in an intact graph 
 
 \subsection{Transitive Defects}
 
-In this thesis, the term transitive defect is used as follows. A software defect is considered \emph{transitive}, if its effect propagates through multiple variable value assignment and/or function calls. Patterns of transitive defects generally can not be directly matched in the ASG, because the graph pattern of such defects — spanning an indeterminate number of functions or variable assignments — can not be described by one general pattern expression. But, patterns of transitive defects can be deduced in the ASG by following their propagation, and marking the intermediate nodes with constraints.
+In this thesis, the term transitive defect is used as follows. A software defect is considered \emph{transitive}, if its effect propagates through multiple variable value assignments and/or function calls. Patterns of transitive defects generally can not be directly matched in the ASG, because the graph pattern of such defects — spanning an indeterminate number of functions or variable assignments — can not be described by one general pattern description. But, patterns of transitive defects can be deduced in the ASG by following their propagation, and marking the intermediate nodes with constraints.
 
-Demonstratively, the running example presented in \Cref{chapter:background} contains a transitive division by zero defect. In the example's \lstinline{exporter} module, there is a variable given the value zero, then the variable is nested into several levels of variable assignments and function return expressions, finally into the \lstinline{exporter} module's default function export. The exported function will return zero, too. After the example's \lstinline{importer} module imports the default export of \lstinline{exporter}, it divides numeric literal $5$ with the return value of the imported function, practically by zero.
+Demonstratively, the running example presented in \Cref{chapter:background} contains a transitive division by zero defect. In the example's \lstinline{exporter} module, there is a variable given the value zero, then the variable is nested into several levels of variable assignments and function return expressions, finally into the \lstinline{exporter} module's default function export. The exported function will return zero, too. After the example's \lstinline{importer} module imports the default export of \lstinline{exporter}, it divides numeric literal $5$ with the return value of the imported function, practically by zero. The defect is transitive in the meaning that the zero is not a numeric literal $0$, which could be revealed easily by simple pattern matching. Instead, that zero comes from nested variable assignments and functions — it \emph{transits} along variable assignments and functions. This transitivity can be deduced by the Qualifier System.
 
-The defect is transitive in the meaning that the zero is not a numeric literal $0$ which could be revealed easily by simple pattern matching. Instead, that zero comes from several levels of nested variable assignments and functions — it \emph{transits} along variable assignments and functions. This transitivity can be deduced by the Qualifier System.
+This deduction of values is similar to the approach of data-flow analysis. By propagating \emph{qualifiers} in the ASG node-by-node, until the system reaches a fixpoint (where no further propagation is possible), basically the nodes' local data-flow equations are solved.
 
-\Cref{fig:transitive-defect-propagation} presents the propagation of the running example's transitive division by zero defect in the \lstinline{exporter} module's partial ASG. The graph node marked with black filling is the exported \lstinline{function b()} (which is the right-hand value of the division in the \lstinline{importer} module). The node with crimson filling is the \lstinline{LiteralNumericExpression}, which finally causes \lstinline{function b()} to return 0. The propagation of the transitive defect starts at the assignment of the literal zero (the crimson node), and ends — at least in the \lstinline{exporter} module — at the exported function (the black node). (Of course, the propagation does not end at module boundaries, since the related modules' ASGs are interconnected. In this case however, the \lstinline{importer} module was omitted from the graph for transparency.)
+\Cref{fig:transitive-defect-propagation} presents the propagation of the running example's transitive division by zero defect in the \lstinline{exporter} module's partial ASG. The graph pseudo-node marked with crimson filling is the \lstinline{importer} module. The node with blue filling is the \lstinline{LiteralNumericExpression}, which finally causes the \lstinline{importer} module's \lstinline{function defaultName()} to return 0. The propagation of the transitive defect starts at the assignment of the literal zero (the blue node), exits the \lstinline{exporter} module, then — as the two related modules' graphs are interconnected with each other — enters and ends in the \lstinline{importer} module.
 
 \begin{sidewaysfigure}[!p]
   \centering
@@ -533,7 +533,7 @@ The basic operation of the system is the following. In the enumeration below, th
 \item \textbf{Repeat the previous step until there is no modification in the graph.\footnote{There has to be a stop condition for unintentional infinite loops.}} In the running example — after the propagation finished — the \lstinline{EqualsZero} qualifier will be connected to every entity that is caused to be zero because of the \lstinline{var a = 0;} assignment, including the exported \lstinline{function b()}, and thus the imported \lstinline{defaultName()} function — which is the right-hand side value of the division. Therefore, the transitive division by zero defect can be detected by simply checking whether the right-hand side of the expression has an \lstinline{EqualsZero} qualifier.
 \end{enumerate}
 
-If the propagation of the Qualifier System finished, then all transitive defects are \emph{closed} in the meaning that every spread of the defect is marked with a qualifier, so it can be easily detected by a simple pattern matching expression. The following subsections present examples for detecting transitive defects with the Qualifier System.
+If the propagation of the Qualifier System finishes, then all transitive defects are \emph{closed} in the meaning that every spread of the defect is marked with a qualifier, so it can be easily detected by a simple pattern matching expression. The following subsections present examples for detecting transitive defects with the Qualifier System.
 
 
 \subsection{The Running Example's Division By Zero (transitive)}
@@ -593,7 +593,9 @@ An exception halts the execution of the program, and yields it to the exception 
 
 \Cref{fig:deeply-nested-exception} presents a program with an exception nested into several levels of functions. The program — instead of logging 42 to the console — will halt, since calling \lstinline{function b()} will eventually cause an \lstinline{SQLException} to be thrown.
 
-By introducing the \lstinline{ExceptionThrown} qualifier instance into the Qualifier System, the propagation path of an exception can be tracked. At analysing the code of \Cref{fig:deeply-nested-exception}, first the \lstinline{throw new SQLException} statement gets marked by the \lstinline{ExceptionThrown} qualifier. Then after several steps of propagation, \lstinline{function b()} also gets marked, therefore it can be easily found by pattern matching. My analysis reports that:
+By introducing the \lstinline{ExceptionThrown} qualifier instance into the Qualifier System, the propagation path of an exception can be tracked. At analysing the code of \Cref{fig:deeply-nested-exception}, first the \lstinline{throw new SQLException} statement gets marked by the \lstinline{ExceptionThrown} qualifier. Then after several steps of propagation, \lstinline{function b()} also gets marked, therefore it can be easily found by pattern matching.
+
+My analysis for exception-caused unreachable code reports that:
 
 \begin{itemize}
 \item an exception is thrown at the execution of the statement \lstinline{console.log(b())}, and
@@ -603,8 +605,8 @@ By introducing the \lstinline{ExceptionThrown} qualifier instance into the Quali
 
 \section{Limitations of the Analyses}
 
-Though the graph-based static analysis approach is a promising novelty from several aspects, my analyses presented in this thesis are very limited in many ways. Implementing \es module interconnections and introducing the Qualifier System were both relevant acts, but they are only supporting elements of the analyses themselves.
+Though the graph-based static analysis approach is a promising novelty from several aspects, my analyses presented in this thesis are limited in many ways. Implementing \es module interconnections and introducing the Qualifier System were both relevant acts, but they are only supporting elements of the analyses themselves.
 
 Codemodel-Rifle's variable and function value deductions are primitive: no arithmetic operations are supported, the framework tracks only raw, unmodified values. Conditional cases are not covered either: an exception gets detected only if it is unconditionally thrown.
 
-Implementing sound and complete analyses with the Codemodel-Rifle framework is not a subject of this thesis. But — building upon the work of Dániel Stein — the first steps have been made to create a versatile graph-based static analysis tool capable of inspecting enterprise-grade source code repositories coherently.
+Implementing sound and complete analyses with the Codemodel-Rifle framework is not the subject of this thesis. But — building upon the work of Dániel Stein — the first steps have been made to create a versatile graph-based static analysis tool capable of inspecting enterprise-grade source code repositories coherently.
