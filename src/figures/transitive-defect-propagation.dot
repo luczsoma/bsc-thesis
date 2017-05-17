@@ -5,11 +5,15 @@ digraph Neo {
     shape = "Mrecord"
     fontname = "Noto Sans"
     penwidth = 0.5
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
   ]
   edge [
     fontname = "Noto Sans"
     fontsize = "18"
     penwidth = 0.5
+    color = "cadetblue4"
+    fontcolor = "cadetblue4"
   ]
   N0 [
     label = "{ReturnStatement\nStatement}"
@@ -141,15 +145,9 @@ digraph Neo {
   ]
   N89 [
     label = "{Variable|'name' = 'b' : String\l}"
-    penwidth = 4
-    fillcolor = "black"
-    fontcolor = "white"
-    color = "white"
-    style = "filled"
   ]
   N89 -> N167 [
     label = "declarations\n"
-    penwidth = 4
   ]
   N91 [
     label = "{Expression\nCallExpression}"
@@ -211,7 +209,7 @@ digraph Neo {
   ]
   N142 [
     label = "{Expression\nLiteralNumericExpression|'value' = 0.0 : double\l}"
-    fillcolor = "crimson"
+    fillcolor = "cadetblue4"
     fontcolor = "white"
     color = "white"
     style = "filled"
@@ -248,8 +246,19 @@ digraph Neo {
   N162 -> N85 [
     label = "declarators\n"
   ]
+  N988 [
+    shape = "folder"
+    label = "importer module"
+    style = "filled"
+    fillcolor = "crimson"
+    fontcolor = "white"
+    color = "white"
+  ]
   N167 [
     label = "{Declaration|'kind' = 'FunctionDeclaration' : String\l}"
+    penwidth = 4
+  ]
+  N988 -> N167 [
     penwidth = 4
   ]
   N167 -> N33 [

@@ -558,7 +558,53 @@ After the propagation of qualifiers, a simple pattern matching query checks if t
 
 \subsection{Misuse of Negative Integers as Function Arguments (transitive)}
 
+Detecting the misuse of negative function arguments in trasitive cases — when the argument is not a numeric literal, but a variable, whose value can be anything — needs the same value deduction, as detecting a transitive division by zero defect. The difference is the usage of qualifiers: in this case, a \lstinline{NegativeNumeric} qualifier\footnote{The qualifiers' names can be arbitrary, the semantic design of a qualifier-based analysis requires no predefined naming system. The name of a qualifier instance matters only at implementing the pattern matching algorithms for the analyses: e.g.\ an \lstinline{EqualsZero} qualifier is only an error if it is connected to the right-hand side of a division expression.} is utilised instead of an \lstinline{EqualsZero}.
+
+The \lstinline{NegativeNumeric} qualifier is propagated through the graph along the variable assignments and function return expressions, similarly to the \lstinline{EqualsZero}, with the same stop condition. After the propagation of the qualifier, a simple pattern matching query checks if there are any \lstinline{Math.sqrt()} or \lstinline{Math.log()} function calls with their arguments marked as \lstinline{NegativeNumeric}. If yes, then it is a misuse of negative function argument defect, so it is reported to the developer.
+
+
 \subsection{Unreachable Code caused by Exception (transitive)}
+
+The exception handling of the \es language has the same semantics as Java. If exceptions thrown with the \lstinline{throw} keyword are surrounded by a \lstinline{try..catch} block context, they get caught, and they can be processed or thrown further.
+
+\begin{figure}[!htb]
+	\centering
+	\begin{lstlisting}[language=JavaScript]
+						function throwsException() {
+						    return function () {
+						        throw new SQLException;
+						    };
+						}
+						let a = throwsException;
+						let b = function () {
+						    return function () {
+						        let c = throwsException();
+						        return 42;
+						    }
+						};
+						console.log(b());
+						console.log(42);
+	\end{lstlisting}
+  \caption{Deeply nested exception in \es}
+  \label{fig:deeply-nested-exception}
+\end{figure}
+
+An exception halts the execution of the program, and yields it to the exception handler — the catch block —, at least if there are handlers implemented by the developer. Source code following an exception throwing statement is not executed, therefore it is unreachable code. Most static analysis tools detect dead code caused by exceptions, but only very shallowly.
+
+\Cref{fig:deeply-nested-exception} presents a program with an exception nested into several levels of functions. The program — instead of logging 42 to the console — will halt, since calling \lstinline{function b()} will eventually cause an \lstinline{SQLException} to be thrown.
+
+By introducing the \lstinline{ExceptionThrown} qualifier instance into the Qualifier System, the propagation path of an exception can be tracked. At analysing the code of \Cref{fig:deeply-nested-exception}, first the \lstinline{throw new SQLException} statement gets marked by the \lstinline{ExceptionThrown} qualifier. Then after several steps of propagation, \lstinline{function b()} also gets marked, therefore it can be easily found by pattern matching. My analysis reports that:
+
+\begin{itemize}
+\item an exception is thrown at the execution of the statement \lstinline{console.log(b())}, and
+\item because of the exception, the statement \lstinline{console.log(42)} will never be executed.
+\end{itemize}
 
 
 \section{Limitations of the Analyses}
+
+Though the graph-based static analysis approach is a promising novelty from several aspects, my analyses presented in this thesis are very limited in many ways. Implementing \es module interconnections and introducing the Qualifier System were both relevant acts, but they are only supporting elements of the analyses themselves.
+
+Codemodel-Rifle's variable and function value deductions are primitive: no arithmetic operations are supported, the framework tracks only raw, unmodified values. Conditional cases are not covered either: an exception gets detected only if it is unconditionally thrown.
+
+Implementing sound and complete analyses with the Codemodel-Rifle framework is not a subject of this thesis. But — building upon the work of Dániel Stein — the first steps have been made to create a versatile graph-based static analysis tool capable of inspecting enterprise-grade source code repositories coherently.

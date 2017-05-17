@@ -562,3 +562,149 @@ RETURN
     entityLocation.line AS line,
     entityLocation.column AS column
 \end{lstlisting}
+
+
+\newpage
+\section{Cypher Queries of the Qualifier System}
+
+\subsection{Initialising the Qualifier System Initialisation}
+\begin{lstlisting}[language=Cypher]
+MERGE (qs:QualifierSystem)
+
+MERGE (qs)-[:_instance]->(:Qualifier:EqualsZero)
+MERGE (qs)-[:_instance]->(:Qualifier:Negative)
+MERGE (qs)-[:_instance]->(:Qualifier:ExceptionThrown)
+\end{lstlisting}
+
+
+\subsection[Tagging the literals with EqualsZero]{Tagging the literals with \lstinline{EqualsZero}}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (literalNumericExpression:LiteralNumericExpression),
+    (qs:QualifierSystem)-[:_instance]->(equalsZero:Qualifier:EqualsZero)
+
+    WHERE
+    literalNumericExpression.value = 0
+
+MERGE
+    (literalNumericExpression)-[:_qualifier]->(equalsZero)
+\end{lstlisting}
+
+
+\subsection[Tagging the exception throw statements with ExceptionThrown]{Tagging the exception throw statements with \lstinline{ExceptionThrown}}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (throwStatement:ThrowStatement),
+    (qs:QualifierSystem)-[:_instance]->(exceptionThrown:ExceptionThrown)
+
+MERGE
+    (throwStatement)-[:_qualifier]->(exceptionThrown)
+\end{lstlisting}
+
+
+\newpage
+\section{Cypher Queries of the Qualifier Propagation}
+
+\subsection{Propagation along function calls}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (callExpression:CallExpression)-[:callee]->(:Expression)
+        -[:_qualifier]->(qualifier:Qualifier)
+
+MERGE
+    (callExpression)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\subsection{Propagation along function declarations}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (qualifier:Qualifier)<-[:_qualifier]-(functionDeclaration:FunctionDeclaration)
+        -[:name]->(bindingIdentifier:BindingIdentifier)
+
+MERGE
+    (bindingIdentifier)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\subsection{Propagation along function return statements}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (function:Function)-[:body]->(:FunctionBody)
+        -[:statements]->(:ReturnStatement)
+        -[:expression]->(:Expression)
+        -[:_qualifier]->(qualifier:Qualifier)
+
+MERGE
+    (function)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\subsection{Propagation along throw statements in functions}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (function:Function)-[:body]->(:FunctionBody)
+        -[:statements]->(:ThrowStatement)
+        -[:_qualifier]->(qualifier:Qualifier)
+
+MERGE
+    (function)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\newpage
+\subsection{Propagation along variable declarations}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (variable:Variable)-[:declarations]->(:Declaration)
+        -[:node]->(:BindingIdentifier)
+        -[:_qualifier]->(qualifier:Qualifier)
+
+MERGE
+    (variable)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\subsection{Propagation along variable declaration statements}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (variableDeclarationStatement:VariableDeclarationStatement)
+        -[:declaration]->(variableDeclaration:VariableDeclaration)
+        -[:declarators]->(variableDeclarator:VariableDeclarator)
+        -[:binding]->(:BindingIdentifier)-[:_qualifier]->(qualifier:Qualifier)
+
+MERGE
+    (variableDeclarationStatement)-[:_qualifier]->(qualifier)
+
+MERGE
+    (variableDeclaration)-[:_qualifier]->(qualifier)
+
+MERGE
+    (variableDeclaration)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\subsection{Propagation along variable initialisations}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (expression:Expression)-[:_qualifier]->(qualifier:Qualifier),
+    (expression)<-[:init]-(:VariableDeclarator)-[:binding]
+        ->(:BindingIdentifier)<-[:node]-(:Reference)
+        <-[:references]-(variable:Variable)
+
+MERGE
+    (variable)-[:_qualifier]->(qualifier)
+\end{lstlisting}
+
+
+\newpage
+\subsection{Propagation along variable references}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (variable:Variable)-[:_qualifier]->(qualifier:Qualifier),
+    (variable)-[:references]->(:Reference)
+        -[:node]->(variableReference:VariableReference)
+
+MERGE
+    (variableReference)-[:_qualifier]->(qualifier)
+\end{lstlisting}
