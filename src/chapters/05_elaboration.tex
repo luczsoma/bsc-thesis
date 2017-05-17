@@ -563,7 +563,7 @@ Detecting the misuse of negative function arguments in trasitive cases — when 
 The \lstinline{NegativeNumeric} qualifier is propagated through the graph along the variable assignments and function return expressions, similarly to the \lstinline{EqualsZero}, with the same stop condition. After the propagation of the qualifier, a simple pattern matching query checks if there are any \lstinline{Math.sqrt()} or \lstinline{Math.log()} function calls with their arguments marked as \lstinline{NegativeNumeric}. If yes, then it is a misuse of negative function argument defect, so it is reported to the developer.
 
 
-\subsection{Unreachable Code caused by Exception (transitive)}
+\subsection{Unreachable Code Caused by Exception (transitive)}
 
 The exception handling of the \es language has the same semantics as Java. If exceptions thrown with the \lstinline{throw} keyword are surrounded by a \lstinline{try..catch} block context, they get caught, and they can be processed or thrown further.
 

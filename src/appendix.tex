@@ -37,6 +37,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportAlias–importDefault}
 \begin{lstlisting}[language=Cypher]
@@ -67,6 +68,7 @@ MERGE
 DETACH DELETE
     declarationToDelete
 \end{lstlisting}
+
 
 \newpage
 \subsection{exportAlias–importName}
@@ -100,6 +102,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportDeclaration–importAlias}
 \begin{lstlisting}[language=Cypher]
@@ -131,6 +134,7 @@ MERGE
 DETACH DELETE
     declarationToDelete
 \end{lstlisting}
+
 
 \newpage
 \subsection{exportDeclaration–importName}
@@ -164,6 +168,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportDefaultDeclaration–importAlias}
 \begin{lstlisting}[language=Cypher]
@@ -194,6 +199,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportDefaultDeclaration–importDefault}
 \begin{lstlisting}[language=Cypher]
@@ -221,6 +227,7 @@ MERGE
 DETACH DELETE
     declarationToDelete
 \end{lstlisting}
+
 
 \newpage
 \subsection{exportDefaultDeclaration–importName}
@@ -252,6 +259,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportDefaultName–importAlias}
 \begin{lstlisting}[language=Cypher]
@@ -282,6 +290,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportDefaultName–importDefault}
 \begin{lstlisting}[language=Cypher]
@@ -309,6 +318,7 @@ MERGE
 DETACH DELETE
     declarationToDelete
 \end{lstlisting}
+
 
 \newpage
 \subsection{exportDefaultName–importName}
@@ -340,6 +350,7 @@ DETACH DELETE
     declarationToDelete
 \end{lstlisting}
 
+
 \newpage
 \subsection{exportName–importAlias}
 \begin{lstlisting}[language=Cypher]
@@ -370,6 +381,7 @@ MERGE
 DETACH DELETE
     declarationToDelete
 \end{lstlisting}
+
 
 \newpage
 \subsection{exportName–importName}
@@ -431,6 +443,7 @@ RETURN
     variableLocation.column AS column
 \end{lstlisting}
 
+
 \newpage
 \subsection{unusedExport — exportName-exportAlias}
 \begin{lstlisting}[language=Cypher]
@@ -455,6 +468,7 @@ RETURN
     exportLocation.line AS line,
     exportLocation.column AS column
 \end{lstlisting}
+
 
 \newpage
 \subsection{unusedExport — exportDefault-exportDefaultName}
@@ -488,6 +502,7 @@ RETURN
     exportLocation.column AS column
 \end{lstlisting}
 
+
 \newpage
 \subsection{unusedExport — exportDeclaration}
 \begin{lstlisting}[language=Cypher]
@@ -515,6 +530,7 @@ RETURN
     exportLocation.column AS column
 \end{lstlisting}
 
+
 \newpage
 \subsection{divisionByZero-literal — restricted}
 \begin{lstlisting}[language=Cypher]
@@ -537,6 +553,7 @@ RETURN
     locationStart.column AS column
 \end{lstlisting}
 
+
 \newpage
 \subsection{squareRootNegativeArgument-literal — restricted}
 \begin{lstlisting}[language=Cypher]
@@ -557,6 +574,73 @@ MATCH
 
 RETURN
     'Square root called with negative argument' AS message,
+    '' AS entityName,
+    containingCompilationUnit.parsedFilePath AS compilationUnitPath,
+    entityLocation.line AS line,
+    entityLocation.column AS column
+\end{lstlisting}
+
+
+\newpage
+\subsection{divisionByZero-variable — transitive}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (binaryExpression:BinaryExpression)-[:right]->(rightValue:Expression)
+        -[:location]->(:SourceSpan)
+        -[:start]->(locationStart:SourceLocation)
+        <-[:contains]-(containingCompilationUnit:CompilationUnit),
+    (rightValue)-[:_qualifier]->(equalsZero:EqualsZero)
+
+    WHERE
+    binaryExpression.operator = 'Div'
+
+RETURN
+    'Division by zero' AS message,
+    '' AS entityName,
+    containingCompilationUnit.parsedFilePath AS compilationUnitPath,
+    locationStart.line AS line,
+    locationStart.column AS column
+\end{lstlisting}
+
+
+\newpage
+\subsection{squareRootNegativeArgument-variable — transitive}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (containingCompilationUnit:CompilationUnit)-[:contains]->
+        (callExpression:CallExpression)
+        -[:callee]->(memberExpression:StaticMemberExpression)
+        -[:object]->(variableReference:VariableReference),
+    (callExpression)-[:arguments]->(argument:Expression)
+        -[:_qualifier]->(negativeNumeric:NegativeNumeric),
+    (callExpression)-[:location]->
+         (:SourceSpan)-[:start]->(entityLocation:SourceLocation)
+
+    WHERE
+    variableReference.name = 'Math'
+    AND memberExpression.property = 'sqrt'
+
+RETURN
+    'Square root called with negative argument' AS message,
+    '' AS entityName,
+    containingCompilationUnit.parsedFilePath AS compilationUnitPath,
+    entityLocation.line AS line,
+    entityLocation.column AS column
+\end{lstlisting}
+
+
+\newpage
+\subsection{unreachableCode-exception — transitive}
+\begin{lstlisting}[language=Cypher]
+MATCH
+    (containingCompilationUnit:CompilationUnit)-[:contains]->
+        (statement:Statement)-[:_qualifier]->(:ExceptionThrown),
+    (statement)-[:_next]->(unreachableStatement:Statement),
+    (unreachableStatement)-[:location]->(:SourceSpan)
+        -[:start]->(entityLocation:SourceLocation)
+
+RETURN
+    'Unreachable code' AS message,
     '' AS entityName,
     containingCompilationUnit.parsedFilePath AS compilationUnitPath,
     entityLocation.line AS line,
@@ -603,7 +687,7 @@ MERGE
 
 
 \newpage
-\section{Cypher Queries of the Qualifier Propagation}
+\section{Cypher Queries for Qualifier Propagation}
 
 \subsection{Propagation along function calls}
 \begin{lstlisting}[language=Cypher]
