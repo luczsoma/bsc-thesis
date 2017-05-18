@@ -1,4 +1,97 @@
 \chapter{Evaluation of Performance}
 \label{chapter:evaluation}
 
-.
+In this chapter, I evaluate the framework's performance by measuring the duration of analysing several code repositories.
+
+
+\section{Evaluation Environment}
+
+\subsection{Computer Configuration}
+
+The measurements were performed on my computer for the sake of simplicity. During a measurement session, my computer was plugged in, it was configured to utilise its full performance, and only those software were running, which were explicitly necessary for the measurements. Each measurement was preceded by a full system reboot.
+
+The major points of the my computer's configuration is the following:
+
+\begin{itemize}
+\item Apple MacBook Pro, Mid-2014, 13 inches;
+\item Intel Core i5 (2,6 GHz);
+\item 8 GB 1600 MHz DDR3 RAM;
+\item 250 GB SSD.
+\end{itemize}
+
+
+\subsection{Software Configuration}
+
+As currently the Codemodel-Rifle framework does not have any interface to interact with, the measurements were performed as per-repository unit tests with logging test results onto the console.
+
+\begin{itemize}
+\item \textbf{Runtime:} JetBrains IntelliJ IDEA Ultimate 2016.3.4
+\item \textbf{Java Runtime Environment:} 1.8.0\_112-release-408-b6 x86\_64
+\item \textbf{Java Virtual Machine:} OpenJDK 64-Bit Server VM by JetBrains s.r.o (initial memory allocation pool: 4 GB, maximum memory allocation pool: 8 GB)
+\item \textbf{Database:} Neo4j Community Edition 3.1.3 Server (initial heap size: 4 GB, maximum heap size: 8 GB, page cache size: 8 GB, transaction log retention policy: 1 day)
+\item \textbf{Database driver:} Neo4j Bolt driver for Java
+\end{itemize}
+
+For speediness, a database index was defined in Neo4j for the \lstinline{`id'} property of all nodes labeled with \lstinline{'AsgNode'}.
+
+
+\section{Measurement Goals and Methods}
+
+\subsection{Selection Criteria of the Analysed Code Repositories}
+
+The evaluation was performed on popular open-source JavaScript code repositories found on GitHub. The 42 randomly chosen repositories differ in size, in the number of lines of code, and in the number of distinct source files.
+
+
+\subsection{Key Performance Indices}
+
+The goal of the performance evaluation was to determine the time characteristics of the refactored Codemodel-Rifle framework, and especially the implemented analyses. Based on the production operation of the framework detailed in the introduction of \Cref{chapter:elaboration}, the following four key performance indices have been determined to be measured.
+
+\begin{itemize}
+\item \textbf{The duration of synchronisation:} the time period between starting the importing process of a code repository (excl. finding all \lstinline{.js} files, and reading the contents of the source files) and saving the last module's last \lstinline{AsgNode} into the database.
+\item \textbf{The duration of interconnection:} this time period encompasses searching for semantically valid interconnections between modules, and actually performing the interconnections.
+\item \textbf{The duration of utilising the Qualifier System:} this time period encompasses initialising the Qualifier System, and propagating the qualifiers.
+\item \textbf{The duration of performing the analyses:} this time period encompasses trying to match all predefined analysis patterns.
+\end{itemize}
+
+Besides the key performance indices, the number of nodes and relationships created during the synchronisation of a repository are also recorded.
+
+
+\subsection{Process of Measurement}
+
+All analysed code repositories were measured four times in a session. Each session was preceded by a full system restart. The final measurement results of a repository are averaged from the four different values.
+
+
+\section{Measurement Results}
+
+\subsection{Synchronisation}
+
+\subsection{Interconnection}
+
+\subsection{The Qualifier System}
+
+\subsection{Analysis}
+
+
+\section{Defects Found by the Framework}
+
+The framework found only two types of defects in the 42 analysed repositories: 897 cases of uninitialised variables, and 134 cases of globally unused exports were found. As the analysis is neither sound, nor complete, these numbers can be inaccurate. However, I inspected a randomly chosen subset of the found defects manually, and — according to my experiences — they were correct in all cases.
+
+
+\section{Threats to Validity}
+
+I designed the measurements to be as accurate and complete as possible. Nevertheless, there are factors beyond control, which may influence the results. In this section, I summarise the factors which could bias the measurements.
+
+
+\subsection{Measurements on a Consumer Laptop}
+
+Since my computer runs an operating system targeted for consumer usage, it may contain software running in the background, which influence measurement factors like processor or memory usage. I tried to mitigate these effects by configuring the computer to utilise all resources for the measurement procedure, running the measurement processes multiple times, and analysing a larger number of code repositories independently.
+
+
+\subsection{Graph Query Optimisations}
+
+I tried to optimise the graph queries of the interconnections and the analyses as much as I can. However, since I am not an expert in the internals of Cypher queries, it is possible that some queries can be optimised further. Therefore, the characteristics of the interconnections or the analyses may not be correct.
+
+
+\subsection{Methological Mistakes}
+
+It is possible that I made other methodological mistakes at implementing the analyses, or the measurements. Using a fluid, internal semantics for the interconnection of modules incorrectly can be an example of a such methodological mistake.
