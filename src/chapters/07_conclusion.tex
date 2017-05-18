@@ -1,4 +1,45 @@
 \chapter{Conclusion and Future Work}
 \label{chapter:conclusion}
 
-.
+My primary object was to extend the Codemodel-Rifle framework with analysis algorithms. To make the framework practically usable, this involved several other supporting features to be planned and implemented.
+
+Codemodel-Rifle was rearchitectured to become modular. Therefore, by changing components if necessary, the framework can adapt to various requirements and use-cases. The software was also revised semantically, by elaborating the capability of performing analyses on multiple modules coherently, the Qualifier System, and the analyses themselves.
+
+Once the framework contains enough analyses, it can be a practical tool for helping developers in finding defects. By this time, utilising module interconnections and the Qualifier System, it is expressive enough to cover a large set of statically analysable use-cases.
+
+
+\section{Summary of Contributions}
+
+I contributed to the development of the framework in two ways. Scientific (or semantic) contributions encompass the performances regarding the analysis of \es, and the language itself. Architectural contributions cover designing the architecture of a large-scale, modular code analysis software.
+
+
+\subsection{Scientific Contributions}
+
+I have achieved the following scientific contributions:
+
+\begin{itemize}
+\item Proposed a semantics of interconnecting multiple Abstract Semantic Graphs along the export-import statements of the \es language.
+\item Implemented an approach to evaluate graph-based static analyses over multiple \es modules coherently.
+\item Provided an extensible data model and an algorithm for analysing the data flow of \es software.
+\end{itemize}
+
+
+\subsection{Architectural Contributions}
+
+I have also achieved the following architectural contributions:
+
+\begin{itemize}
+\item Designed a modular architecture for an analysis framework to be capable to scale and adapt to various requirements.
+\item Created a specialised Object-Graph Mapping layer for optimising the transformation of Abstract Syntax Trees into Abstract Semantic Graphs.
+\item Implemented a specialised Query Builder for the Cypher language.
+\item Elaborated several graph-based analyses for the \es language.
+\end{itemize}
+
+
+\section{Future Work}
+
+The goal of the work described in this thesis was to extend the Codemodel-Rifle framework with analysis algorithms. By implementing several other supporting features, the scope broadened: it is now possible to analyse multiple modules coherently, and to inspect the data flow of \es software. Implementing more — and more precise — analyses, which utilise these new capabilities is a task for the future.
+
+Further optimisations can be done at various points of the architecture. By collaborating with version-control systems like Git for file-level incremental processing, the speed of the analyses could be increased significantly.
+
+To include Codemodel-Rifle into various software development methods, the framework should be able to communicate with other software. Thus the capability of producing machine-readable output is to be implemented. Also, creating plugins for continuous integration infrastructures would make possible to embed the framework into well-known software production architectures.
