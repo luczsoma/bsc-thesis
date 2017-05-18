@@ -759,10 +759,8 @@ MATCH
 
 MERGE
     (variableDeclarationStatement)-[:_qualifier]->(qualifier)
-
 MERGE
     (variableDeclaration)-[:_qualifier]->(qualifier)
-
 MERGE
     (variableDeclaration)-[:_qualifier]->(qualifier)
 \end{lstlisting}
@@ -781,7 +779,6 @@ MERGE
 \end{lstlisting}
 
 
-\newpage
 \subsection{Propagation along variable references}
 \begin{lstlisting}[language=Cypher]
 MATCH
