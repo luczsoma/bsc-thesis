@@ -651,7 +651,7 @@ RETURN
 \newpage
 \section{Cypher Queries of the Qualifier System}
 
-\subsection{Initialising the Qualifier System Initialisation}
+\subsection{Initialising the Qualifier System}
 \begin{lstlisting}[language=Cypher]
 MERGE (qs:QualifierSystem)
 
@@ -661,7 +661,7 @@ MERGE (qs)-[:_instance]->(:Qualifier:ExceptionThrown)
 \end{lstlisting}
 
 
-\subsection[Tagging the literals with EqualsZero]{Tagging the literals with \lstinline{EqualsZero}}
+\subsection[Tagging literals with EqualsZero]{Tagging literals with \lstinline{EqualsZero}}
 \begin{lstlisting}[language=Cypher]
 MATCH
     (literalNumericExpression:LiteralNumericExpression),
@@ -675,7 +675,7 @@ MERGE
 \end{lstlisting}
 
 
-\subsection[Tagging the exception throw statements with ExceptionThrown]{Tagging the exception throw statements with \lstinline{ExceptionThrown}}
+\subsection[Tagging the throw statements with ExceptionThrown]{Tagging the \lstinline{throw} statements with \lstinline{ExceptionThrown}}
 \begin{lstlisting}[language=Cypher]
 MATCH
     (throwStatement:ThrowStatement),
@@ -789,3 +789,162 @@ MATCH
 MERGE
     (variableReference)-[:_qualifier]->(qualifier)
 \end{lstlisting}
+
+
+\newpage
+\section{Selected Open-Source Repositories for the Evaluation}
+
+Apart from the \lstinline{tresorit/webclient} — which is a closed-source, security-oriented industrial project from the cloud-security company Tresorit —, every source code repository has been selected and downloaded from GitHub\footnote{\texttt{https://github.com}}, a popular web-based repository hosting service for the Git version control system. The below format denotes \lstinline{owner/repository}.
+
+
+\subsection{Repository and Graph Data}
+
+\begin{center}
+\begin{tabular}{l|cc|cc}
+    \toprule
+                                                      & \rotatebox{90}{JavaScript SLOC excl. comments}
+                                                      & \rotatebox{90}{Number of JavaScript source file}
+                                                      & \rotatebox{90}{Number of nodes in the ASG}
+                                                      & \rotatebox{90}{Number of relationships in the ASG~~}
+                                                      \\
+    \midrule
+    \textbf{initialstate/silent-doorbell}             &   15        &   2     &   686         &   2,306       \\
+    \textbf{babel/example-node-server}                &   17        &   2     &   573         &   1,900       \\
+    \textbf{bradtraversy/rxjs\_boiler}                &   19        &   2     &   340         &   1,104       \\
+    \textbf{tj/deferred.js}                           &   29        &   3     &   1,152       &   3,927       \\
+    \textbf{karma-runner/gulp-karma}                  &   32        &   4     &   988         &   3,232       \\
+    \textbf{scotch-io/node-web-scraper}               &   34        &   1     &   1,559       &   5,326       \\
+    \textbf{brettlangdon/jsnice}                      &   36        &   1     &   1,460       &   4,976       \\
+    \textbf{facundoolano/promise-log}                 &   41        &   1     &   533         &   1,816       \\
+    \textbf{jinzhe/vue-editable}                      &   41        &   1     &   1,479       &   5,092       \\
+    \textbf{callmecavs/gotem}                         &   44        &   2     &   1,172       &   3,998       \\
+    \textbf{Heydon/forceFeed}                         &   48        &   1     &   2,205       &   7,574       \\
+    \textbf{varHarrie/Dawn-Blossoms}                  &   50        &   2     &   2,369       &   8,120       \\
+    \textbf{kmewhort/pointer\_events\_polyfill}       &   54        &   1     &   1,595       &   5,402       \\
+    \textbf{bodil/eslint-config-cleanjs}              &   55        &   1     &   973         &   3,238       \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{l|cc|cc}
+    \toprule
+                                                      & \rotatebox{90}{JavaScript SLOC excl. comments}
+                                                      & \rotatebox{90}{Number of JavaScript source file}
+                                                      & \rotatebox{90}{Number of nodes in the ASG}
+                                                      & \rotatebox{90}{Number of relationships in the ASG~~}
+                                                      \\
+    \midrule
+    \textbf{Verba/jquery-readyselector}               &   71        &   2     &   2,754       &   9,378       \\
+    \textbf{scotch-io/node-api}                       &   74        &   2     &   2,782       &   9,376       \\
+    \textbf{kolodny/wavy}                             &   79        &   2     &   3,186       &   11,068      \\
+    \textbf{bas2k/jquery.appear}                      &   81        &   1     &   3,158       &   10,896      \\
+    \textbf{bevacqua/trunc-html}                      &   89        &   2     &   3,061       &   10,452      \\
+    \textbf{tj/node-trace}                            &   89        &   2     &   3,429       &   11,690      \\
+    \textbf{louisondumont/facematch}                  &   93        &   6     &   3,174       &   10,692      \\
+    \textbf{bilbof/purser}                            &   97        &   4     &   6,232       &   21,200      \\
+    \textbf{markdalgleish/react-themeable}            &   112       &   2     &   3,299       &   11,160      \\
+    \textbf{OutSystems/AutoAnimations}                &   125       &   1     &   3,965       &   13,802      \\
+    \textbf{sindresorhus/grunt-sass}                  &   145       &   3     &   4,185       &   14,154      \\
+    \textbf{dissimulate/Tearable-Cloth}               &   184       &   1     &   6,708       &   23,369      \\
+    \textbf{ebidel/appmetrics.js}                     &   307       &   6     &   13,244      &   45,578      \\
+    \textbf{BohemianCoding/sketch-image-compressor}   &   367       &   2     &   13,825      &   47,879      \\
+    \textbf{eduardomb/scroll-up-bar}                  &   457       &   7     &   17,129      &   59,224      \\
+    \textbf{mewo2/naming-language}                    &   463       &   1     &   11,398      &   39,044      \\
+    \textbf{angular-ui/ui-codemirror}                 &   580       &   6     &   19,027      &   65,344      \\
+    \textbf{angular-app/Samples}                      &   3,310     &   123   &   118,811     &   402712      \\
+    \textbf{mzabriskie/axios}                         &   3,863     &   76    &   146,178     &   498,722     \\
+    \textbf{alvin198761/web-os}                       &   5,922     &   67    &   205,115     &   707,597     \\
+    \textbf{reactjs/redux}                            &   6,036     &   158   &   56,750      &   192,018     \\
+    \textbf{joyent/node-workflow}                     &   6,143     &   20    &   191,449     &   653,107     \\
+    \textbf{facebookincubator/create-react-app}       &   6,855     &   141   &   97,933      &   335,169     \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{l|cc|cc}
+    \toprule
+                                                      & \rotatebox{90}{JavaScript SLOC excl. comments}
+                                                      & \rotatebox{90}{Number of JavaScript source file}
+                                                      & \rotatebox{90}{Number of nodes in the ASG}
+                                                      & \rotatebox{90}{Number of relationships in the ASG~~}
+                                                      \\
+    \midrule
+    \textbf{freeCodeCamp/freeCodeCamp}                &   11,823    &   177   &   163,070     &   551,500     \\
+    \textbf{vuejs/vue}                                &   12,982    &   188   &   81,619      &   282,253     \\
+    \textbf{tresorit/webclient}                       &   34,546    &   609   &   1,346,776   &   4,576,319   \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+
+\subsection{Measurement Results}
+
+\begin{center}
+\tiny
+\begin{tabular}{l|cccc}
+    \toprule
+                                                      & \rotatebox{90}{Duration of synchronisation}
+                                                      & \rotatebox{90}{Duration of interconnection}
+                                                      & \rotatebox{90}{Duration of running the Qualifier System~~}
+                                                      & \rotatebox{90}{Duration of the analyses}
+                                                      \\
+    \midrule
+    \textbf{initialstate/silent-doorbell}             &   1,497,553 $\mu$s       &   13,367 $\mu$s       &   2,650,105 $\mu$s    &   87,580 $\mu$s      \\
+    \textbf{babel/example-node-server}                &   932,053 $\mu$s         &   2,702,617 $\mu$s    &   2,171,579 $\mu$s    &   3,091,490 $\mu$s   \\
+    \textbf{bradtraversy/rxjs\_boiler}                &   1,202,026 $\mu$s       &   3,577,111 $\mu$s    &   4,531,478 $\mu$s    &   6,583,445 $\mu$s   \\
+    \textbf{tj/deferred.js}                           &   5,539,918 $\mu$s       &   15,038 $\mu$s       &   3,294,333 $\mu$s    &   5,358,816 $\mu$s   \\
+    \textbf{karma-runner/gulp-karma}                  &   1,521,805 $\mu$s       &   2,663,639 $\mu$s    &   2,123,288 $\mu$s    &   6,016,907 $\mu$s   \\
+    \textbf{scotch-io/node-web-scraper}               &   1,991,224 $\mu$s       &   11,180 $\mu$s       &   2,181,329 $\mu$s    &   64,417 $\mu$s      \\
+    \textbf{brettlangdon/jsnice}                      &   1,909,302 $\mu$s       &   7,215 $\mu$s        &   1,943,869 $\mu$s    &   43,765 $\mu$s      \\
+    \textbf{facundoolano/promise-log}                 &   7,116,37 $\mu$s        &   2,515,415 $\mu$s    &   1,586,458 $\mu$s    &   54,952 $\mu$s      \\
+    \textbf{jinzhe/vue-editable}                      &   2,669,613 $\mu$s       &   8,086 $\mu$s        &   2,635,767 $\mu$s    &   2,409,739 $\mu$s   \\
+    \textbf{callmecavs/gotem}                         &   2,763,192 $\mu$s       &   1,033,612 $\mu$s    &   7,960,501 $\mu$s    &   2,625,625 $\mu$s   \\
+    \textbf{Heydon/forceFeed}                         &   3,146,354 $\mu$s       &   7,280 $\mu$s        &   2,222,943 $\mu$s    &   52,337 $\mu$s      \\
+    \textbf{varHarrie/Dawn-Blossoms}                  &   3,672,140 $\mu$s       &   2,450,689 $\mu$s    &   2,107,809 $\mu$s    &   53,592 $\mu$s      \\
+    \textbf{kmewhort/pointer\_events\_polyfill}       &   2,164,437 $\mu$s       &   7,563 $\mu$s        &   1,996,131 $\mu$s    &   104,837 $\mu$s     \\
+    \textbf{bodil/eslint-config-cleanjs}              &   1,445,878 $\mu$s       &   26,147 $\mu$s       &   3,276,381 $\mu$s    &   41,178 $\mu$s      \\
+    \textbf{Verba/jquery-readyselector}               &   5,290,469 $\mu$s       &   3,585,861 $\mu$s    &   3,501,627 $\mu$s    &   6,432,633 $\mu$s   \\
+    \textbf{scotch-io/node-api}                       &   3,777,201 $\mu$s       &   8,681 $\mu$s        &   4,124,129 $\mu$s    &   37,368 $\mu$s      \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\tiny
+\begin{tabular}{l|cccc}
+    \toprule
+                                                      & \rotatebox{90}{Duration of synchronisation}
+                                                      & \rotatebox{90}{Duration of interconnection}
+                                                      & \rotatebox{90}{Duration of running the Qualifier System~~}
+                                                      & \rotatebox{90}{Duration of the analyses}
+                                                      \\
+    \midrule
+    \textbf{kolodny/wavy}                             &   4,570,584 $\mu$s       &   5,468 $\mu$s        &   1,994,231 $\mu$s    &   54,605 $\mu$s      \\
+    \textbf{bas2k/jquery.appear}                      &   5,448,897 $\mu$s       &   10,726 $\mu$s       &   2,269,582 $\mu$s    &   5,208,812 $\mu$s   \\
+    \textbf{bevacqua/trunc-html}                      &   4,327,909 $\mu$s       &   11,221 $\mu$s       &   1,986,631 $\mu$s    &   6,669,424 $\mu$s   \\
+    \textbf{tj/node-trace}                            &   11,879,062 $\mu$s      &   12,639,721 $\mu$s   &   6,610,741 $\mu$s    &   7,725,408 $\mu$s   \\
+    \textbf{louisondumont/facematch}                  &   4,626,696 $\mu$s       &   5,967 $\mu$s        &   2,161,497 $\mu$s    &   64,844 $\mu$s      \\
+    \textbf{bilbof/purser}                            &   8,663,335 $\mu$s       &   2,668,585 $\mu$s    &   2,390,193 $\mu$s    &   3,090,801 $\mu$s   \\
+    \textbf{markdalgleish/react-themeable}            &   5,162,753 $\mu$s       &   2,189,079 $\mu$s    &   2,393,060 $\mu$s    &   6,524,218 $\mu$s   \\
+    \textbf{OutSystems/AutoAnimations}                &   6,269,249 $\mu$s       &   2,653,444 $\mu$s    &   2,098,536 $\mu$s    &   5,944,605 $\mu$s   \\
+    \textbf{sindresorhus/grunt-sass}                  &   5,483,316 $\mu$s       &   2,017,179 $\mu$s    &   2,122,158 $\mu$s    &   2,968,374 $\mu$s   \\
+    \textbf{dissimulate/Tearable-Cloth}               &   12,913,704 $\mu$s      &   240,211 $\mu$s      &   2,804,645 $\mu$s    &   2,172,038 $\mu$s   \\
+    \textbf{ebidel/appmetrics.js}                     &   21,597,123 $\mu$s      &   2,657,964 $\mu$s    &   2,590,861 $\mu$s    &   5,978,452 $\mu$s   \\
+    \textbf{BohemianCoding/sketch-image-compressor}   &   30,141,715 $\mu$s      &   2,128,170 $\mu$s    &   3,716,391 $\mu$s    &   5,902,471 $\mu$s   \\
+    \textbf{eduardomb/scroll-up-bar}                  &   24,928,994 $\mu$s      &   2,664,088 $\mu$s    &   2,214,006 $\mu$s    &   85,223 $\mu$s      \\
+    \textbf{mewo2/naming-language}                    &   50,654,490 $\mu$s      &   2,900,949 $\mu$s    &   4,030,616 $\mu$s    &   4,063,752 $\mu$s   \\
+    \textbf{angular-ui/ui-codemirror}                 &   79,015,546 $\mu$s      &   3,832,991 $\mu$s    &   3,574,924 $\mu$s    &   6,571,692 $\mu$s   \\
+    \textbf{angular-app/Samples}                      &   221,836,333 $\mu$s     &   6,233,693 $\mu$s    &   5,411,927 $\mu$s    &   8,201,479 $\mu$s   \\
+    \textbf{mzabriskie/axios}                         &   345,069,568 $\mu$s     &   2,894,648 $\mu$s    &   7,629,029 $\mu$s    &   5,965,491 $\mu$s   \\
+    \textbf{alvin198761/web-os}                       &   1,126,669,966 $\mu$s   &   3,167,234 $\mu$s    &   38,086,892 $\mu$s   &   5,852,797 $\mu$s   \\
+    \textbf{reactjs/redux}                            &   115,551,087 $\mu$s     &   7,887,990 $\mu$s    &   7,517,116 $\mu$s    &   7,368,536 $\mu$s   \\
+    \textbf{joyent/node-workflow}                     &   1,036,041,011 $\mu$s   &   5,412,719 $\mu$s    &   5,729,655 $\mu$s    &   7,454,727 $\mu$s   \\
+    \textbf{facebookincubator/create-react-app}       &   200,879,187 $\mu$s     &   3,702,773 $\mu$s    &   3,512,440 $\mu$s    &   3,223,522 $\mu$s   \\
+    \textbf{freeCodeCamp/freeCodeCamp}                &   243,149,247 $\mu$s     &   3,074,393 $\mu$s    &   3,997,613 $\mu$s    &   5,563,976 $\mu$s   \\
+    \textbf{vuejs/vue}                                &   273,768,964 $\mu$s     &   1,862,202 $\mu$s    &   5,625,412 $\mu$s    &   4,905,929 $\mu$s   \\
+    \textbf{tresorit/webclient}                       &   4,651,047,877 $\mu$s   &   26,838,424 $\mu$s   &   36,416,152 $\mu$s   &   5,588,438 $\mu$s   \\
+    \bottomrule
+\end{tabular}
+\end{center}
