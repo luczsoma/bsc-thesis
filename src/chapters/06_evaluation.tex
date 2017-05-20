@@ -39,7 +39,7 @@ For better performance, a database index was defined in Neo4j for the \lstinline
 
 \subsection{Selection Criteria of the Analysed Source Code Repositories}
 
-The evaluation was performed on popular open-source JavaScript code repositories randomly chosen and downloaded from GitHub, and on a closed-source, security-oriented industrial project from Tresorit, called \lstinline{webclient}. The altogether 40 repositories differ in size, in the number of lines of code, and in the number of distinct source files.
+The evaluation was performed on popular open-source JavaScript code repositories randomly chosen and downloaded from GitHub, and on a closed-source, security-oriented product from Tresorit, called \lstinline{webclient}. The altogether 40 repositories (listed in the Appendix) differ in size, in the number of lines of code, and in the number of source files.
 
 
 \subsection{Key Performance Indices}
@@ -97,9 +97,9 @@ There are many coding styles and conventions, and the contents of the source fil
 	\label{fig:measurement-synctime-nodes-relationships}
 \end{figure}
 
-As for the duration of the synchronisation phase, the tendency is linear in this case too. The bigger the repository is, the more time it consumes to synchronise the code base into Codemodel-Rifle (as more graph nodes and relationships need to be created). \Cref{fig:measurement-synctime-sloc} shows the correlation between the duration of synchronisation and the repository size. The shortest synchronisation duration belongs to the \lstinline{facundoolano/promise-log} repository with altogether 41 SLOC in 1 module, it was imported into the framework in around 7 milliseconds. The import of the largest repository, \lstinline{tresorit/webclient} with 34,546 SLOC in 609 modules, took about 78 minutes.
+As for the duration of the synchronisation phase, the correlation is linear in this case too. The bigger the repository is, the more time it consumes to synchronise the code base into Codemodel-Rifle (as more graph nodes and relationships need to be created). \Cref{fig:measurement-synctime-sloc} shows the correlation between the duration of synchronisation and the repository size. The shortest synchronisation duration belongs to the \lstinline{facundoolano/promise-log} repository with altogether 41 SLOC in 1 module, it was imported into the framework in around 7 milliseconds. The import of the largest repository, \lstinline{tresorit/webclient} with 34,546 SLOC in 609 modules, took about 78 minutes.
 
-A more evident approach is to inspect the relationship between the duration of synchronisation and the repository size, but now the latter in terms of the number of created graph nodes and relationships. As \Cref{fig:measurement-synctime-nodes-relationships} shows, the relationship between these two measurement values is also linear. Practically, this means the underlying graph database, Neo4j is able to handle node and relationship creations at very large volumes — even at the magnitude of several millions of graph nodes — linearly. With the effect of the database index on the \lstinline{`id'} attribute, the nodes are retrieved faster at creating the relationships.
+A more evident approach is to inspect the relationship between the duration of synchronisation and the repository size measured with the number of created graph nodes and relationships. As \Cref{fig:measurement-synctime-nodes-relationships} shows, the relationship between these two values is also linear. Practically, this means the underlying graph database, Neo4j is able to handle very large volumes of node and relationship creations linearly. By using the database index on the \lstinline{`id'} attribute, the nodes are retrieved faster at creating the relationships.
 
 An important thing to consider regarding Neo4j is transaction granularity. According to my experience with the production server run on my laptop with the configuration mentioned earlier, the graph database tends to freeze if a very large amount of queries are committed within one transaction. In the framework's current implementation, it is not possible to configure the maximum number of queries committed in one turn. It is hard-coded into the framework to handle each file in a separate transaction as a whole, to preserve at least file-level consistency. The transactions of synchronising larger files (several hundred kilobytes, several thousand SLOC) should be configurably split into multiple smaller ones in the future, in order to ensure solid operation.
 
@@ -124,9 +124,9 @@ Regarding the characteristics of the export-import interconnections, no explicit
 
 \subsection{The Qualifier System}
 
-Spreading qualifiers along possible propagation paths in the Abstract Semantic Graph is a long process. In each propagation step, a particular qualifier can traverse only one relationship at a time — similarly to solving data-flow equations locally, based on the solution of the preceding equation. In larger graphs containing long transitive paths, producing a full transitive closure can involve many steps.
+Spreading qualifiers along possible propagation paths in the Abstract Semantic Graph is a long process. In each step, a particular qualifier can traverse only one relationship at a time — similarly to solving data-flow equations locally, based on the solution of the preceding equation. In larger graphs containing long transitive paths, producing a full transitive closure can involve many steps.
 
-The more \textquote{entry points} has a particular software for the Qualifier System (e.g.\ literals and \lstinline{throw} statements can be entry points: they are the first to be marked with a qualifier at the initialisation of the Qualifier System), the more propagation paths need to be closed up. The bigger the repository is, the more likely it is to contain such entry points.
+The more \textquote{entry points} has a particular software for the Qualifier System (e.g.\ literals and \lstinline{throw} statements can be entry points: they are the first to be marked with qualifiers at the initialisation of the Qualifier System), the more propagation paths need to be closed up. The bigger the repository is, the more likely it is to contain such entry points.
 
 \begin{figure}[!htb]
 	\centerfloat
@@ -135,7 +135,7 @@ The more \textquote{entry points} has a particular software for the Qualifier Sy
 	\label{fig:measurement-qualifiersystem-nodes-relationships}
 \end{figure}
 
-\Cref{fig:measurement-qualifiersystem-nodes-relationships} presents the characteristics of the Qualifier System. The relationship between the duration of running the Qualifier System and the number of nodes and relationships in the ASG is not unequivocal, but an exponential trendline fits the dataset well. The Qualifier System's longest run took 38 seconds, at analysing the \lstinline{alvin198761/web-os} repository. For the \lstinline{tresorit/webclient}, the Qualifier System ran for 36 seconds. It is worth to mention here, that while the \lstinline{web-os} contains only 5,922 SLOC, the \lstinline{webclient} has 34,546. The similar duration of running the Qualifier System with this difference could imply that the \lstinline{web-os} contains much more transitive defect paths to propagate qualifiers on.
+\Cref{fig:measurement-qualifiersystem-nodes-relationships} presents the characteristics of the Qualifier System. The relationship between the duration of running the Qualifier System and the number of graph nodes and relationships is not unequivocal. The two outlier values — 38 seconds for the \lstinline{alvin198761/web-os}, and 36 seconds for the \lstinline{tresorit/webclient} — can be explained by either the number of contained transitive defect, or simply the size of the repository. It is worth to mention here, that while the \lstinline{web-os} contains only 5,922 SLOC, the \lstinline{webclient} has 34,546. The similar duration of running the Qualifier System with this difference could imply that the \lstinline{web-os} contains much more transitive defect paths to propagate qualifiers on.
 
 
 \subsection{Analysis}
@@ -144,20 +144,18 @@ Importing, interconnecting, and applying the Qualifier System are only preparato
 
 \Cref{fig:measurement-analysis-nodes-relationships} presents the characteristics of the analyses. The duration of the analysis phase seemingly does not have any relationship with the number of graph nodes and relationships of a code repository. This is plausible, since the number of defects in a repository does not necessarily depend on the code base's size.
 
-\vspace*{-2mm}
 \begin{figure}[!htb]
 	\centerfloat
 	\includegraphics[width=\textwidth,clip]{figures/measurement-analysis-nodes-relationships.pdf}
 	\caption{The characteristics of performing the analyses}
 	\label{fig:measurement-analysis-nodes-relationships}
 \end{figure}
-\vspace*{-2mm}
 
 \subsection{Total Duration of the Analysis Process}
 
 The total duration of analysing a repository seems to be in linear relationship with the repository's size. \Cref{fig:measurement-totaltime-sloc} and \Cref{fig:measurement-totaltime-nodes-relationships} present that both measured in SLOC and in the number of graph nodes and relationships, there is a linear tendency: the bigger the source code repository is, the more time it takes perform a complete analysis process on it.
 
-It is interesting to notice by the detailed measurement data in the Appendix, how the proportion of the synchronisation phase's duration within the duration of the full analysis process increases with the size of the repository. While for the smaller repositories, the import makes up only 30–40\% of the total duration, for the larger repositories, it increases to 80–90\%. For the \lstinline{tresorit/webclient} repository, the synchronisation phase alone makes up 98\% of the duration of the total analysis process.
+It is interesting to notice, how the proportion of the synchronisation phase's duration increases with the size of the repository (see the Appendix for details). While for the smaller repositories, the import makes up only 30–40\% of the total duration, for the larger repositories, it increases to 80–90\%. For the \lstinline{tresorit/webclient} repository, the synchronisation phase alone makes up 98\% of the duration of the total analysis process.
 
 \begin{figure}[!p]
 	\centerfloat
