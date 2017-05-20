@@ -230,7 +230,7 @@ Some defects are more high-level or more general than to present their patterns 
 
 Transitive graph manipulations can be achieved by introducing \emph{qualifiers} into the analysis. The concept of qualifiers will be described in detail in \Cref{chapter:elaboration}.
 
-If the analysis matches the specified pattern, it returns the following:
+If an analysis matches the specified pattern, it returns the following:
 
 \begin{itemize}
 \item a \textbf{message} to explain the type of the defect for a human reader,
@@ -240,7 +240,7 @@ If the analysis matches the specified pattern, it returns the following:
 \item the \textbf{column} of the line at which the defect begins.
 \end{itemize}
 
-In my current implementation, the above items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect's type. This is not flexible, since an \emph{unreachable code} defect may require other arguments to be logged, than a \emph{non-initialised variable} defect.} returned from the database as elements of a Neo4j \lstinline{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be easily parsed into a Java class named \lstinline{Defect}. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output. With a clean API, this would allow the framework to be embedded to other software.
+In my current implementation, the above items are uniformly\footnote{Exactly these items are returned in all cases, regardless of the defect's type. This is not flexible, since an \emph{unreachable code} defect may require other arguments to be logged, than a \emph{non-initialised variable} defect.} returned from the database as elements of a Neo4j \lstinline{Record}, and they are handed over to a central logger to be immediately printed after minimal formatting. This is not a flexible solution; in the future, this basic defect processing logic should be refined. The found defects could be returned as JSON objects from the database to be easily parsed into a Java class named \lstinline{Defect}. They could also be collected into a per-analysis data structure. This way, the framework could display defects found at an analysis according to various aspects and criteria, and it could also produce machine-readable output. With a clean API, this would allow the framework to be embedded into other software.
 
 
 \section{In Production: Steps of Operating Live}

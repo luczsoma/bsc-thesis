@@ -8,14 +8,14 @@ Software development is a highly complex process involving many people, tools an
 
 Today's developer tools in commercial and open-source projects generally include \emph{version control systems (VCS)} and \emph{continuous integration (CI)} toolsets~\cite{hilton2016usage, fowlerCI}. Integrating code quality assurance tools into the CI platform, or into the developers' \emph{integrated development environment (IDE)}, seems to be the practical choice for enforcing project-/company-wide coding style compliance, and analysing the code deeper whether it contains defects.
 
-A CI tool can be configured to scan and analyse the source code with external tools when the developer commits their code to the central code repository. A common workflow is the following:
+A CI platform can be configured to scan and analyse the source code with external tools when the developer commits their code to the central code repository. A common workflow is the following:
 
 \begin{enumerate}
 \item the developer edits the code,
 \item the developer commits and pushes the modified code into the central repository,
 \item the VCS triggers a hook to inform the subscribers of the hook (including the CI platform) that new code has been committed,
-\item the CI tool analyses the source code with the static analysis tools integrated and configured by the user, and creates reports about the analyses,
-\item the CI tool builds the code with its dependencies and passes on the built artifact for further testing, and finally for deployment.
+\item the CI platform analyses the source code with the static analysis platforms integrated and configured by the user, and creates reports about the analyses,
+\item the CI platform builds the code with its dependencies and passes on the built artifact for further testing, and finally for deployment.
 \end{enumerate}
 
 The reports created by the integrated static analysis tools give the developers insights about code quality and help them discover faults in the software before it gets to testing or production state.
@@ -36,7 +36,7 @@ The solution can introduce other usability requirements as well, like incrementa
 
 \section{Objectives and Contributions}
 
-Dániel Stein created a graph-based static analysis framework for JavaScript (\es) called \emph{Codemodel-Rifle}~\cite{stein-daniel-msc}. The project's source code is available on GitHub~\cite{codemodel-rifle-github}. The framework stores the parsed source code repository's each parsed file as a distinct property graph, called an \emph{Abstract Semantic Graph (ASG)}, and gives us an interface to run analyses via graph queries.
+Dániel Stein created a graph-based static analysis framework for JavaScript (\es), called \emph{Codemodel-Rifle}~\cite{stein-daniel-msc}. The project's source code is available on GitHub~\cite{codemodel-rifle-github}. The framework stores the analysed source code repository's each parsed file as a distinct property graph, called an \emph{Abstract Semantic Graph (ASG)}, and gives us an interface to run analyses via graph queries.
 
 My main goal is to extend \emph{Codemodel-Rifle} with several static analysis constraints. This involves providing ways for evaluating analysis queries over more than one JavaScript modules related to each other.
 

@@ -50,7 +50,7 @@ The goal of the performance evaluation was to determine the time characteristics
 \item \textbf{The duration of synchronisation:} the time period between starting the importing process of a code repository (excl. finding all \lstinline{.js} files, and reading the contents of the source files) and saving the last module's last \lstinline{AsgNode} into the database.
 \item \textbf{The duration of interconnection:} this time period encompasses searching for semantically valid interconnections amongst related modules' property graphs, and actually performing the interconnections.
 \item \textbf{The duration of running the Qualifier System:} this time period encompasses initialising the Qualifier System, and propagating the qualifiers.
-\item \textbf{The duration of performing the analyses:} this time period encompasses trying to match all predefined analysis patterns.
+\item \textbf{The duration of performing the analyses:} this time period encompasses trying to match all predefined analysis patterns and logging analysis results.
 \item \textbf{The total duration of the analysis process:} the calculated sum of the above four.
 \end{itemize}
 
@@ -135,7 +135,7 @@ The more \textquote{entry points} has a particular software for the Qualifier Sy
 	\label{fig:measurement-qualifiersystem-nodes-relationships}
 \end{figure}
 
-\Cref{fig:measurement-qualifiersystem-nodes-relationships} presents the characteristics of the Qualifier System. The relationship between the duration of running the Qualifier System and the number of graph nodes and relationships is not unequivocal. The two outlier values — 38 seconds for the \lstinline{alvin198761/web-os}, and 36 seconds for the \lstinline{tresorit/webclient} — can be explained by either the number of contained transitive defect, or simply the size of the repository. It is worth to mention here, that while the \lstinline{web-os} contains only 5,922 SLOC, the \lstinline{webclient} has 34,546. The similar duration of running the Qualifier System with this difference could imply that the \lstinline{web-os} contains much more transitive defect paths to propagate qualifiers on.
+\Cref{fig:measurement-qualifiersystem-nodes-relationships} presents the characteristics of the Qualifier System. The relationship between the duration of running the Qualifier System and the number of graph nodes and relationships is not unequivocal. The two outlier values — 36 seconds for the \lstinline{tresorit/webclient} and 38 seconds for the \lstinline{alvin198761/web-os} — can be explained by either the large number of transitive defects, or simply the size of the repository. It is worth to mention though, that while the \lstinline{web-os} contains only 5,922 SLOC, the \lstinline{webclient} has 34,546 SLOC. The similar duration of running the Qualifier System with this difference could imply that the \lstinline{web-os} contains much more transitive defect paths to propagate qualifiers on.
 
 
 \subsection{Analysis}
@@ -153,7 +153,7 @@ Importing, interconnecting, and applying the Qualifier System are only preparato
 
 \subsection{Total Duration of the Analysis Process}
 
-The total duration of analysing a repository seems to be in linear relationship with the repository's size. \Cref{fig:measurement-totaltime-sloc} and \Cref{fig:measurement-totaltime-nodes-relationships} present that both measured in SLOC and in the number of graph nodes and relationships, there is a linear tendency: the bigger the source code repository is, the more time it takes perform a complete analysis process on it.
+The total duration of analysing a repository seems to be in linear relationship with the repository's size. \Cref{fig:measurement-totaltime-sloc} and \Cref{fig:measurement-totaltime-nodes-relationships} present that both measured in SLOC and in the number of graph nodes and relationships, the correlation is linear: the bigger the source code repository is, the more time it takes to perform a complete analysis process on it.
 
 It is interesting to notice, how the proportion of the synchronisation phase's duration increases with the size of the repository (see the Appendix for details). While for the smaller repositories, the import makes up only 30–40\% of the total duration, for the larger repositories, it increases to 80–90\%. For the \lstinline{tresorit/webclient} repository, the synchronisation phase alone makes up 98\% of the duration of the total analysis process.
 

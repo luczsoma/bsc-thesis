@@ -51,7 +51,7 @@ Static analysis is limited in many ways. It often provides false values: \emph{f
 
 Regarding limitations, time and resources are also important aspects. An analysis tool can not be utilised efficiently, if the amount of either time or resources consumed by an analysis is too high. Even if it was theoretically possible to create a tool which finds every possible defects in a piece of source code, this tool would presumably consume so much time and resources for an analysis that there would be no appropriate use case for operating it~\cite{anderson2008use}.
 
-Exploring execution paths greatly benefits static analysis proceedings, as it provides extra information about program states. Nevertheless, exploring all possible execution paths of a program is very costly: if a procedure contains $n$ branches without loops, the number of intraprocedural execution paths would be $2^n$~\cite{anderson2008use}. And even if a tool would encapsulate so much resources that it would be capable of exploring all possible executions paths, the set of possible inputs, whose cardinality is typically infinite, of the software would still not be taken into account. Since Alan Turing proved the halting problem to be generally undecidable over Turing-machines, we can conclude that — generally — some questions about a software can not be answered only by inspecting its source code.
+Exploring execution paths greatly benefits static analysis proceedings, as it provides extra information about program states. Nevertheless, exploring all possible execution paths of a program is very costly: if a procedure contains $n$ branches without loops, the number of intraprocedural execution paths would be $2^n$~\cite{anderson2008use}. And even if a tool would encapsulate so much resources that it would be capable of exploring all possible executions paths, the set of possible inputs, whose cardinality is typically infinite, would still not be taken into account. Since Alan Turing proved the halting problem to be generally undecidable over Turing-machines, we can conclude that — generally — some questions about a software can not be answered only by inspecting its source code.
 
 
 \section{JavaScript}
@@ -160,7 +160,7 @@ It is a common way to define graphs as a set of objects, in which some object pa
 	\label{fig:property-graph}
 \end{figure}
 
-The Codemodel-Rifle framework uses property graphs for its internal data storage. The parsed source code's AST is transformed into an ASG, and is stored as a property graph: nodes in the AST become property graph nodes, nested AST nodes are connected to each other via labeled graph relations. \Cref{fig:codemodel-rifle-asg} shows the ASG of the following JavaScript program: \lstinline{const PI = 3.141593;} produced and visualised by Codemodel-Rifle.\footnote{Administrative properties and labels are omitted for the sake of simplicity, e.g. no identifiers are shown.}
+The Codemodel-Rifle framework uses property graphs for its internal data storage. The parsed source code's AST is transformed into an ASG, and is stored as a property graph: nodes in the AST become property graph nodes, nested AST nodes are connected to each other via labeled graph relations. \Cref{fig:codemodel-rifle-asg} shows the ASG of the simple JavaScript program \lstinline{const PI = 3.141593;} produced and visualised by Codemodel-Rifle.\footnote{Administrative properties and labels are omitted for the sake of simplicity, e.g. no identifiers are shown.}
 
 \begin{figure}[!p]
 	\centering
@@ -192,7 +192,7 @@ Cypher is a query language developed especially for graph databases by Neo Techn
 	\label{fig:cypher-intro}
 \end{figure}
 
-Cypher syntax is elegant and expressive, thus very readable. Besides using it to represent nodes and relationships, we can utilise it to access the database's indexing capabilities and stored procedures as well. Since complex pattern-matching conditions can be expressed easily and intuitively in Cypher, it should be the primary way of accessing Neo4j instead of the little bit faster but less readable API.\footnote{Since the subject of this thesis mainly features Cypher queries, Cypher is detailed further in Chapter 5.}
+Cypher syntax is elegant and expressive, thus very readable. Besides using it to represent nodes and relationships, we can utilise it to access the database's indexing capabilities and stored procedures as well. Since complex pattern-matching conditions can be expressed easily and intuitively in Cypher, it should be the primary way of accessing Neo4j instead of the little bit faster but less readable API.
 
 
 \section{Running Example}
