@@ -91,7 +91,7 @@ This process can be partially automated with scripts, but it is still not a clea
 As a solution, Gábor Szárnyas advised to use his \emph{neo4j-drivers} project~\cite{neo4j-drivers}. The package contains wrappers for the Neo4j Java driver: the \lstinline{EmbeddedTestkitDriver} makes possible to use a local, in-memory \lstinline{ImpermanentGraphDatabase} accessed via a driver. Using an impermanent, local database is convenient for use cases where persistency is not explicitly needed — e.g.\ testing and developing new analyses —, since no external Neo4j database needs to be installed and run. At the same time, Codemodel-Rifle can be easily reconfigured for production environments, where the framework needs to persist its data in an actual remote database. This reconfiguration only involves changing the framework's database driver in the \lstinline{DbServicesManager} class to another Neo4j-compatible one.
 
 
-\subsection{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
+\subsection[Solutions to Speed-Related Issues]{Solutions to Speed-Related Issues: Object-Graph Mapping and the Cypher Query Builder}
 
 Converting from embedded Neo4j to external, driver-accessed Neo4j, involving converting from \emph{persistent driver-accessed Neo4j} to \emph{in-memory driver-accessed Neo4j} introduced notable slowness, making testing and developing new analyses inconvenient again. \Cref{table:embedded-vs-in-memory-remote-table} compares the duration of visualising a simple JavaScript program (the runnning example's \lstinline{exporter} module seen on \Cref{fig:running-example-exporter}) with the old embedded, and the new in-memory driver-accessed approach.
 
