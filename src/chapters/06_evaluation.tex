@@ -8,15 +8,15 @@ In this chapter, I evaluate the framework's performance by measuring the duratio
 
 \subsection{Computer Configuration}
 
-The measurements were performed on my computer for the sake of simplicity. During a measurement session, my computer was plugged in, it was configured to utilise its full performance, and only those software were running, which were explicitly necessary for the measurements. Each measurement session was preceded by a full system reboot.
+The measurements were performed on my computer for the sake of simplicity. During a measurement session, my computer was plugged in, it was configured to utilise its full performance, and only those software were running, which were explicitly necessary for the measurements. Each measurement session was preceded by a full system restart.
 
 The major points of the my computer's configuration are the following:
 
 \begin{itemize}
-\item Apple MacBook Pro, Mid-2014, 13 inches;
-\item Intel Core i5, 2.6 GHz;
-\item 8 GB 1600 MHz DDR3 RAM;
-\item 250 GB SSD.
+\item \textbf{Brand and model:} Apple MacBook Pro, Mid-2014, 13 inches;
+\item \textbf{CPU:} Intel Core i5 (4278U), 2.6 GHz;
+\item \textbf{Memory:} 8 GB 1600 MHz DDR3 RAM;
+\item \textbf{Storage:} 250 GB SSD.
 \end{itemize}
 
 
@@ -39,19 +39,19 @@ For better performance, a database index was defined in Neo4j for the \lstinline
 
 \subsection{Selection Criteria of the Analysed Source Code Repositories}
 
-The evaluation was performed on popular open-source JavaScript code repositories found on GitHub. The 40 randomly chosen repositories differ in size, in the number of lines of code, and in the number of distinct source files. The repositories are listed in the Appendix.
+The evaluation was performed on popular open-source JavaScript code repositories randomly chosen and downloaded from GitHub, and on a closed-source, security-oriented industrial project from Tresorit, called \lstinline{webclient}. The altogether 40 repositories differ in size, in the number of lines of code, and in the number of distinct source files.
 
 
 \subsection{Key Performance Indices}
 
-The goal of the performance evaluation was to determine the time characteristics of the refactored Codemodel-Rifle framework, and especially the implemented analyses. Based on the production operation of the framework detailed in the introduction of \Cref{chapter:elaboration}, the following Key Performance Indices have been determined to be measured.
+The goal of the performance evaluation was to determine the time characteristics of the extended Codemodel-Rifle framework, especially the implemented analyses. Based on the production operation of the framework detailed in the introduction of \Cref{chapter:elaboration}, the following Key Performance Indices have been determined to be measured.
 
 \begin{itemize}
 \item \textbf{The duration of synchronisation:} the time period between starting the importing process of a code repository (excl. finding all \lstinline{.js} files, and reading the contents of the source files) and saving the last module's last \lstinline{AsgNode} into the database.
 \item \textbf{The duration of interconnection:} this time period encompasses searching for semantically valid interconnections amongst related modules' property graphs, and actually performing the interconnections.
 \item \textbf{The duration of running the Qualifier System:} this time period encompasses initialising the Qualifier System, and propagating the qualifiers.
 \item \textbf{The duration of performing the analyses:} this time period encompasses trying to match all predefined analysis patterns.
-\item \textbf{The total duration of the analysis process:} this time period is the sum of the above four durations. It was not measured, but calculated from the above.
+\item \textbf{The total duration of the analysis process:} the calculated sum of the above four.
 \end{itemize}
 
 Besides the Key Performance Indices, the number of graph nodes and relationships created during the synchronisation of a repository is also recorded.
