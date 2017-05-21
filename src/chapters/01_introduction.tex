@@ -18,18 +18,25 @@ A CI platform can be configured to scan and analyse the source code with externa
 \item the CI platform builds the code with its dependencies and passes on the built artifact for further testing, and finally for deployment.
 \end{enumerate}
 
-The reports created by the integrated static analysis tools give the developers insights about code quality and help them discover faults in the software before it gets to testing or production state.
+The reports created by the integrated static analysis tools give the developers insights about code quality, and help them discover faults in the software before they reach the testing or production stage.
 
 This thesis focuses on the static analysis of JavaScript projects. As JavaScript is an interpreted language, it is generally considered not to require to be built before executing in browsers and external runtimes. Nevertheless, it is sensible to involve CI into JavaScript-projects for code quality and testing purposes, for a so-called transpiling step\footnote{The procedure of transpiling will be detailed in \Cref{chapter:background}.}, and for automated deployment.
 
 
 \section{Problem Statement and Requirements}
 
-Despite being one of the most commonly used programming language in the world~\cite{javascriptstackoverflow}, JavaScript does not have extensive static analysis tooling. There are static analysers for the language, but either their capabilities are very limited, or they require special preparations, like code annotations or special syntax flavours to work appropriately. There are only a couple of analysers which analyse more than one JavaScript modules coherently.
+Despite being one of the most commonly used programming language in the world~\cite{javascriptstackoverflow}, JavaScript does not have extensive static analysis tooling. There are static analysers for the language, but either their capabilities are very limited, or they require special preparations, like code annotations or special syntax flavours to work appropriately. There are only a couple of analysers, which analyse more than one JavaScript modules coherently.
 
 One solution is to modify already existing JavaScript projects according to the needs of the analysis toolsets. If developers annotate their objects and/or use specially extended, non-standard flavours of the JavaScript language, they can get benefits like type inference. For already existing projects being developed for a longer amount of time, this solution is far from ideal. Since more complex projects can excede 1 million lines of code in size, utilising annotations or special, non-standard syntax flavours would involve huge refactoring costs.
 
-Another possible solution would be a general JavaScript analysis framework with a static type system and other analytical benefits based on nothing else, but the current JavaScript standard\footnote{According to the standard~\cite{ecmascriptstandard}, the official name of the JavaScript language is \es.}~\cite{ecmascriptstandard}. This solution would require a JavaScript parser complying with the latest \es standards to parse the source files into a data structure that can be processed and manipulated effectively, a database technology for storing the data structure, an intuitive interface to manipulate the data structure for the purposes of the analysis processes, and — necessarily — the analyses' algorithmic descriptions themselves, which reveal the potential defects' location in the analysed software.
+Another possible solution would be a general JavaScript analysis framework with a static type system and other analytical benefits based on nothing else, but the current JavaScript standard\footnote{According to the standard~\cite{ecmascriptstandard}, the official name of the JavaScript language is \es.}~\cite{ecmascriptstandard}. This solution would require:
+
+\begin{itemize}
+\item a JavaScript parser complying with the latest \es standards to parse the source files into a data structure that can be processed and manipulated effectively,
+\item a database technology for storing the data structure,
+\item an interface to manipulate the data structure for the purposes of the analyses,
+\item and — necessarily — the analyses' algorithmic descriptions themselves, which reveal the potential defects' location in the inspected software.
+\end{itemize}
 
 The solution can introduce other usability requirements as well, like incremental processing of source code repositories for speed, multi-version data model in accordance with VCSs so the analysis framework can be used by many developers simultaneously, or even a centralised interface for collecting, storing, and presenting previous analysis results for fine-grained, per-person or per-workgroup efficiency analytics. This thesis focuses on the source code analyses themselves.
 
@@ -40,7 +47,7 @@ Dániel Stein created a graph-based static analysis framework for JavaScript (\e
 
 My main goal is to extend \emph{Codemodel-Rifle} with several static analysis constraints. This involves providing ways for evaluating analysis queries over more than one JavaScript modules related to each other.
 
-The framework and the analyses are tested with open-source projects and a closed-source, security-oriented industrial product from Tresorit~\cite{tresorit}, a cloud security company located in Budapest, Hungary. The results, if relevant, are delivered to the maintainers of the projects for further evaluation.
+The framework and the analyses are tested with open-source projects and a closed-source, security-oriented industrial product from Tresorit~\cite{tresorit}, a cloud security company located in Budapest, Hungary.
 
 
 \section{Structure of the Thesis}

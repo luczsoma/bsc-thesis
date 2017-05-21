@@ -1,4 +1,4 @@
-\chapter{Preliminaries: Background}
+\chapter{Preliminaries}
 \label{chapter:background}
 
 This chapter presents the concept of static analysis, shortly summarises the JavaScript language and its static analysis approaches, and gives insights to the background technologies of the previously mentioned \emph{Codemodel-Rifle} framework.
@@ -51,7 +51,7 @@ Static analysis is limited in many ways. It often provides false values: \emph{f
 
 Regarding limitations, time and resources are also important aspects. An analysis tool can not be utilised efficiently, if the amount of either time or resources consumed by an analysis is too high. Even if it was theoretically possible to create a tool which finds every possible defects in a piece of source code, this tool would presumably consume so much time and resources for an analysis that there would be no appropriate use case for operating it~\cite{anderson2008use}.
 
-Exploring execution paths greatly benefits static analysis proceedings, as it provides extra information about program states. Nevertheless, exploring all possible execution paths of a program is very costly: if a procedure contains $n$ branches without loops, the number of intraprocedural execution paths would be $2^n$~\cite{anderson2008use}. And even if a tool would encapsulate so much resources that it would be capable of exploring all possible executions paths, the set of possible inputs, whose cardinality is typically infinite, would still not be taken into account. Since Alan Turing proved the halting problem to be generally undecidable over Turing-machines, we can conclude that — generally — some questions about a software can not be answered only by inspecting its source code.
+Exploring execution paths greatly benefits static analysis proceedings, as it provides extra information about program states. Nevertheless, exploring all possible execution paths of a program is very costly: if a procedure contains $n$ branches without loops, the number of intraprocedural execution paths would be $2^n$~\cite{anderson2008use}. And even if a tool would encapsulate so much resources that it would be capable of exploring all possible executions paths, the set of possible inputs, whose cardinality is typically infinite, would still not be taken into account. Since Alan Turing proved the halting problem to be generally undecidable over Turing-machines~\cite{turing1937computable}, we can conclude that — generally — some questions about a software can not be answered only by inspecting its source code.
 
 
 \section{JavaScript}
